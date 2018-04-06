@@ -1,0 +1,33 @@
+.header-navbar {
+    display: grid;
+    grid-template-columns: 15% auto;
+    padding: 2px;
+}
+.logo img {
+    height: 40px;
+    width: auto;
+}
+.big-title {
+    color: #c20a0a;
+    font-size: 25px;
+    text-transform: uppercase;
+    word-spacing: 5px;
+    font-weight: bold;
+    line-height: 40px;
+}
+.header-logo {
+    margin: auto;
+    width: 50%;
+}
+html,
+body{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+#viewDiv {
+    height: 90%;
+    width: 99%;
+    /* margin: auto; */
+    border: solid 1px #ccc;
+  }
