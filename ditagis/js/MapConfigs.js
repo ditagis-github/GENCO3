@@ -39,8 +39,8 @@ define(["require", "exports"], function (require, exports) {
             outFields: ['*']
         }
         ],
-        zoom: 10,
-        center: [106.6843694, 11.158752270428375]
+        zoom: 6,
+        center: [106.9562792, 16.8799795]
     };
     return MapConfigs;
 });
