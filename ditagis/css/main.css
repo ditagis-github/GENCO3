@@ -31,3 +31,7 @@ body{
     /* margin: auto; */
     border: solid 1px #ccc;
   }
+
+  .popup-content > img{
+    height: 113px;
+  }
