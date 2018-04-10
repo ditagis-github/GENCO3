@@ -38,3 +38,6 @@ body{
   .popup-content > img{
     height: 113px;
   }
+  .weather{
+      background: white
+  }

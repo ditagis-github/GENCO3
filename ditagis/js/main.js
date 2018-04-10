@@ -12,6 +12,8 @@ require([
     "ditagis/js/Popup",
     "ditagis/js/MapConfigs",
     "esri/core/watchUtils",
+
+    "dojo/dom-construct",
     "dojo/domReady!"
 ], function (
     Map, MapView, Graphic,
@@ -19,7 +21,8 @@ require([
     BasemapToggle, Zoom, Legend,
     FeatureLayer,
     Extent, Popup, MapConfigs,
-    watchUtils
+    watchUtils,
+    domConstruct
 ) {
         var map = new Map({
             basemap: "osm"
@@ -137,18 +140,61 @@ require([
                 layerNhaMay = event.layerView.layer;
             }
         });
+        var script;
+        // if (script) {
+        //     document.head.removeChild(script);
+        // }
+        script = document.createElement('script');
+        var encodedQuery = "select atmosphere.humidity, wind.speed, item.condition.temp from weather.forecast where woeid in (select woeid from geo.places(1) where text='(" + view.center.latitude + "," + view.center.longitude + ")')";
+        script.src = 'http://query.yahooapis.com/v1/public/yql?q='
+            + encodedQuery + "&format=json&callback=callbackFunction";
+        document.head.appendChild(script);
+
         watchUtils.whenTrue(view, "stationary", function (evt) {
-            if(view.zoom == 6){
-                view.extent = map_ext;
-            }
+            // if (view.zoom == 6 &&  view.extent.xmax != map_ext.xmax) {
+            //     view.extent = map_ext;
+            // }
             if (view.zoom >= 15) {
                 layerNhaMay.renderer.symbol.color.a = 0;
-                // console.log(renderer);
             }
             else {
                 if (layerNhaMay)
                     layerNhaMay.renderer.symbol.color.a = 1;
             }
         });
+
+        var weather_Element = domConstruct.create("div", {
+            id: "weather",
+            class: 'weather'
+        });
+        var doam = domConstruct.create("div", {
+            id: "doam",
+        });
+        weather_Element.appendChild(doam);
+        var nhietdo = domConstruct.create("div", {
+            id: "nhietdo",
+        });
+        weather_Element.appendChild(nhietdo);
+        var tocdogio = domConstruct.create("div", {
+            id: "tocdogio",
+        });
+        weather_Element.appendChild(tocdogio);
+        var refresh_weather = domConstruct.create("button", {
+            id: "refresh_weather",
+            innerHTML: "Làm mới"
+        });
+        refresh_weather.onclick = function () {
+            if (script) {
+                document.head.removeChild(script);
+            }
+            script = document.createElement('script');
+            var encodedQuery = "select atmosphere.humidity, wind.speed, item.condition.temp from weather.forecast where woeid in (select woeid from geo.places(1) where text='(" + view.center.latitude + "," + view.center.longitude + ")')";
+            script.src = 'http://query.yahooapis.com/v1/public/yql?q='
+                + encodedQuery + "&format=json&callback=callbackFunction";
+            document.head.appendChild(script);
+        }
+        weather_Element.appendChild(refresh_weather);
+        view.ui.add(weather_Element, 'top-right');
+
 
     });

@@ -8,6 +8,19 @@
     <script src="https://js.arcgis.com/4.6/"></script>
     <link rel="stylesheet" href="../ditagis/css/main.css">
     <script src="../ditagis/js/main.js"></script>
+    <script>
+        var callbackFunction = function (data) {
+            var results = data.query.results;
+            var nhietdo = document.getElementById("nhietdo");
+            nhietdo.textContent = "Nhiệt độ: " + Math.round((results.channel.item.condition.temp -32) * 5 / 9);
+            var doam = document.getElementById("doam");
+            doam.textContent = "Độ ẩm: " + results.channel.wind.speed;
+            var tocdogio = document.getElementById("tocdogio");
+            tocdogio.textContent = "Tốc độ gió: " + results.channel.atmosphere.humidity;
+            
+            
+        };
+    </script>
 </head>
 
 <body>
@@ -20,14 +33,22 @@
             </div>
             <div class="header-title">
                 <div class="big-title">
-                    Tổng công ty phát điện 
+                    Tổng công ty phát điện
                 </div>
+                <!-- <script>
+                    var callbackFunction = function (data) {
+                        var wind = data.query.results.channel.wind;
+                        console.log(data);
+                        alert(wind.chill);
+                    };
+                </script>
+                <script src="https://query.yahooapis.com/v1/public/yql?q=select wind from weather.forecast where woeid in (select woeid from geo.places(1) where text='(10.7737924,106.6563737)')&format=json&callback=callbackFunction"></script> -->
 
             </div>
         </div>
     </nav>
     <div id="viewDiv">
-        
+
     </div>
 </body>
 
