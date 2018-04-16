@@ -1,3 +1,6 @@
+*{
+    font-family: arial,sans-serif;
+}
 .header-navbar {
     display: grid;
     grid-template-columns: 15% auto;
@@ -34,4 +37,7 @@ body{
 
   .popup-content > img{
     height: 113px;
+  }
+  .weather{
+      background: white
   }
