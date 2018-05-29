@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Draw polyline - 4.7</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.6/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.6/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/Graphic",
+      "esri/geometry/Polyline",
+
+      "dojo/domReady!"
+    ], function (
+      Map, MapView, Graphic,
+      Polyline
+    ) {
+        var map = new Map({
+          basemap: "osm"
+        });
+
+        var view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 6,
+          center: [106.9562792, 16.8799795]
+        });
+
+
+        view.when(function (evt) {
+          var vertices = [
+            [12313819.712455463, 1931562.8733008872],
+            [12662127.87337062, 2003474.814582455],
+            [12677782.236479847, 1610160.3970510],
+            [12358825.745135121, 1584722.1689668426],
+            [12304035.772834962, 1915908.510191659],
+          ]
+          var graphic = new Graphic({
+            geometry: new Polyline({
+              paths: vertices,
+              spatialReference: view.spatialReference
+            }),
+            symbol: {
+              type: "simple-line", // autocasts as new SimpleFillSymbol
+              color: [4, 90, 141],
+              width: 4,
+              cap: "round",
+              join: "round"
+            }
+          });
+
+          console.log(graphic)
+          // Add the graphics to the view's graphics layer
+          view.graphics.add(graphic);
+
+        });
+
+       
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv">
+    <div id="line-button" class="esri-widget-button esri-widget esri-interactive" title="Draw polyline">
+      <span class="esri-icon-polyline"></span>
+    </div>
+  </div>
+</body>
+
+</html>
