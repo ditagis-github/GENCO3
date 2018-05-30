@@ -2,16 +2,23 @@
 <html>
 
 <head>
-<meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>GENCO3</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>GENCO3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://js.arcgis.com/4.6/esri/css/main.css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="../ditagis/config.js"></script>
+
     <script src="https://js.arcgis.com/4.6/"></script>
+    <!-- <script src="../ditagis/js/libs/jquery.min.js"></script> -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <link rel="stylesheet" href="../ditagis/css/font-awesome.min.css">
     <link rel="stylesheet" href="../ditagis/css/main.css">
+    <link rel="stylesheet" href="../ditagis/css/css.css">
+    <link rel="stylesheet" href="../ditagis/css/map.css">
     <script src="../ditagis/js/main.js"></script>
+
 </head>
 
 <body>
@@ -24,22 +31,112 @@
             </div>
             <div class="header-title">
                 <div class="big-title">
-                    Tổng công ty phát điện
+                    Tổng công ty phát điện 3
                 </div>
-                <!-- <script>
-                    var callbackFunction = function (data) {
-                        var wind = data.query.results.channel.wind;
-                        console.log(data);
-                        alert(wind.chill);
-                    };
-                </script>
-                <script src="https://query.yahooapis.com/v1/public/yql?q=select wind from weather.forecast where woeid in (select woeid from geo.places(1) where text='(10.7737924,106.6563737)')&format=json&callback=callbackFunction"></script> -->
-
             </div>
         </div>
     </nav>
-    <div id="viewDiv">
+    <div id="header_template">
+        <div id="text_head">
+            <div id="control_toolbar">
+                <div id="map-tools" class="control_item item btn-primary">
+                    <span class="esri-icon-applications" title="Chức năng bản đồ">
+                    </span>
+                </div>
+                <div id="factorylist" class="control_item item btn-primary">
+                    <span class="esri-icon-organization" title="Danh sách nhà máy">
+                    </span>
+                </div>
+                <div id="weather" class="control_item item btn-primary">
+                    <span class="esri-icon-chart" title="Thời tiết">
+                    </span>
+                </div>
+                <div id="legend-widget" class="control_item item btn-primary">
+                    <span class="esri-icon-layer-list" title="Chú thích bản đồ">
+                    </span>
+                </div>
 
+            </div>
+            <div id="widget-tool" class="map-tool">
+                <div id="zoom-in" class="widget_item item zoom-item btn-primary">
+                    <span class="esri-icon-plus" title="Phóng to">
+                    </span>
+                </div>
+                <div id="zoom-out" class="widget_item item zoom-item btn-primary">
+                    <span class="esri-icon-minus" title="Thu nhỏ">
+                    </span>
+                </div>
+                <div id="location" class="widget_item item btn-primary">
+                    <span class="esri-icon-locate" title="Định vị">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="viewDiv">
+    </div>
+    <div class="panel panel-info hidden" id="weather-panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">Thời tiết</h3>
+            <span class="btn-danger pull-right closePanel closePanel_weather">X</span>
+        </div>
+        <div class="panel-primary" style="max-height:650px;overflow: hidden;">
+            <div class="row-item">
+                Nhiệt độ
+                <div class="label pull-right">
+                    <strong id="nhietdo"></strong>
+                    <strong>
+                        <sup>o</sup>C</strong>
+                </div>
+            </div>
+            <div class="row-item">
+                Độ ẩm
+                <div class="label pull-right">
+                    <strong id="doam"></strong>
+                    <strong>
+                        %</strong>
+                </div>
+            </div>
+            <div class="row-item">
+                Tốc độ gió
+                <div class="label pull-right">
+                    <strong id="tocdogio"></strong>
+                    <strong>m/s</strong>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="panel panel-info hidden" id="legend-panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">Chú thích</h3>
+            <span class="btn-danger pull-right closePanel closePanel_legend">X</span>
+        </div>
+        <div class="panel-primary" id="legend-symbols">
+
+        </div>
+    </div>
+
+    <div class="panel panel-info hidden" id="listNhaMay">
+        <div class="panel-heading">
+            <h3 class="panel-title">Danh sách nhà máy</h3>
+            <span class="btn-danger pull-right closePanel closePanel_NhaMay">X</span>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã nhà máy</th>
+                        <th>Tên nhà máy</th>
+                        <th>Địa chỉ</th>
+                        <th>Loại hình sản xuất</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="inforDetails"></tbody>
+            </table>
+        </div>
     </div>
 </body>
 

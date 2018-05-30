@@ -3,7 +3,7 @@ define([
     "esri/layers/FeatureLayer",
     "esri/core/watchUtils",
     "esri/Graphic",
-], function (GraphicsLayer,FeatureLayer, watchUtils, Graphic) {
+], function (GraphicsLayer, FeatureLayer, watchUtils, Graphic) {
 
     return class {
         constructor(view, featureLayer) {
@@ -29,7 +29,8 @@ define([
                 geometryType: "point",
                 spatialReference: this.view.spatialReference,
                 source: [],
-                renderer: renderer
+                renderer: renderer,
+                title: "Nhà máy"
             });
             this.view.map.add(this.graphicLayer);
             this.queryListNhaMay().then((displayResults) => {
@@ -49,10 +50,11 @@ define([
                 this.graphicLayer.renderer = renderer;
             });
         }
+
         rendererSymbol() {
-            this.featureLayer.renderer.symbol.color.a = 0;
+            this.featureLayer.renderer.symbol.color.a = 0.4;
             watchUtils.whenTrue(this.view, "stationary", (evt) => {
-                if (this.view.zoom >= 15) {
+                if (this.view.zoom >= 14) {
                     this.graphicLayer.visible = false;
                     this.featureLayer.visible = true;
                 }
