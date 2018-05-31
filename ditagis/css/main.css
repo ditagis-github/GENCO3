@@ -41,3 +41,19 @@ body{
   .weather{
       background: white
   }
+  .esri-basemap-toggle {
+    cursor: pointer;
+    position: relative;
+    overflow: visible;
+    bottom: -15px;
+    background-color: transparent;
+    box-shadow: none;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+}
+.esri-basemap-toggle__container, .esri-basemap-toggle__image {
+    width: 80px;
+    height: 80px;
+}

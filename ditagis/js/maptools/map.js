@@ -38,12 +38,12 @@ define([
                 this.view.zoom = 14;
                 this.thoitiet.laythongtinthoitiet(this.view.center);
             });
-            
+
             // function - tools
 
             // hien thi danh sach nha may
             $("#factorylist").click(() => {
-                $("div#listNhaMay").toggleClass("hidden");
+                $("div#danhsachnhamay").toggleClass("hidden");
                 this.danhsachnhamay();
             });
             $(".closePanel_NhaMay").click(function () {
@@ -139,6 +139,36 @@ define([
 
         }
         danhsachnhamay() {
+            this.queryListNhaMay().then((displayResults) => {
+                this.featuresNhaMay = displayResults.features;
+                var resultHtml = "<ul class='widget-runway-all-cards'>";
+                var index = 0;
+                for (var i = 0; i < this.featuresNhaMay.length; i++) {
+                    var feature = this.featuresNhaMay[i];
+                    var attr = feature.attributes;
+                    index = index += 1;
+                    resultHtml += `
+                    <span class="item-nhamay">
+                        <li >
+                            <button>
+                                <div class="image-hack-clip">
+                                    <div class="image-hack-wrapper">
+                                        <img src="../ditagis/images/factory/EPS1.jpg" alt="Nhà máy">
+                                    </div>
+                                </div>
+                                <div class="caption-image">
+                                    <label class="title-image">${attr["Ten"]}</label>
+                                </div>
+                            </button>
+                        </li>
+                    </span>
+                    `
+                }
+                resultHtml += "</ul>";
+                document.getElementById("danhsachnhamay").innerHTML = resultHtml;
+            });
+        }
+        danhsachnhamay1() {
             this.queryListNhaMay().then((displayResults) => {
                 this.featuresNhaMay = displayResults.features;
                 var resultHtml = "";

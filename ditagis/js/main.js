@@ -43,10 +43,11 @@ require([
         last_ext = view.extent;
         var toggle = new BasemapToggle({
             view: view,
-            nextBasemap: "satellite"
+            nextBasemap: "satellite",
+            container:document.getElementById('toggle-basemap')
         });
         view.ui.components = ["attribution"];
-        view.ui.add(toggle, "bottom-left");
+        // view.ui.add(toggle, "bottom-left");
         initFeatureLayer();
         function initFeatureLayer() {
             for (const layer of MapConfigs.layers) {
@@ -71,8 +72,6 @@ require([
                 new MapTools(view,layerNhaMay);
             }
         });
-        // var thoitiet = new ThoiTiet();
-        // thoitiet.start();
        
 
 

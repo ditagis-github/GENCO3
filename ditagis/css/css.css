@@ -4833,7 +4833,8 @@ a.list-group-item:hover,a.list-group-item:focus {
 }
 
 .panel-body {
-    padding: 15px
+    padding: 15px;
+    max-width: 100vh;
 }
 
 .panel-body:before,.panel-body:after {
