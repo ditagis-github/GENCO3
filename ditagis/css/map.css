@@ -113,8 +113,8 @@ span > img{
 }
 .panel-info>.panel-heading {
     color: #fff;
-    background-color: rgb(0, 94, 181);
-    border-color: #357ebd
+    background-color: #4285F4;
+   
 }
 
 .panel-heading {
@@ -125,14 +125,13 @@ span > img{
 }
 .btn-primary {
     color: #fff;
-    background-color: rgb(0, 94, 181);
-    border-color: #357ebd
+    background-color: #4285F4;
+   
 }
 
 .btn-primary:hover,.btn-primary:focus,.btn-primary:active,.btn-primary.active,.open .dropdown-toggle.btn-primary {
     color: #fff;
     background-color: #3276b1;
-    border-color: #285e8e
 }
 
 .btn-primary:active,.btn-primary.active,.open .dropdown-toggle.btn-primary {
@@ -140,8 +139,8 @@ span > img{
 }
 
 .btn-primary.disabled,.btn-primary[disabled],fieldset[disabled] .btn-primary,.btn-primary.disabled:hover,.btn-primary[disabled]:hover,fieldset[disabled] .btn-primary:hover,.btn-primary.disabled:focus,.btn-primary[disabled]:focus,fieldset[disabled] .btn-primary:focus,.btn-primary.disabled:active,.btn-primary[disabled]:active,fieldset[disabled] .btn-primary:active,.btn-primary.disabled.active,.btn-primary[disabled].active,fieldset[disabled] .btn-primary.active {
-    background-color: rgb(0, 94, 181);
-    border-color: #357ebd
+    background-color: #4285F4;
+   
 }
 .label.pull-right > img{
     width: 40px;
@@ -227,7 +226,20 @@ span > img{
     left: -149px;
     top: -202px;
 }
-
+.goToDirection{
+    cursor: pointer;
+    color: white;
+    font-size: 11px;
+    position: absolute;
+    line-height: normal;
+    top:2px;
+    right: 2px;
+    width: 30px;
+    height: 30px;
+    text-indent: 6px;
+    text-shadow: rgba(0,0,0,0.7) 0px 1px 8px;
+    background: url(../images/map/directions.png) no-repeat 1px 1px/20px;
+}
 .caption-image{
     cursor: pointer;
     color: white;

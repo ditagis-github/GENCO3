@@ -3,11 +3,12 @@ define([
     "esri/geometry/Extent",
     "esri/core/watchUtils",
     "esri/widgets/Locate",
+    "esri/widgets/Locate/LocateViewModel",
     "esri/widgets/Legend",
     "esri/widgets/Expand",
     "ditagis/js/maptools/thoitiet",
     "esri/Graphic",
-], function (FeatureLayer, Extent, watchUtils, Locate, Legend, Expand, ThoiTiet, Graphic) {
+], function (FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, ThoiTiet, Graphic) {
 
     return class {
         constructor(view, layerNhaMay) {
@@ -17,9 +18,11 @@ define([
             this.startup();
             this.thoitiet = new ThoiTiet();
             this.locateBtn = new Locate({
-                viewModel: {
-                    view: view,
-                }
+                view: view,
+            });
+            this.locateViewModel = new LocateViewModel({
+                view: view,
+                goToLocationEnabled: false
             });
             this.view.when(() => {
                 this.legend = new Legend({
@@ -28,15 +31,28 @@ define([
             })
         }
         startup() {
-            $("#inforDetails").on("click", "span.viewData", (result) => {
-                $("div#weather_panel").toggleClass("hidden");
+            $("#danhsachnhamay").on("click", "span.viewData", (result) => {
                 var value = result.currentTarget.attributes.alt.nodeValue;
                 var feature = this.featuresNhaMay.find(f => {
                     return f.attributes['OBJECTID'] == value;
-                })
+                });
                 this.view.center = [feature.geometry.centroid.x, feature.geometry.centroid.y];
                 this.view.zoom = 14;
                 this.thoitiet.laythongtinthoitiet(this.view.center);
+            });
+            $("#danhsachnhamay").on("click", "div.goToDirection", (result) => {
+                var value = result.currentTarget.attributes.alt.nodeValue;
+                var feature = this.featuresNhaMay.find(f =>
+                    f.attributes['OBJECTID'] == value
+                );
+                // toa do nha may
+                var longitude = feature.geometry.centroid.x, latitude = feature.geometry.centroid.y;
+                this.locateViewModel.locate().then((response) => {
+                    var coords = response.coords;// toa do hien tai
+                    var url = `https://www.google.com/maps/dir/${coords.latitude},${coords.longitude}/${latitude},${longitude}`;
+                    var win = window.open(url, '_blank');
+                    win.focus();
+                });
             });
 
             // function - tools
@@ -80,7 +96,6 @@ define([
             });
             $("#location").click(() => {
                 this.locateBtn.locate().then((response) => {
-                    console.log(response);
                 });
             });
 
@@ -148,7 +163,7 @@ define([
                     var attr = feature.attributes;
                     index = index += 1;
                     resultHtml += `
-                    <span class="item-nhamay">
+                    <span alt='${attr["OBJECTID"]}'class="item-nhamay viewData">
                         <li >
                             <button>
                                 <div class="image-hack-clip">
@@ -156,8 +171,13 @@ define([
                                         <img src="../ditagis/images/factory/EPS1.jpg" alt="Nhà máy">
                                     </div>
                                 </div>
+                                <div class="image-direction">
+                                    <div alt='${attr["OBJECTID"]}' class="widget_item goToDirection">
+                                    </div>
+                                </div>
                                 <div class="caption-image">
                                     <label class="title-image">${attr["Ten"]}</label>
+                                   
                                 </div>
                             </button>
                         </li>
