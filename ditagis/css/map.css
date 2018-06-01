@@ -75,6 +75,9 @@ span > img{
     line-height: 1;
     border-radius: .25em;
 }
+span.btn-danger.pull-right.closePanel.closePanel_print{
+    z-index: 1;
+}
 
 #weather-panel{
     width: 320px;
@@ -88,6 +91,16 @@ span > img{
     overflow: hidden;
 }
 #legend-panel{
+    width: 320px;
+    background-color: #f9f9f9;
+    float: right;
+    position: absolute;
+    right: 15px;
+    top: 75px;
+    z-index: 999;
+    overflow: hidden;
+}
+#print-panel{
     width: 320px;
     background-color: #f9f9f9;
     float: right;
@@ -225,6 +238,10 @@ span > img{
     line-height: 500px;
     left: -149px;
     top: -202px;
+}
+.image-hack-wrapper > img {
+    height: 100px;
+    width: 203px;
 }
 .goToDirection{
     cursor: pointer;

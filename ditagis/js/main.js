@@ -6,7 +6,7 @@ require([
     "esri/geometry/geometryEngine",
     "esri/widgets/BasemapToggle",
     "esri/widgets/Zoom",
-    "esri/layers/FeatureLayer",
+    "ditagis/js/layers/FeatureLayer",
     "esri/geometry/Extent",
     "ditagis/js/Popup",
     "ditagis/js/MapConfigs",

@@ -4,38 +4,43 @@ define(["require", "exports"], function (require, exports) {
         layers: [{
             title: 'Nhà máy',
             id: "NhaMay",
-            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/6",
+            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/7",
             outFields: ['*'],
         },
         {
             title: 'Van',
             id: "Van",
-            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/0",
+            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/6",
             outFields: ['*'],
         }, {
             title: 'Lò hơi',
             id: "LoHoi",
-            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/1",
+            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/5",
             outFields: ['*']
         }, {
             title: 'Trạm biến áp',
             id: "TramBienAp",
-            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/2",
+            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/4",
             outFields: ['*'],
+        }, {
+            title: 'Tua bin',
+            id: "TuaBin",
+            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/3",
+            outFields: ['*']
         }, {
             title: 'Bồn chứa',
             id: "BonChua",
-            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/3",
+            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/2",
             outFields: ['*']
         }, {
             title: 'Ống khói',
             id: "OngKhoi",
-            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/4",
+            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/1",
             outFields: ['*'],
         }, {
             title: 'Camera',
             id: "Camera",
-            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/5",
+            url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/0",
             outFields: ['*']
         }
         ],

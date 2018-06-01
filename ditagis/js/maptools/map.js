@@ -6,9 +6,10 @@ define([
     "esri/widgets/Locate/LocateViewModel",
     "esri/widgets/Legend",
     "esri/widgets/Expand",
+    "esri/widgets/Print",
     "ditagis/js/maptools/thoitiet",
     "esri/Graphic",
-], function (FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, ThoiTiet, Graphic) {
+], function (FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, Print,ThoiTiet, Graphic) {
 
     return class {
         constructor(view, layerNhaMay) {
@@ -77,6 +78,20 @@ define([
             });
             $(".closePanel_weather").click(function () {
                 $("div#weather-panel").toggleClass("hidden");
+            });
+
+            // In bản đồ
+
+            var print = new Print({
+                view: this.view,
+                container:  $("#print-widget")[0],
+                printServiceUrl: "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
+            });
+            $("#printer-widget").click(() => {
+                $("div#print-panel").toggleClass("hidden");
+            });
+            $(".closePanel_print").click(function () {
+                $("div#print-panel").toggleClass("hidden");
             });
 
             // hien thi chu thich ban do

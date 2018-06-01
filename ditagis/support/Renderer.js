@@ -13,15 +13,40 @@ define([
             this.createGraphicLayer();
         }
         createGraphicLayer() {
-            const SYMBOL = {
-                type: "picture-marker",
-                url: "../ditagis/images/map/factory.png",
-                width: "12px",
-                height: "12px"
-            };
+            // var renderer = {
+            //     type: "simple",  // autocasts as new SimpleRenderer()
+            //     symbol: SYMBOL
+            // };
             var renderer = {
-                type: "simple",  // autocasts as new SimpleRenderer()
-                symbol: SYMBOL
+                type: "unique-value",
+                field: 'LoaiHinhSX',
+                uniqueValueInfos: [{
+                    value: 1,
+                    symbol: {
+                        type: "picture-marker",
+                        url: "../ditagis/images/map/factory.png",
+                        width: "12px",
+                        height: "12px"
+                    }
+                },
+                {
+                    value: 2,
+                    symbol: {
+                        type: "picture-marker",
+                        url: "../ditagis/images/map/factory.png",
+                        width: "12px",
+                        height: "12px"
+                    }
+                }, {
+                    value: 3,
+                    symbol: {
+                        type: "picture-marker",
+                        url: "../ditagis/images/map/factory.png",
+                        width: "12px",
+                        height: "12px"
+                    }
+                }
+                ]
             };
             this.graphicLayer = new FeatureLayer({
                 fields: this.featureLayer.fields,
@@ -52,7 +77,12 @@ define([
         }
 
         rendererSymbol() {
-            this.featureLayer.renderer.symbol.color.a = 0.4;
+            var uniqueValueInfos = this.featureLayer.renderer.uniqueValueInfos;
+            for (const uniqueValueInfo of uniqueValueInfos) {
+                uniqueValueInfo.symbol.color.a = 0.2;
+            }
+            // this.featureLayer.renderer.uniqueValueInfos[0].symbol.c
+            // this.featureLayer.renderer.symbol.color.a = 0.4;
             watchUtils.whenTrue(this.view, "stationary", (evt) => {
                 if (this.view.zoom >= 14) {
                     this.graphicLayer.visible = false;
