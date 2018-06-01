@@ -7,9 +7,9 @@ define([
     "esri/widgets/Legend",
     "esri/widgets/Expand",
     "esri/widgets/Print",
-    "ditagis/js/maptools/thoitiet",
+    "public/ditagis/maptools/thoitiet",
     "esri/Graphic",
-], function (FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, Print,ThoiTiet, Graphic) {
+], function (FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, Print, ThoiTiet, Graphic) {
 
     return class {
         constructor(view, layerNhaMay) {
@@ -84,7 +84,7 @@ define([
 
             var print = new Print({
                 view: this.view,
-                container:  $("#print-widget")[0],
+                container: $("#print-widget")[0],
                 printServiceUrl: "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
             });
             $("#printer-widget").click(() => {
@@ -168,22 +168,27 @@ define([
             document.getElementById("legend-symbols").innerHTML += resultHtml;
 
         }
-        danhsachnhamay() {
-            this.queryListNhaMay().then((displayResults) => {
-                this.featuresNhaMay = displayResults.features;
-                var resultHtml = "<ul class='widget-runway-all-cards'>";
-                var index = 0;
-                for (var i = 0; i < this.featuresNhaMay.length; i++) {
-                    var feature = this.featuresNhaMay[i];
-                    var attr = feature.attributes;
-                    index = index += 1;
-                    resultHtml += `
+        async danhsachnhamay() {
+            var displayResults = await this.queryListNhaMay();
+            this.featuresNhaMay = displayResults.features;
+            var index = 0;
+            var resultHtml = "<ul class='widget-runway-all-cards'>";
+            for (var i = 0; i < this.featuresNhaMay.length; i++) {
+                var feature = this.featuresNhaMay[i];
+                var attr = feature.attributes;
+                var imageResults = await this.layerNhaMay.getAttachments(attr["OBJECTID"]);
+                var src = "../public/images/factory/EPS1.jpg";
+                if(imageResults && imageResults.attachmentInfos && imageResults.attachmentInfos.length > 0){
+                    src = imageResults.attachmentInfos[0].src;
+                }
+                index = index + 1;
+                resultHtml += `
                     <span alt='${attr["OBJECTID"]}'class="item-nhamay viewData">
                         <li >
                             <button>
                                 <div class="image-hack-clip">
                                     <div class="image-hack-wrapper">
-                                        <img src="../ditagis/images/factory/EPS1.jpg" alt="Nhà máy">
+                                        <img src="${src}" alt="Nhà máy">
                                     </div>
                                 </div>
                                 <div class="image-direction">
@@ -198,29 +203,9 @@ define([
                         </li>
                     </span>
                     `
-                }
-                resultHtml += "</ul>";
+            }
+            resultHtml += "</ul>";
                 document.getElementById("danhsachnhamay").innerHTML = resultHtml;
-            });
-        }
-        danhsachnhamay1() {
-            this.queryListNhaMay().then((displayResults) => {
-                this.featuresNhaMay = displayResults.features;
-                var resultHtml = "";
-                var index = 0;
-                for (var i = 0; i < this.featuresNhaMay.length; i++) {
-                    var feature = this.featuresNhaMay[i];
-                    var attr = feature.attributes;
-                    index = index += 1;
-                    resultHtml += "<tr class='item'> <td> " + (index) + "</td> <td>" + attr["Ma_NhaMay"] + "</td> <td> " + attr["Ten"] + "  </td>  <td> " + attr["DiaChi"]
-                        + "  </td> <td> " + attr["LoaiHinhSX"] + " </td> <td> <span alt='" + attr["OBJECTID"] + "' class='label label-danger pull-right viewData' >Xem</span> </td></tr>";
-
-                }
-                document.getElementById("inforDetails").innerHTML = resultHtml;
-            });
-        }
-        xemchitietnhamay(OBJECTID) {
-
         }
         queryListNhaMay() {
             var query = this.layerNhaMay.createQuery();

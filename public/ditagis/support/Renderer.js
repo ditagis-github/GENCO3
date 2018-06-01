@@ -24,7 +24,7 @@ define([
                     value: 1,
                     symbol: {
                         type: "picture-marker",
-                        url: "../ditagis/images/map/factory.png",
+                        url: "../public/images/map/factory.png",
                         width: "12px",
                         height: "12px"
                     }
@@ -33,7 +33,7 @@ define([
                     value: 2,
                     symbol: {
                         type: "picture-marker",
-                        url: "../ditagis/images/map/factory.png",
+                        url: "../public/images/map/factory.png",
                         width: "12px",
                         height: "12px"
                     }
@@ -41,7 +41,7 @@ define([
                     value: 3,
                     symbol: {
                         type: "picture-marker",
-                        url: "../ditagis/images/map/factory.png",
+                        url: "../public/images/map/factory.png",
                         width: "12px",
                         height: "12px"
                     }

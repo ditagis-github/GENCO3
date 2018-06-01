@@ -1,8 +1,8 @@
 var dojoConfig = {
     isDebug:true,
     paths: {
-      js: location.href.replace(/\/[^/]+$/, "") + "/js",
-      ditagis: location.origin+ "/ditagis",
+      js: location.href.replace(/\/[^/]+$/, "") + "/ditagis",
+      public: location.origin+ "/public",
     },
     map: {
       '*': {
