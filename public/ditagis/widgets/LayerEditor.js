@@ -6,8 +6,8 @@ define([
   "dojo/dom",
   "esri/widgets/Expand",
   "../core/ConstName",
-  "ditagis/js/widgets/subwidgets/PointDrawingTools",
-  "ditagis/js/widgets/subwidgets/PolylineDrawingTools"
+  "ditagis/widgets/subwidgets/PointDrawingTools",
+  "ditagis/widgets/subwidgets/PolylineDrawingTools"
 ], function (Base, on,
   domConstruct, domClass, dom,
   Expand, constName,

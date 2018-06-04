@@ -2,7 +2,7 @@ var dojoConfig = {
     isDebug:true,
     paths: {
       js: location.href.replace(/\/[^/]+$/, "") + "/ditagis",
-      public: location.origin+ "/public",
+      ditagis: location.origin+ "/public/ditagis",
     },
     map: {
       '*': {

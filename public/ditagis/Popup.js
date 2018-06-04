@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "dojo/on", "dojo/dom-construct", "public/ditagis/support/HightlightGraphic", "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate"], function (require, exports, on, domConstruct, HightlightGraphic, SimpleLineSymbol, watchUtils, PopupTemplate) {
+define(["require", "exports", "dojo/on", "dojo/dom-construct", "ditagis/support/HightlightGraphic", "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate"], function (require, exports, on, domConstruct, HightlightGraphic, SimpleLineSymbol, watchUtils, PopupTemplate) {
     "use strict";
     class Popup {
         constructor(view) {

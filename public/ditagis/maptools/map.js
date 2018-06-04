@@ -1,4 +1,5 @@
 define([
+    "esri/Graphic",
     "esri/layers/FeatureLayer",
     "esri/geometry/Extent",
     "esri/core/watchUtils",
@@ -7,9 +8,12 @@ define([
     "esri/widgets/Legend",
     "esri/widgets/Expand",
     "esri/widgets/Print",
-    "public/ditagis/maptools/thoitiet",
-    "esri/Graphic",
-], function (FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, Print, ThoiTiet, Graphic) {
+    "ditagis/maptools/thoitiet",
+    "ditagis/widgets/LayerEditor",
+    
+], function (Graphic,FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, Print, ThoiTiet,
+    LayerEditor,
+     ) {
 
     return class {
         constructor(view, layerNhaMay) {

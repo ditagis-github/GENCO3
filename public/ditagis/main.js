@@ -6,15 +6,15 @@ require([
     "esri/geometry/geometryEngine",
     "esri/widgets/BasemapToggle",
     "esri/widgets/Zoom",
-    "public/ditagis/layers/FeatureLayer",
+    "ditagis/layers/FeatureLayer",
     "esri/geometry/Extent",
-    "public/ditagis/Popup",
-    "public/ditagis/MapConfigs",
-    "public/ditagis/maptools/thoitiet",
-    "public/ditagis/maptools/hiddenmap",
-    "public/ditagis/maptools/map",
+    "ditagis/Popup",
+    "ditagis/MapConfigs",
+    "ditagis/maptools/thoitiet",
+    "ditagis/maptools/hiddenmap",
+    "ditagis/maptools/map",
     "esri/core/watchUtils",
-    "public/ditagis/support/Renderer",
+    "ditagis/support/Renderer",
     "dojo/dom-construct",
     "dojo/domReady!"
 ], function (
@@ -22,7 +22,8 @@ require([
     Polyline, geometryEngine,
     BasemapToggle, Zoom,
     FeatureLayer,
-    Extent, Popup, MapConfigs, ThoiTiet, HiddenMap,MapTools,
+    Extent, Popup, MapConfigs, ThoiTiet, HiddenMap,
+    MapTools,
     watchUtils, Renderer,
     domConstruct
 ) {
@@ -72,13 +73,4 @@ require([
                 new MapTools(view,layerNhaMay);
             }
         });
-       
-
-
-
-
-
-
-
-
     });
