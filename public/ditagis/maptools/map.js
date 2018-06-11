@@ -95,6 +95,7 @@ define([
 
                 // hien thi thong tin thoi tiet
                 $("#weather").click(() => {
+                    this.thoitiet.laythongtinthoitiet(this.view.center);
                     $("div#weather-panel").toggleClass("hidden");
                 });
                 $(".closePanel_weather").click(function () {
