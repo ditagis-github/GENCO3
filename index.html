@@ -33,24 +33,28 @@
     <div id="header_template">
         <div id="text_head">
             <div id="control_toolbar">
-                <div id="map-tools" class="control_item item btn-primary">
+                <div id="map-tools" class="control_item item">
                     <span class="esri-icon-applications" title="Chức năng bản đồ">
                     </span>
                 </div>
-                <div id="factorylist" class="control_item item btn-primary">
+                <div id="factorylist" class="control_item item">
                     <span class="esri-icon-organization" title="Danh sách nhà máy">
                     </span>
                 </div>
-                <div id="weather" class="control_item item btn-primary">
+                <div id="weather" class="control_item item ">
                     <span class="esri-icon-chart" title="Thời tiết">
                     </span>
                 </div>
-                <div id="legend-widget" class="control_item item btn-primary">
+                <div id="legend-widget" class="control_item item ">
                     <span class="esri-icon-layer-list" title="Chú thích bản đồ">
                     </span>
                 </div>
-                <div id="printer-widget" class="control_item item btn-primary">
+                <div id="printer-widget" class="control_item item ">
                     <span class="esri-icon-printer" title="In bản đồ">
+                    </span>
+                </div>
+                <div id="editor-widget" class="control_item item ">
+                    <span class="esri-icon-authorize" title="Biên tập dữ liệu">
                     </span>
                 </div>
 
@@ -62,16 +66,16 @@
             <div id="control_toolbar">
                 <div id="widget-tool" class="map-tool">
                     <div class="zoom-item">
-                        <div id="zoom-in" class="widget_item item btn-primary">
+                        <div id="zoom-in" class="widget_item item ">
                             <span class="esri-icon-plus" title="Phóng to">
                             </span>
                         </div>
-                        <div id="zoom-out" class="widget_item item btn-primary">
+                        <div id="zoom-out" class="widget_item item ">
                             <span class="esri-icon-minus" title="Thu nhỏ">
                             </span>
                         </div>
                     </div>
-                    <div id="location" class="widget_item item btn-primary">
+                    <div id="location" class="widget_item item ">
                         <span class="esri-icon-locate" title="Định vị">
                         </span>
                     </div>
@@ -129,28 +133,10 @@
         </div>
     </div>
 
-    <div class="panel panel-info hidden" id="listNhaMay">
-        <div class="panel-heading">
-            <h3 class="panel-title">Danh sách nhà máy</h3>
-            <span class="btn-danger pull-right closePanel closePanel_NhaMay">X</span>
-        </div>
-        <div class="panel-body">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Mã nhà máy</th>
-                        <th>Tên nhà máy</th>
-                        <th>Địa chỉ</th>
-                        <th>Loại hình sản xuất</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="inforDetails"></tbody>
-            </table>
-        </div>
+    <div class="panel panel-info" id="pane-tools">
     </div>
-
+    <div class="panel panel-info" id="type-draw-tools">
+        </div>
     <div class="widget-list">
         <div id="toggle-basemap"></div>
         <div class="widget-list-factory hidden" id="danhsachnhamay">
@@ -158,6 +144,8 @@
 
     </div>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="http://kendo.cdn.telerik.com/2017.3.1026/js/jquery.min.js"></script>
+    <script type="text/javascript" src="http://kendo.cdn.telerik.com/2017.3.1026/js/kendo.all.min.js"></script>
     <script src="../public/config.js"></script>
 
     <script src="https://js.arcgis.com/4.6/"></script>

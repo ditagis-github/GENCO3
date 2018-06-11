@@ -468,10 +468,6 @@ h3 small,.h3 small,h4 small,.h4 small {
     border-bottom: 1px solid #eee
 }
 
-ul,ol {
-    margin-top: 0;
-    margin-bottom: 10px
-}
 
 ul ul,ol ul,ul ol,ol ol {
     margin-bottom: 0
@@ -1362,11 +1358,6 @@ table {
 
 th {
     text-align: left
-}
-
-.table {
-    width: 100%;
-    margin-bottom: 20px
 }
 
 .table thead>tr>th,.table tbody>tr>th,.table tfoot>tr>th,.table thead>tr>td,.table tbody>tr>td,.table tfoot>tr>td {
@@ -4824,7 +4815,6 @@ a.list-group-item:hover,a.list-group-item:focus {
 }
 
 .panel {
-    margin-bottom: 20px;
     background-color: #fff;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -6441,9 +6431,6 @@ html,body,#mapDiv {
     padding: 5px
 }
 
-.panel {
-    margin-bottom: 10px
-}
 
 #chart_panel {
     position: absolute;

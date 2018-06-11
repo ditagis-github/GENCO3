@@ -63,11 +63,12 @@ define([
                     document.body.removeChild(this.container);
             }
             initView() {
-                this.container = domConstruct.create("div");
+                // this.container = domConstruct.create("div");
+                this.container = $("#type-draw-tools")[0];
                 for (let drawingMethod of this.drawingMethods) {
                     let btn = domConstruct.create("button", {
-                        class: 'methods',
-                        innerHTML: drawingMethod.name
+                        class: 'methods type-draw',
+                        innerHTML: drawingMethod.name,
                     }, this.container);
                     this.clickBtnEvt = on(btn, 'click', () => {
                         this.clickBtnFunc(drawingMethod.type);

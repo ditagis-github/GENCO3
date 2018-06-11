@@ -6,22 +6,58 @@ define(["require", "exports"], function (require, exports) {
             id: "NhaMay",
             url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/7",
             outFields: ['*'],
+            outFields: ["*"],
+            permission: {
+                create: true,
+                delete: true,
+                edit: true,
+                view: true,
+            },
+            queryFields: "",
+            groupLayer: "chuyendehientrang"
         },
         {
             title: 'Van',
             id: "Van",
             url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/6",
             outFields: ['*'],
+            outFields: ["*"],
+            permission: {
+                create: true,
+                delete: true,
+                edit: true,
+                view: true,
+            },
+            queryFields: "",
+            groupLayer: "chuyendehientrang"
         }, {
             title: 'Lò hơi',
             id: "LoHoi",
             url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/5",
-            outFields: ['*']
+            outFields: ['*'],
+            outFields: ["*"],
+            permission: {
+                create: true,
+                delete: true,
+                edit: true,
+                view: true,
+            },
+            queryFields: "",
+            groupLayer: "chuyendehientrang"
         }, {
             title: 'Trạm biến áp',
             id: "TramBienAp",
             url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/4",
             outFields: ['*'],
+            outFields: ["*"],
+            permission: {
+                create: true,
+                delete: true,
+                edit: true,
+                view: true,
+            },
+            queryFields: "",
+            groupLayer: "chuyendehientrang"
         }, {
             title: 'Tua bin',
             id: "TuaBin",

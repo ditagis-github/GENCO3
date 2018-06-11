@@ -9,8 +9,12 @@
     margin: 2px;
     border-radius: 3px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-    border: solid 1px #ccc;
+    border: solid 1px #ccc
+    ;color: #fff;
+    background-color: #4285F4;
+    
 }
+
 
 .widget_item {
     text-align: center;
@@ -119,6 +123,85 @@ span.btn-danger.pull-right.closePanel.closePanel_print{
     margin-bottom: 0;
 }
 
+/* Begin Layer editor */
+#pane-tools{
+    position: absolute;
+    right: 15px;
+    top: 75px;
+    max-height: 55vh;
+    overflow-x: hidden;
+}
+#pane-tools>div {
+    height: 100%;
+}
+.ditagis-widget-layer-editor {
+    max-height: 550px;
+    width: 250px;
+    max-height: 420px;
+    overflow: hidden;
+    overflow-y: auto;
+    transition: max-height 250ms ease-in-out;
+}
+.esri-widget {
+    font-family: "Roboto", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+
+.pane-item {
+    background-color: #fff;
+}
+.ditagis-widget-layer-editor .title {
+    text-align: center;
+    font-weight: bold;
+    padding: 7px;
+}
+.esri-widget.ditagis-widget-layer-editor.pane-item > ul {
+    list-style: none;
+    padding: 0;
+}
+button.accordion {
+    background-color: #4285F4;
+    color: #fff;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    border: solid 1px #ccc;
+    text-align: left;
+    outline: none;
+    transition: 0.4s;
+}
+.ditagis-widget-layer-editor .panel-body {
+    padding: 0px;
+}
+
+div.panel-accordion {
+    background-color: white;
+    display: none;
+}
+/* End layer editor */
+
+/* Begin select type draw editor */
+.esri-widget-button {
+    background-color: #4285F4;
+    color: #fff;
+}
+button.methods {
+    background-color: #4285F4;
+    color: #fff;
+    cursor: pointer;
+    padding: 10px;
+    width: 120px;
+    border: solid 1px #ccc;
+    text-align: left;
+    outline: none;
+    transition: 0.4s;
+}
+.esri-expand__container.esri-expand__container--expanded {
+    right: 205px;
+    top: -20px;
+}
+/* End select type draw editor */
+
 #listNhaMay .panel-body {
     max-height: 220px;
     overflow: hidden;
@@ -127,6 +210,7 @@ span.btn-danger.pull-right.closePanel.closePanel_print{
 .panel-info>.panel-heading {
     color: #fff;
     background-color: #4285F4;
+    /* background-color: #005aa6; */
    
 }
 
@@ -136,11 +220,7 @@ span.btn-danger.pull-right.closePanel.closePanel_print{
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
 }
-.btn-primary {
-    color: #fff;
-    background-color: #4285F4;
-   
-}
+
 
 .btn-primary:hover,.btn-primary:focus,.btn-primary:active,.btn-primary.active,.open .dropdown-toggle.btn-primary {
     color: #fff;

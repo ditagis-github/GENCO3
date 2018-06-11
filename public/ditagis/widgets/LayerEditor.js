@@ -30,25 +30,14 @@ define([
       this._isStartup = false;
       this._layerGroups = [];
       this._hasLayer = false;
-      this.initWidget();
       this.initView();
       this.polylineDrawingTools = new PolylineDrawingTools(view);
       this.pointDrawingTools = new PointDrawingTools(view);
 
 
     }
-    initWidget() {
-      this.content = $('<div/>', {
-        class: "esri-widget esri-widget-button",
-        title: this.options.title,
-        html: `<span class='${this.options.icon}'></span>`
-      })
-      this.content.click(e => {
-        this.fire("click", $(this._container));
-        // this.initView();
-        // this.startup();
-        // pane_layer_list.style.display = 'block'
-      });
+    editor(){
+      this.fire("click", $(this._container));
     }
     set hasLayer(val) {
       if (!this._hasLayer) {
@@ -86,7 +75,6 @@ define([
         let panelGroup = this._layerGroups[layer.parent.id];
         if (!panelGroup) {
           let li = document.createElement('li');
-          li.innerHTML = `<label class="title">${layer.parent.title}</label>`
           let div = document.createElement('div');
           div.classList.add('item-container');
           li.appendChild(div);

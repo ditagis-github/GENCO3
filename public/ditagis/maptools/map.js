@@ -9,10 +9,13 @@ define([
     "esri/widgets/Expand",
     "esri/widgets/Print",
     "ditagis/maptools/thoitiet",
+    "ditagis/widgets/ExpandTools",
     "ditagis/widgets/LayerEditor",
+    "ditagis/toolview/PaneManager",
+   
     
 ], function (Graphic,FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, Print, ThoiTiet,
-    LayerEditor,
+    ExpandTools,LayerEditor,PaneManager,
      ) {
 
     return class {
@@ -33,8 +36,22 @@ define([
                 this.legend = new Legend({
                     view: this.view,
                 });
+            });
+            var expandTools = new ExpandTools(view, {
+                position: 'top-left',
+            });
+            
+            this.layereditor = new LayerEditor(view);
+            this.layereditor.on("click", addPane);
+            var paneManager = new PaneManager({
+                element: "#pane-tools"
             })
+            function addPane(pane) {
+                paneManager.add(pane);
+            }
+
         }
+        
         startup() {
             $("#danhsachnhamay").on("click", "span.viewData", (result) => {
                 var value = result.currentTarget.attributes.alt.nodeValue;
@@ -45,6 +62,7 @@ define([
                 this.view.zoom = 14;
                 this.thoitiet.laythongtinthoitiet(this.view.center);
             });
+            
             $("#danhsachnhamay").on("click", "div.goToDirection", (result) => {
                 var value = result.currentTarget.attributes.alt.nodeValue;
                 var feature = this.featuresNhaMay.find(f =>
@@ -66,9 +84,6 @@ define([
             $("#factorylist").click(() => {
                 $("div#danhsachnhamay").toggleClass("hidden");
                 this.danhsachnhamay();
-            });
-            $(".closePanel_NhaMay").click(function () {
-                $("div#listNhaMay").toggleClass("hidden");
             });
 
             // hien thi cac widget ban do
@@ -106,6 +121,14 @@ define([
             $(".closePanel_legend").click(function () {
                 $("div#legend-panel").toggleClass("hidden");
             });
+            // Biên tập dữ liệu
+            $("#editor-widget").click(() => {
+                this.layereditor.editor();
+            });
+
+            
+
+
             // map - tools (zoom in, out, location)
             $("#zoom-in").click(() => {
                 this.view.zoom += 1;
