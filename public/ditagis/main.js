@@ -20,7 +20,7 @@ require([
     "dojo/dom-construct",
     "dojo/domReady!"
 ], function (
-    Map, MapView, Graphic,GroupLayer,
+    Map, MapView, Graphic, GroupLayer,
     Polyline, geometryEngine,
     BasemapToggle, Zoom,
     FeatureLayer,
@@ -115,6 +115,10 @@ require([
             for (const layerCfg of MapConfigs.layers) {
                 if (layerCfg.groupLayer === 'chuyendehientrang' && layerCfg.permission.view) {
                     let fl = new FeatureLayer(layerCfg);
+                    if (fl.id != "NhaMay") {
+                        fl.minScale = 30000;
+                        fl.minScale = 36111.909643;
+                    }
                     gr.add(fl);
                 }
             }

@@ -354,7 +354,6 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct", "ditagis/support/
             return container[0].outerHTML;
         }
         contentPopup(target) {
-            console.log(target.graphic.geometry.rings);
             return __awaiter(this, void 0, void 0, function* () {
                 const graphic = target.graphic, layer = graphic.layer, attributes = graphic.attributes;
                 this.hightlightGraphic.clear();
