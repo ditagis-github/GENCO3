@@ -6,7 +6,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "dojo/on", "dojo/dom-construct", "ditagis/support/HightlightGraphic", "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate"], function (require, exports, on, domConstruct, HightlightGraphic, SimpleLineSymbol, watchUtils, PopupTemplate) {
+define(["require", "exports", "dojo/on", "dojo/dom-construct", 
+"ditagis/support/HightlightGraphic", 
+"ditagis/support/Editing",
+"esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate"], 
+function (require, exports, on, domConstruct, HightlightGraphic,EditingSupport,
+     SimpleLineSymbol, watchUtils, PopupTemplate) {
     "use strict";
     class Popup {
         constructor(view) {
@@ -15,6 +20,7 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct", "ditagis/support/
                 hightLength: 100
             };
             this.fireFields = ['created_user', 'created_date', 'last_edited_user', 'last_edited_date', 'XaPhuongTT', 'HuyenTXTP', 'TinhTrang', 'ChapThuanCuaSo', 'LoaiTram', 'DoCaoTram'];
+            this.editingSupport = new EditingSupport();
             this.hightlightGraphic = new HightlightGraphic(view, {
                 symbolMarker: {
                     type: 'simple-marker',
@@ -38,12 +44,28 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct", "ditagis/support/
                 let layer = evt.layer;
                 if (layer.type == 'feature') {
                     var content;
+                    let actions = [];
+                    if (layer.permission.edit) {
+                        actions.push({
+                            id: "update",
+                            title: "Cập nhật",
+                            className: "esri-icon-edit",
+                        });
+                    }
+                    if (layer.permission.delete) {
+                        actions.push({
+                            id: "delete",
+                            title: "Xóa",
+                            className: "esri-icon-erase",
+                        });
+                    }
                     if (layer.id == 'Camera') {
                         layer.popupTemplate = new PopupTemplate({
                             content: (target) => {
                                 return this.contentImages(target);
                             },
                             title: layer.title,
+                            actions: actions
                         });
                     }
                     else
@@ -52,6 +74,7 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct", "ditagis/support/
                                 return this.contentPopup(target);
                             },
                             title: layer.title,
+                            actions: actions
                         });
                 }
             });
@@ -402,6 +425,65 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct", "ditagis/support/
                     });
                 }
                 return container[0].outerHTML;
+            });
+        }
+        editFeature() {
+            let applyAttributes = {
+                objectId: this.attributes.OBJECTID
+            };
+            if (!this.attributes || !this.kendoModel)
+                kendo.alert("Có lỗi xảy ra trong quá trình cập nhật");
+            if (this.kendoModel.get('deleteAttachment') && this.kendoModel.get('deleteAttachment').length > 0) {
+                this.layer.deleteAttachments({
+                    objectId: this.attributes.OBJECTID,
+                    deletes: this.kendoModel.get('deleteAttachment')
+                });
+                this.kendoModel.set('deleteAttachment', []);
+            }
+            for (let field of this.layer.fields) {
+                let value = this.kendoModel.get(field.name);
+                if (!value ||
+                    (value && value == -1))
+                    continue;
+                if (field.type === 'date') {
+                    if (value.getTime() <= 0)
+                        continue;
+                    applyAttributes[field.name] = value.getTime();
+                }
+                else
+                    applyAttributes[field.name] = value;
+            }
+            const updatedInfo = this.editingSupport.getUpdatedInfo(this.view);
+            for (let i in updatedInfo) {
+                applyAttributes[i] = updatedInfo[i];
+            }
+            this.layer.applyEdits({
+                updateFeatures: [{
+                        attributes: applyAttributes
+                    }]
+            }).then((res) => {
+                let updateFeatureResults = res.updateFeatureResults;
+                if (updateFeatureResults[0].objectId) {
+                    let query = this.layer.createQuery();
+                    query.outFields = ['*'];
+                    query.where = 'OBJECTID=' + this.attributes['OBJECTID'];
+                    this.layer.queryFeatures(query).then(res => {
+                        this.view.popup.open({
+                            features: res.features
+                        });
+                    });
+                }
+            });
+        }
+        deleteFeature() {
+            this.layer.applyEdits({
+                deleteFeatures: [{
+                        objectId: this.attributes.OBJECTID
+                    }]
+            }).then((res) => {
+                if (res.deleteFeatureResults.length > 0 && !res.deleteFeatureResults[0].error) {
+                    this.view.popup.close();
+                }
             });
         }
 

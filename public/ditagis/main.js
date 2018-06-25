@@ -39,51 +39,7 @@ require([
             center: MapConfigs.center,
         });
         view.systemVariable = new SystemStatusObject();
-        var user = {
-            Capabilities: "QLTKNQ-QLTK",
-            DisplayName: "Bưu chính viễn thông",
-            Email: null,
-            GroupRole: "STTTT",
-            ID: "10066",
-            Layers: [{
-                url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/7",
-                id: "NhaMayDien",
-                title: "Nhà máy điện",
-                outFields: ["*"],
-                permission: {
-                    create: true,
-                    delete: true,
-                    edit: true,
-                    view: true,
-                },
-                queryFields: "",
-            },
-            {
-                url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/1",
-                id: "OngKhoi",
-                title: "Ống khói",
-                outFields: ["*"],
-                permission: {
-                    create: true,
-                    delete: true,
-                    edit: true,
-                    view: true,
-                },
-                queryFields: "",
-            },],
-            Password: "bcvt",
-            Phone: null,
-            PrimaryCapability: null,
-            Role: "BCVT",
-            RoleName: "Phòng Bưu Chính Viễn Thông",
-            Status: true,
-            Username: "bcvt",
-            date_create: "2017-11-27T17:36:50.997Z",
-            expired_date: null,
-            last_access: null,
-            usser_create: null
-        };
-        view.systemVariable.user = user;
+        view.systemVariable.user = MapConfigs.user;
 
         var hiddenmap = new HiddenMap(view);
         hiddenmap.start();
