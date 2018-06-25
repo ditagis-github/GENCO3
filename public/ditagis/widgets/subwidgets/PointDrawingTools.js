@@ -33,19 +33,25 @@ define([
                 this.systemVariable.on('change-selectedFeature', () => {
                     //khi giá trị thay đổi thì cập nhật cho drawManager
                     this.drawManager.drawLayer = this.drawLayer;
-                })
+                });
+                this.initView();
             }
             startup() {
                 if (!this.isStartup) {
                     if (this.view.isMobile) {
                         this.drawManager.drawSimple();
                     } else {
-                        this.initView();
                         this.view.ui.add(this.expandWidget, "top-right");
                     }
 
                     this.isStartup = true;
                 }
+            }
+            clearEvents(){
+                if (!this.drawLayer || this.drawLayer.geometryType !== 'point') return;
+               this.drawManager.clearEvents();
+               this.view.ui.remove(this.expandWidget);
+               this.isStartup = false;
             }
             destroy() {
                 if (this.isStartup) {
@@ -93,6 +99,7 @@ define([
                         this.drawManager.drawSimple();
                         break;
                     case this.drawingMethods[1].type:
+                        this.drawManager.drawByPointInput();
                         break;
 
                     default:

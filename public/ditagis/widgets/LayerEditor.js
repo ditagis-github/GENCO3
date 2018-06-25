@@ -38,6 +38,7 @@ define([
     }
     editor(){
       this.fire("click", $(this._container));
+      this.startup();
     }
     set hasLayer(val) {
       if (!this._hasLayer) {
@@ -53,7 +54,14 @@ define([
     startup() {
       if (!this._isStartup) {
         this._isStartup = true;
+        
       }
+      else{
+        this.clearEvents();
+      }
+    }
+    clearEvents(){
+      this.pointDrawingTools.clearEvents();
     }
     destroy() {
       if (this._isStartup) {

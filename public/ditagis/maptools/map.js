@@ -123,6 +123,7 @@ define([
                 });
                 $(".closePanel_legend").click(function () {
                     $("div#legend-panel").toggleClass("hidden");
+                   
                 });
                 // Biên tập dữ liệu
                 $("#editor-widget").click(() => {

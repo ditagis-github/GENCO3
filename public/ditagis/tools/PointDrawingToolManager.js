@@ -7,10 +7,10 @@ define([
   "ditagis/tools/SimpleDrawPoint",
   "ditagis/editing/PointEditing",
   "esri/Graphic",
-  "ditagis/classes/EventListener", 
+  "ditagis/classes/EventListener", './PointInput',
   "../core/ConstName"
 ], function (SimpleDrawPoint, PointEditing, Graphic,
-  EventListener, constName) {
+  EventListener, PointInput, constName) {
   'use strict';
   return class {
     constructor(view) {
@@ -23,6 +23,7 @@ define([
       this.simpleDrawPoint = new SimpleDrawPoint(this.view);
       this.eventListener = new EventListener(this);
       this.pointEditing = new PointEditing(this.view);
+      this.pointInput = new PointInput(this.view);
       this.registerEvent();
     }
     addFeature(graphic) {
@@ -45,6 +46,13 @@ define([
             graphic.attributes.LoaiTram = valChonLoaiCot;
             graphic.attributes.DoCaoTram = parseInt(valChieuCao);
           }
+          this.quyHoachBTS.run(graphic).then(ketQua => {
+            if (ketQua.loiNhan)
+              kendo.alert(ketQua.loiNhan)
+            if (ketQua.tinhTrang) {
+              this.pointEditing.draw(this.drawLayer, graphic);
+            };
+          })
 
         }
         dialog.kendoDialog({
@@ -97,6 +105,11 @@ define([
     drawSimple() {
       this.simpleDrawPoint.clearEvents();
       this.simpleDrawPoint.draw(this.drawLayer);
+    }
+    drawByPointInput() {
+      this.pointInput.getPointInput().then(geometry => {
+        this.addFeature(geometry);
+      })
     }
     clearEvents(){
       this.simpleDrawPoint.clearEvents();

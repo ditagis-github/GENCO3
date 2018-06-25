@@ -32,7 +32,8 @@ define([
           }
         };
 
-        var graphic = new Graphic({
+        
+        this.graphic = new Graphic({
           geometry: new Polygon({
             rings: vertices,
             spatialReference: this.view.spatialReference
@@ -41,9 +42,18 @@ define([
         });
 
         // Add the graphics to the view's graphics layer
-        this.view.graphics.add(graphic);
+        this.view.graphics.add(this.graphic);
 
       });
+    }
+    toogleGraphics(){
+      var items = this.view.graphics.items;
+      if(items.length > 0){
+        this.view.graphics.remove(this.graphic);
+      }
+      else{
+        this.view.graphics.add(this.graphic);
+      }
     }
   }
 });

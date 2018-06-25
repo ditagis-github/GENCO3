@@ -47,8 +47,8 @@ require([
             ID: "10066",
             Layers: [{
                 url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/7",
-                id: "DiemDichVu",
-                title: "Điểm dịch vụ",
+                id: "NhaMayDien",
+                title: "Nhà máy điện",
                 outFields: ["*"],
                 permission: {
                     create: true,
@@ -60,8 +60,8 @@ require([
             },
             {
                 url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/1",
-                id: "TramBTS",
-                title: "Trạm BTS",
+                id: "OngKhoi",
+                title: "Ống khói",
                 outFields: ["*"],
                 permission: {
                     create: true,
@@ -90,10 +90,13 @@ require([
         view.ui.move(["zoom"]);
 
         last_ext = view.extent;
-        var toggle = new BasemapToggle({
+        var basemapToggle = new BasemapToggle({
             view: view,
             nextBasemap: "satellite",
             container: document.getElementById('toggle-basemap')
+        });
+        basemapToggle.on('toggle', function (event) {
+            hiddenmap.toogleGraphics();
         });
         view.ui.components = ["attribution"];
         // view.ui.add(toggle, "bottom-left");
