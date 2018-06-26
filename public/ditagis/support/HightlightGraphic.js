@@ -28,13 +28,13 @@ define([
                 }
             })
             this.symbolPlg = options.symbolPlg || {
-                type:'simple-polygon',
-                color: [255, 0, 0],
+                type:'simple-fill',
+                color: [255, 0, 0, 0.0],
                 size: 3,
                 width: 4,
                 outline: { // autocasts as new SimpleLineSymbol()
-                    color: [255, 64, 0, 0.4], // autocasts as new Color()
-                    width: 7
+                    color: [255, 64, 0, 0.8], // autocasts as new Color()
+                    width: 2
                 }
             }
             this.tmpGraphics = [];
