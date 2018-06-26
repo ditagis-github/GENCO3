@@ -89,17 +89,41 @@ define(["require", "exports"], function (require, exports) {
             title: 'Bồn chứa',
             id: "BonChua",
             url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/2",
-            outFields: ['*']
+            outFields: ['*'],
+            permission: {
+                create: true,
+                delete: true,
+                edit: true,
+                view: true,
+            },
+            queryFields: "",
+            groupLayer: "chuyendehientrang"
         }, {
             title: 'Ống khói',
             id: "OngKhoi",
             url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/1",
             outFields: ['*'],
+            permission: {
+                create: true,
+                delete: true,
+                edit: true,
+                view: true,
+            },
+            queryFields: "",
+            groupLayer: "chuyendehientrang"
         }, {
             title: 'Camera',
             id: "Camera",
             url: "https://ditagis.com:6443/arcgis/rest/services/GENCO3/DuLieuChuyenDe/FeatureServer/0",
-            outFields: ['*']
+            outFields: ['*'],
+            permission: {
+                create: true,
+                delete: true,
+                edit: true,
+                view: true,
+            },
+            queryFields: "",
+            groupLayer: "chuyendehientrang"
         }
         ],
         zoom: 6,

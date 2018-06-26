@@ -372,7 +372,7 @@ function (require, exports, on, domConstruct, HightlightGraphic,EditingSupport,
                 class: 'popup-content',
             });
             let image = $('<img/>', {
-                src:"../ditagis/images/genco3.jpg"
+                src:"../public/images/genco3.jpg"
             }).appendTo(container);
             return container[0].outerHTML;
         }

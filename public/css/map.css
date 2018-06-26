@@ -122,6 +122,17 @@ span.btn-danger.pull-right.closePanel.closePanel_print{
     z-index: 9999;
     margin-bottom: 0;
 }
+#direction-panel {
+    width: 320px;
+    background-color: #f9f9f9;
+    float: right;
+    position: absolute;
+    left: 8px;
+    top: 110px;
+    z-index: 999;
+    margin: 5px 5px 0 0;
+    overflow: hidden;
+}
 
 /* Begin Layer editor */
 #pane-tools{
@@ -336,6 +347,20 @@ button.methods {
     text-indent: 6px;
     text-shadow: rgba(0,0,0,0.7) 0px 1px 8px;
     background: url(../images/map/directions.png) no-repeat 1px 1px/20px;
+}
+.goToDirection1{
+    cursor: pointer;
+    color: white;
+    font-size: 11px;
+    position: absolute;
+    line-height: normal;
+    top:2px;
+    right: 30px;
+    width: 30px;
+    height: 30px;
+    text-indent: 6px;
+    text-shadow: rgba(0,0,0,0.7) 0px 1px 8px;
+    background: url(../images/map/icon-swap.jpg) no-repeat 1px 1px/20px;
 }
 .caption-image{
     cursor: pointer;
@@ -639,7 +664,103 @@ button.methods {
 .ditagis-widget-layer-editor .panel-body table tr td:hover { cursor: pointer }
 .ditagis-widget-layer-editor .panel-body .table {margin-bottom: 0px; }
 .ditagis-widget-layer-editor .panel-title {font-weight: 400;font-family: Roboto,sans-serif;}
-/* .esri-widget table tr td {
-  width: 0%;
-} */
 
+
+select.esri-select {
+    width: 239px;
+}
+
+i.fa.fa-map-marker {
+    font-size: 21px;
+}
+
+
+
+
+#direction-panel {
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 10px;
+}
+.group-reverse-widget{
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+.input-group-icon {
+    display: table-cell
+}
+
+.input-group-icon:not(:first-child):not(:last-child),.input-group-btn:not(:first-child):not(:last-child),.input-group .form-control:not(:first-child):not(:last-child) {
+    border-radius: 0
+}
+
+.input-group-icon,.input-group-btn {
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle
+}
+
+.input-group-icon {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1;
+    text-align: center;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 4px
+}
+
+.input-group-icon.input-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 3px
+}
+
+.input-group-icon.input-lg {
+    padding: 10px 16px;
+    font-size: 18px;
+    border-radius: 6px
+}
+
+.input-group-icon input[type="radio"],.input-group-icon input[type="checkbox"] {
+    margin-top: 0
+}
+
+.input-group .form-control:first-child,.input-group-icon:first-child,.input-group-btn:first-child>.btn,.input-group-btn:first-child>.dropdown-toggle,.input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0
+}
+
+.input-group-icon:first-child {
+    border-right: 0
+}
+
+.input-group .form-control:last-child,.input-group-icon:last-child,.input-group-btn:last-child>.btn,.input-group-btn:last-child>.dropdown-toggle,.input-group-btn:first-child>.btn:not(:first-child) {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0
+}
+
+.input-group-icon:last-child {
+    border-left: 0
+}
+
+.diamond {
+	width: 0;
+	height: 0;
+	border: 50px solid transparent;
+	border-bottom-color: red;
+	position: relative;
+	top: -50px;
+}
+.diamond:after {
+	content: '';
+	position: absolute;
+	left: -50px;
+	top: 50px;
+	width: 0;
+	height: 0;
+	border: 50px solid transparent;
+	border-top-color: red;
+}

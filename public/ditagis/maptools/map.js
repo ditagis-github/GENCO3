@@ -32,11 +32,9 @@ define([
                     view: view,
                     goToLocationEnabled: false
                 });
-                this.view.when(() => {
-                    this.legend = new Legend({
-                        view: this.view,
-                        container: "legend-symbols",
-                    });
+                this.legend = new Legend({
+                    view: this.view,
+                    container: "legend-symbols",
                 });
                 var expandTools = new ExpandTools(view, {
                     position: 'top-left',
@@ -77,6 +75,28 @@ define([
                         var url = `https://www.google.com/maps/dir/${coords.latitude},${coords.longitude}/${latitude},${longitude}`;
                         var win = window.open(url, '_blank');
                         win.focus();
+                    });
+                });
+                $("#danhsachnhamay").on("click", "div.goToDirection1", (result) => {
+                    var objectId_first = result.currentTarget.attributes.alt.nodeValue;
+                    $('.item-nhamay').css('border', 'red solid 1px');
+                    $(`.item-nhamay[alt="${objectId_first}"]`).css('border', 'none');
+                    $("#danhsachnhamay").one("click",".item-nhamay", (evt) => {
+                        evt.stopPropagation();
+                        var feature_first = this.featuresNhaMay.find(f =>
+                            f.attributes['OBJECTID'] == objectId_first
+                        );
+                        var longitude_first = feature_first.geometry.centroid.x, latitude_first = feature_first.geometry.centroid.y;
+                        var objectId_second = evt.currentTarget.attributes.alt.nodeValue;
+                        if(objectId_first != objectId_second){
+                            var feature_second = this.featuresNhaMay.find(f =>
+                                f.attributes['OBJECTID'] == objectId_second
+                            );
+                            var longitude_second = feature_second.geometry.centroid.x, latitude_second = feature_second.geometry.centroid.y;
+                            var url = `https://www.google.com/maps/dir/${latitude_second},${longitude_second}/${latitude_first},${longitude_first}`;
+                            var win = window.open(url, '_blank');
+                            win.focus();
+                        }
                     });
                 });
 
@@ -123,7 +143,7 @@ define([
                 });
                 $(".closePanel_legend").click(function () {
                     $("div#legend-panel").toggleClass("hidden");
-                   
+
                 });
                 // Biên tập dữ liệu
                 $("#editor-widget").click(() => {
@@ -224,7 +244,11 @@ define([
                                     </div>
                                 </div>
                                 <div class="image-direction">
-                                    <div alt='${attr["OBJECTID"]}' class="widget_item goToDirection">
+                                    <div alt='${attr["OBJECTID"]}' class="widget_item goToDirection1"title="Đến nhà máy khác" >
+                                    </div>
+                                </div>
+                                <div class="image-direction">
+                                    <div alt='${attr["OBJECTID"]}' class="widget_item goToDirection" title="Đi đến nhà máy">
                                     </div>
                                 </div>
                                 <div class="caption-image">

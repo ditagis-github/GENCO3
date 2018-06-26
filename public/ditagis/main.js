@@ -18,6 +18,7 @@ require([
     "ditagis/support/Renderer",
     "ditagis/classes/SystemStatusObject",
     "dojo/dom-construct",
+    "esri/widgets/Print",
     "dojo/domReady!"
 ], function (
     Map, MapView, Graphic, GroupLayer,
@@ -27,7 +28,7 @@ require([
     Extent, Popup, MapConfigs, ThoiTiet, HiddenMap,
     MapTools,
     watchUtils, Renderer, SystemStatusObject,
-    domConstruct
+    domConstruct, Print
 ) {
         var map = new Map({
             basemap: "osm"
@@ -40,7 +41,6 @@ require([
         });
         view.systemVariable = new SystemStatusObject();
         view.systemVariable.user = MapConfigs.user;
-
         var hiddenmap = new HiddenMap(view);
         hiddenmap.start();
         view.ui.move(["zoom"]);
@@ -55,17 +55,8 @@ require([
             hiddenmap.toogleGraphics();
         });
         view.ui.components = ["attribution"];
-        // view.ui.add(toggle, "bottom-left");
         initFeatureLayer();
         function initFeatureLayer() {
-            // for (const layer of MapConfigs.layers) {
-            //     var featureLayer = new FeatureLayer(layer);
-            //     if (layer.id != "NhaMay") {
-            //         // featureLayer.minScale = 30000;
-            //         featureLayer.minScale = 36111.909643;
-            //     }
-            //     map.add(featureLayer);
-            // }
             let gr = new GroupLayer({
                 title: 'Dữ liệu chuyên đề',
                 id: "chuyendehientrang"

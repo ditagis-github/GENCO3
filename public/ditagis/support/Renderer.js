@@ -24,18 +24,18 @@ define([
                     value: 1,
                     symbol: {
                         type: "picture-marker",
-                        url: "../public/images/map/factory.png",
-                        width: "12px",
-                        height: "12px"
+                        url: "../public/images/map/nhietdien.png",
+                        width: "25px",
+                        height: "25px"
                     }
                 },
                 {
                     value: 2,
                     symbol: {
                         type: "picture-marker",
-                        url: "../public/images/map/factory.png",
-                        width: "12px",
-                        height: "12px"
+                        url: "../public/images/map/thuydien.png",
+                        width: "25px",
+                        height: "25px"
                     }
                 }, {
                     value: 3,
@@ -55,7 +55,14 @@ define([
                 spatialReference: this.view.spatialReference,
                 source: [],
                 renderer: renderer,
-                title: "Nhà máy"
+                title: "Nhà máy",
+                outFields: ['*'],
+                permission: {
+                    create: false,
+                    delete: false,
+                    edit: false,
+                    view: true,
+                },
             });
             this.view.map.add(this.graphicLayer);
             this.queryListNhaMay().then((displayResults) => {
@@ -81,8 +88,6 @@ define([
             for (const uniqueValueInfo of uniqueValueInfos) {
                 uniqueValueInfo.symbol.color.a = 0.2;
             }
-            // this.featureLayer.renderer.uniqueValueInfos[0].symbol.c
-            // this.featureLayer.renderer.symbol.color.a = 0.4;
             watchUtils.whenTrue(this.view, "stationary", (evt) => {
                 if (this.view.zoom >= 14) {
                     this.graphicLayer.visible = false;
