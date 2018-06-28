@@ -284,7 +284,7 @@ button.methods {
     display: inline-block;
     margin-right: 3px;
     height: 100px;
-    width: 203px;
+    width: 207px;
     position: relative;
 
     
@@ -424,7 +424,25 @@ button.methods {
   .esri-legend__service {
     background-color: white;
     color: #000;
+    display: flex;
   }
+  p.esri-legend__service-label{
+      order: 2;
+  }
+  .esri-legend__service.esri-legend__group-layer{
+      max-height: 600px;
+  }
+  .esri-legend__service.esri-legend__group-layer-child:not(:last-child) > .esri-legend__layer{
+      order: 1;
+      width: 40px;
+      height: 30px;
+  }
+  .esri-legend__service.esri-legend__group-layer-child {
+    padding: 12px 15px 0 15px;
+}
+  .esri-legend__service:last-child {
+    display: inherit;
+}
 
   .esri-popup--content-visible .esri-popup__content {
     margin: 0;
@@ -763,4 +781,10 @@ i.fa.fa-map-marker {
 	height: 0;
 	border: 50px solid transparent;
 	border-top-color: red;
+}
+
+.control_item span {
+    color: #fff;
+    font-size: 15px;
+    padding: 7px
 }

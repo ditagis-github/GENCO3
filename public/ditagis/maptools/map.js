@@ -11,11 +11,14 @@ define([
     "ditagis/maptools/thoitiet",
     "ditagis/widgets/ExpandTools",
     "ditagis/widgets/LayerEditor",
+    // "ditagis/widgets/QueryMethods",
     "ditagis/toolview/PaneManager",
 
 
 ], function (Graphic, FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, Print, ThoiTiet,
-    ExpandTools, LayerEditor, PaneManager,
+    ExpandTools, LayerEditor,
+    // QueryMethods,
+     PaneManager,
     ) {
 
         return class {
@@ -48,7 +51,9 @@ define([
                 function addPane(pane) {
                     paneManager.add(pane);
                 }
-
+                // var queryMethods = new QueryMethods(view, {});
+                // queryMethods.on("click", addPane);
+                // expandTools.append(queryMethods.container);
             }
 
             startup() {
@@ -78,11 +83,13 @@ define([
                     });
                 });
                 $("#danhsachnhamay").on("click", "div.goToDirection1", (result) => {
+                    result.stopPropagation();
                     var objectId_first = result.currentTarget.attributes.alt.nodeValue;
-                    $('.item-nhamay').css('border', 'red solid 1px');
+                    $('.item-nhamay').css('border', 'red solid 2px');
                     $(`.item-nhamay[alt="${objectId_first}"]`).css('border', 'none');
                     $("#danhsachnhamay").one("click",".item-nhamay", (evt) => {
                         evt.stopPropagation();
+                        $(`.item-nhamay`).css('border', 'none');
                         var feature_first = this.featuresNhaMay.find(f =>
                             f.attributes['OBJECTID'] == objectId_first
                         );
