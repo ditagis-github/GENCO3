@@ -1,6 +1,6 @@
 define(["../core/Base",
-"ditagis/widgets/ReportObjects"
-  ],
+  "ditagis/widgets/ReportObjects"
+],
   function (Base,
     ReportObjects) {
     "use strict";
@@ -9,11 +9,15 @@ define(["../core/Base",
         super();
         this.view = view;
         this.layerListContent = [];
-        this.on("query-start",_=>{
-          kendo.ui.progress(this.attributeslayer,true)
+        this.layerListContent.push({
+          title: "Chọn lớp dữ liệu",
+          id: "0",
+        });
+        this.on("query-start", _ => {
+          kendo.ui.progress(this.attributeslayer, true)
         })
-        this.on("query-success",_=>{
-          kendo.ui.progress(this.attributeslayer,false)
+        this.on("query-success", _ => {
+          kendo.ui.progress(this.attributeslayer, false)
         })
         this.bindingDataSource();
         this.displayFields = {
@@ -21,20 +25,22 @@ define(["../core/Base",
         this.reportObjects = new ReportObjects(view);
         this.render();
       }
-      render(){
+      render() {
         this.pane = document.createElement('div');
         this.pane.classList.add('esri-widget', 'ditagis-widget-layer-editor');
         this.select = $("<input/>", {
-          style: "width:100%"
-        }).appendTo(this.pane);
-        this.comboLayers = this.select.kendoComboBox({
+          style: "width:100%",
           placeholder: "Chọn lớp dữ liệu",
+        }).appendTo(this.pane);
+        this.dropDownLayers = this.select.kendoDropDownList({
           dataTextField: "title",
-          dataValueField: "id"
-        }).data("kendoComboBox");
-        this.attributeslayer = $("<div/>",{
-          class:"query-method-widget",
-          style:"padding:10px;width:300px;"
+          dataValueField: "id",
+          text: "Chai"
+        }).data("kendoDropDownList");
+
+        this.attributeslayer = $("<div/>", {
+          class: "query-method-widget",
+          style: "padding:10px;width:300px;"
         }).appendTo(this.pane);
       }
       bindingDataSource() {
@@ -49,11 +55,11 @@ define(["../core/Base",
         });
       }
       onCbChangeQueryLayer(evt) {
-        var div = this.comboLayers_change(evt);
+        var div = this.dropDownLayers_change(evt);
         this.attributeslayer.empty();
         this.attributeslayer.append(div);
       }
-      comboLayers_change(evt) {
+      dropDownLayers_change(evt) {
         var that = this;
         var attributeslayer = $("<div/>");
         if (!evt) return;
@@ -78,7 +84,7 @@ define(["../core/Base",
             input = $('<input/>', {
               'data-bind': 'value:' + field.name,
               name: field.name,
-              style: 'width:100%',
+              style: 'width:90%',
               class: 'input-field'
             }).appendTo(li);
             input.keyup((evt) => {
@@ -89,7 +95,7 @@ define(["../core/Base",
             if (field.domain && field.domain.type === "codedValue") {
               const codedValues = field.domain.codedValues;
               if (codedValues.length > 0) {
-                input.kendoComboBox({
+                input.kendoDropDownList({
                   dataTextField: "name",
                   dataValueField: "code",
                   dataSource: codedValues,
@@ -177,10 +183,11 @@ define(["../core/Base",
           });
         }
       }
-      start(){
-        this.comboLayers.setDataSource(this.layerListContent);
+      start() {
+        this.dropDownLayers.setDataSource(this.layerListContent);
+        this.dropDownLayers.value("0");
         this.fire("click", $(this.pane));
-        this.comboLayers.bind("change", this.onCbChangeQueryLayer.bind(this))
+        this.dropDownLayers.bind("change", this.onCbChangeQueryLayer.bind(this))
       }
     }
 

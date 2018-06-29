@@ -139,8 +139,6 @@ span.btn-danger.pull-right.closePanel.closePanel_print{
     position: absolute;
     right: 15px;
     top: 75px;
-    max-height: 55vh;
-    overflow-x: hidden;
 }
 #pane-tools>div {
     height: 100%;
@@ -787,4 +785,35 @@ i.fa.fa-map-marker {
     color: #fff;
     font-size: 15px;
     padding: 7px
+}
+
+#pane-tools > div > span > span > span.k-select, #pane-tools > div > span > span > span.k-input{
+    background-color: #4285F4;
+    color: #fff;
+}
+button.k-button.k-primary{
+    background-color: #4285F4;
+    color: #fff;
+}
+
+input.input-field.k-textbox, input.input-field {
+    height: 30px;
+    color: #000;
+    border-color: #bcb0b0;
+    border-width: 1px;
+    border-style: solid;
+}
+span.k-widget.k-dropdown.k-header.input-field,span.k-widget.k-datepicker.k-header.input-field{
+    color: #000;
+    border-color: #bcb0b0;
+    border-width: 1px;
+    border-style: solid;
+}
+label {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 2px;
+    margin-top: 8px;
+    font-weight: bold;
+    font-size: 12px;
 }

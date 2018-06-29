@@ -4756,13 +4756,6 @@ a.list-group-item:hover,a.list-group-item:focus {
     line-height: 1.3
 }
 
-.panel {
-    background-color: #fff;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
-    box-shadow: 0 1px 1px rgba(0,0,0,.05)
-}
 
 .panel-body {
     padding: 15px;
@@ -4957,9 +4950,7 @@ a.list-group-item:hover,a.list-group-item:focus {
     border-bottom-color: #eed3d7
 }
 
-.panel-info {
-    border-color: #bce8f1
-}
+
 
 .panel-info>.panel-heading+.panel-collapse .panel-body {
     border-top-color: #bce8f1
