@@ -4009,7 +4009,6 @@ table.k-editor {
 
 
 .k-loading-mask .k-loading-image {
-    background-image: url('/images/loading.gif');
 }
 
 .k-widget.k-listbox {
@@ -4083,4 +4082,8 @@ table.k-editor {
 }
 .k-window-title{
   font-size:14px;
+}
+
+#vertical {
+  height: 100%;
 }

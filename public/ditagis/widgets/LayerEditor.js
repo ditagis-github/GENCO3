@@ -72,13 +72,6 @@ define([
     }
     rendererLayerGroup(layer) {
       if (layer.parent && layer.parent.type === 'group') {
-        let testLayer = layer.parent;
-        do {
-          if (testLayer.id === "nhomTramBTS") {
-            return;
-          }
-          testLayer = testLayer.parent;
-        } while (testLayer)
         //none then create
         let panelGroup = this._layerGroups[layer.parent.id];
         if (!panelGroup) {

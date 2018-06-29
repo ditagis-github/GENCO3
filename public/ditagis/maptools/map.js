@@ -11,13 +11,13 @@ define([
     "ditagis/maptools/thoitiet",
     "ditagis/widgets/ExpandTools",
     "ditagis/widgets/LayerEditor",
-    // "ditagis/widgets/QueryMethods",
+    "ditagis/widgets/QueryLayer",
     "ditagis/toolview/PaneManager",
 
 
 ], function (Graphic, FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, Print, ThoiTiet,
     ExpandTools, LayerEditor,
-    // QueryMethods,
+    QueryLayer,
      PaneManager,
     ) {
 
@@ -43,17 +43,17 @@ define([
                     position: 'top-left',
                 });
 
-                this.layereditor = new LayerEditor(view);
-                this.layereditor.on("click", addPane);
+                this.layerEditor = new LayerEditor(view);
+                this.layerEditor.on("click", addPane);
+                this.queryLayer = new QueryLayer(view);
+                this.queryLayer.on("click", addPane);
+                
                 var paneManager = new PaneManager({
                     element: "#pane-tools"
                 })
                 function addPane(pane) {
                     paneManager.add(pane);
                 }
-                // var queryMethods = new QueryMethods(view, {});
-                // queryMethods.on("click", addPane);
-                // expandTools.append(queryMethods.container);
             }
 
             startup() {
@@ -154,10 +154,12 @@ define([
                 });
                 // Biên tập dữ liệu
                 $("#editor-widget").click(() => {
-                    this.layereditor.editor();
+                    this.layerEditor.editor();
                 });
 
-
+                $("#statistics-widget").click(()=>{
+                    this.queryLayer.start();
+                })
 
 
                 // map - tools (zoom in, out, location)
