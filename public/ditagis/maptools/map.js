@@ -65,8 +65,28 @@ define([
                     });
                     this.view.center = [feature.geometry.centroid.x, feature.geometry.centroid.y];
                     this.view.zoom = 14;
-                    this.thoitiet.laythongtinthoitiet(this.view.center);
+                    var manhamay = feature.attributes["Ma"];
+                    this.thoitiet.laythongtinthoitiet(this.view.center,manhamay);
                     $("div#weather-panel").removeClass("hidden");
+                    // // var interval = setInterval(() => {
+                    // //     $.ajax({
+                    // //         url: `http://localhost:2005/thongtinmoitruong/vinhtan2_s1?id=CO2`, success: function (result) {
+                    // //             $(`#${manhamay}`).text(result);
+                    // //         }
+                    // //     });
+                    // // }, 1000);
+                    // var resultHtml = "";
+                    // resultHtml += `
+                    // <div class="row-item">
+                    //     Tốc độ gió
+                    //     <div class="label pull-right">
+                    //         <strong id="tocdogio">3</strong>
+                    //         <strong>m/s</strong>
+                    //     </div>
+                    // </div>
+                    // `
+                    // document.getElementById("thongtinmoitruong").innerHTML = resultHtml;
+
                 });
 
                 $("#danhsachnhamay").on("click", "div.goToDirection", (result) => {

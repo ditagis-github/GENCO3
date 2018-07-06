@@ -4,7 +4,9 @@ define([
 
     return class ThoiTiet {
         constructor() {
-            window.laydulieuthoitiet = function (data) {
+            this.manhamay = null;
+            var cacchiso = ["CO2", "CO", 'Dust', 'NO2', "O2", "SO2", "Temp"];
+            window.laydulieuthoitiet = (data) => {
                 var results = data.query.results;
                 if (results) {
                     var nhietdo = document.getElementById("nhietdo");
@@ -14,6 +16,41 @@ define([
                     var tocdogio = document.getElementById("tocdogio");
                     tocdogio.textContent = Math.round((results.channel.wind.speed) * 0.44704);
                 }
+                document.getElementById("thongtinmoitruong").innerHTML = "";
+                // var resultHtml = "";
+                if (this.manhamay)
+                    for (const chiso of cacchiso) {
+                        $.ajax({
+                            url: `http://localhost:2005/thongtinmoitruong/${this.manhamay}?id=${chiso}`, 
+                            success: function (result) {
+                                document.getElementById("thongtinmoitruong").innerHTML += `
+                                <div class="row-item">
+                                    ${chiso}
+                                    <div class="label pull-right">
+                                        <strong>${result}</strong>
+                                    </div>
+                                </div>
+                                `
+                            },
+                            error : function(jqXHR, textStatus, errorThrown) { 
+                                if(jqXHR.status == 404 || errorThrown == 'Not Found') 
+                                { 
+                                    console.log('There was a 404 error.'); 
+                                }
+                            }
+                        });
+                    }
+                // document.getElementById("thongtinmoitruong").innerHTML = resultHtml;
+                // var interval = setInterval(() => {
+                //     $.ajax({
+                //         url: `http://localhost:2005/thongtinmoitruong/vinhtan2_s1?id=CO2`, success: function (result) {
+                //             $(`#${manhamay}`).text(result);
+                //         }
+                //     });
+                // }, 1000);
+
+
+
 
 
 
@@ -30,7 +67,8 @@ define([
             document.head.appendChild(this.script);
 
         }
-        laythongtinthoitiet(location) {
+        laythongtinthoitiet(location, manhamay) {
+            this.manhamay = manhamay;
             if (this.script) {
                 document.head.removeChild(this.script);
             }
