@@ -2,6 +2,8 @@ define([
     "esri/Graphic",
     "esri/layers/FeatureLayer",
     "esri/geometry/Extent",
+    "esri/geometry/Polygon",
+    "esri/layers/GraphicsLayer",
     "esri/core/watchUtils",
     "esri/widgets/Locate",
     "esri/widgets/Locate/LocateViewModel",
@@ -15,7 +17,7 @@ define([
     "ditagis/toolview/PaneManager",
 
 
-], function (Graphic, FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, Print, ThoiTiet,
+], function (Graphic, FeatureLayer, Extent, Polygon, GraphicsLayer, watchUtils, Locate, LocateViewModel, Legend, Expand, Print, ThoiTiet,
     ExpandTools, LayerEditor,
     QueryLayer,
     PaneManager,
@@ -24,7 +26,12 @@ define([
         return class {
             constructor(view, layerNhaMay) {
                 this.view = view;
-                this.layerNhaMay = layerNhaMay;
+                this.graphicsLayer = new GraphicsLayer({
+                    listMode: 'hide',
+                    opacity: 0.6
+                });
+                this.view.map.add(this.graphicsLayer);
+                this.layerNhaMay = layerNhaMay
                 this.featuresNhaMay;
                 this.startup();
                 this.thoitiet = new ThoiTiet();
@@ -66,27 +73,8 @@ define([
                     this.view.center = [feature.geometry.centroid.x, feature.geometry.centroid.y];
                     this.view.zoom = 14;
                     var manhamay = feature.attributes["Ma"];
-                    this.thoitiet.laythongtinthoitiet(this.view.center,manhamay);
+                    this.thoitiet.laythongtinthoitiet(this.view.center, manhamay);
                     $("div#weather-panel").removeClass("hidden");
-                    // // var interval = setInterval(() => {
-                    // //     $.ajax({
-                    // //         url: `http://localhost:2005/thongtinmoitruong/vinhtan2_s1?id=CO2`, success: function (result) {
-                    // //             $(`#${manhamay}`).text(result);
-                    // //         }
-                    // //     });
-                    // // }, 1000);
-                    // var resultHtml = "";
-                    // resultHtml += `
-                    // <div class="row-item">
-                    //     Tốc độ gió
-                    //     <div class="label pull-right">
-                    //         <strong id="tocdogio">3</strong>
-                    //         <strong>m/s</strong>
-                    //     </div>
-                    // </div>
-                    // `
-                    // document.getElementById("thongtinmoitruong").innerHTML = resultHtml;
-
                 });
 
                 $("#danhsachnhamay").on("click", "div.goToDirection", (result) => {
@@ -187,13 +175,40 @@ define([
                 });
 
                 var point1tmp,
-                    widthtmp, heighttmp;
+                    widthtmp, heighttmp, tmpScale, tmpPolygonGraphic;
 
 
-                this.view.watch('zoom', () => {
-                    var screenCoods = this.view.toScreen(point1tmp);
-                    console.log(screenCoods);
+                this.view.watch('scale', (newVal, oldVal) => {
+                    var screen1 = this.view.toScreen(this.point1);
+                    var screen2 = this.view.toScreen(this.point2);
+                    var screen3 = this.view.toScreen(this.point3);
+                    var width = screen2.longitude - screen1.longitude;
+                    var height = screen3.latitude - screen2.latitude;
+                    if (this.graphic_polygon) {
+                        this.graphicsLayer.remove(this.graphic_polygon);
+                        this.graphic_polygon = null;
+                    }
+                    var img = $('#pane img')[0];
+                    var fillSymbol = {
+                        type: "picture-marker", // autocasts as new SimpleFillSymbol()
+                        url: img.src,
+
+                        width,
+                        height
+                    };
+                    // Create a symbol for rendering the graphic
+                    // Add the geometry and symbol to a new graphic
+                    if (this.polygonGraphic) {
+                        this.graphic_polygon = new Graphic({
+                            geometry: this.polygonGraphic.geometry,
+                            symbol: fillSymbol
+                        });
+                        this.graphicsLayer.add(this.graphic_polygon);
+                    }
+
                 });
+
+
                 $("#pane > div > div.widget_item.check").click(() => {
                     var pane = $('#pane');
                     let screenCoods = pane.position();
@@ -201,17 +216,15 @@ define([
                     let width = pane.width(), height = pane.height();
                     console.log(width, height);
                     var top = screenCoods.top - 70;
-                    widthtmp = width, heighttmp = height;
-                    var point1 = this.view.toMap({
+                    this.point1 = this.view.toMap({
                         x: screenCoods.left,
                         y: top
                     });
-                    point1tmp = point1;
-                    var point2 = this.view.toMap({
+                    this.point2 = this.view.toMap({
                         x: screenCoods.left + width,
                         y: top
                     });
-                    var point3 = this.view.toMap({
+                    this.point3 = this.view.toMap({
                         x: screenCoods.left + width,
                         y: top + height
                     });
@@ -219,46 +232,70 @@ define([
                         x: screenCoods.left,
                         y: top + height
                     });
-                    var polygon = {
-                        type: "polygon", // autocasts as new Polygon()
+                    var polygon = new Polygon({
                         rings: [
                             [  // first ring
-                                [point1.longitude, point1.latitude],
-                                [point2.longitude, point2.latitude],
-                                [point3.longitude, point3.latitude],
+                                [this.point1.longitude, this.point1.latitude],
+                                [this.point2.longitude, this.point2.latitude],
+                                [this.point3.longitude, this.point3.latitude],
                                 [point4.longitude, point4.latitude],
                             ]
                         ]
-                    };
+                    });
+                    this.polygonGraphic = new Graphic({
+                        geometry: polygon.extent.center,
+                        symbol: fillSymbol
+                    });
                     var img = $('#pane img')[0];
                     var fillSymbol = {
-                        type: "picture-fill", // autocasts as new SimpleFillSymbol()
+                        type: "picture-marker", // autocasts as new SimpleFillSymbol()
                         url: img.src,
+
                         width,
                         height
                     };
                     // Create a symbol for rendering the graphic
                     // Add the geometry and symbol to a new graphic
-                    var polygonGraphic = new Graphic({
-                        geometry: polygon,
-                        symbol: fillSymbol
-                    });
+                    if (this.polygonGraphic) {
+                        this.graphic_polygon = new Graphic({
+                            geometry: this.polygonGraphic.geometry,
+                            symbol: fillSymbol
+                        });
+
+                        this.graphicsLayer.add(this.graphic_polygon);
+                    }
+
+
+                    // this.graphicsLayer.add(this.polygonGraphic);
+
+
                     var markerSymbol = {
                         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-                        color: [255, 255, 255],
+                        color: [255, 0, 0],
                         outline: { // autocasts as new SimpleLineSymbol()
-                            color: [255, 255, 255],
+                            color: [255, 0, 0],
                             width: 2
                         }
                     };
 
                     // Create a graphic and add the geometry and symbol to it
                     var pointGraphic = new Graphic({
-                        geometry: polygonGraphic.geometry.extent.center,
+                        geometry: this.point1,
                         symbol: markerSymbol
                     });
-                    console.log(polygonGraphic);
-                    this.view.graphics.addMany([polygonGraphic]);
+                    var pointGraphic1 = new Graphic({
+                        geometry: this.point2,
+                        symbol: markerSymbol
+                    });
+                    var pointGraphic2 = new Graphic({
+                        geometry: this.point3,
+                        symbol: markerSymbol
+                    });
+                    var pointGraphic3 = new Graphic({
+                        geometry: point4,
+                        symbol: markerSymbol
+                    });
+                    this.view.graphics.addMany([pointGraphic, pointGraphic1, pointGraphic2, pointGraphic3]);
 
                 });
 
