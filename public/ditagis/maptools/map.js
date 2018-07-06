@@ -18,7 +18,7 @@ define([
 ], function (Graphic, FeatureLayer, Extent, watchUtils, Locate, LocateViewModel, Legend, Expand, Print, ThoiTiet,
     ExpandTools, LayerEditor,
     QueryLayer,
-     PaneManager,
+    PaneManager,
     ) {
 
         return class {
@@ -47,13 +47,14 @@ define([
                 this.layerEditor.on("click", addPane);
                 this.queryLayer = new QueryLayer(view);
                 this.queryLayer.on("click", addPane);
-                
+
                 var paneManager = new PaneManager({
                     element: "#pane-tools"
                 })
                 function addPane(pane) {
                     paneManager.add(pane);
                 }
+
             }
 
             startup() {
@@ -87,7 +88,7 @@ define([
                     var objectId_first = result.currentTarget.attributes.alt.nodeValue;
                     $('.item-nhamay').css('border', 'red solid 2px');
                     $(`.item-nhamay[alt="${objectId_first}"]`).css('border', 'none');
-                    $("#danhsachnhamay").one("click",".item-nhamay", (evt) => {
+                    $("#danhsachnhamay").one("click", ".item-nhamay", (evt) => {
                         evt.stopPropagation();
                         $(`.item-nhamay`).css('border', 'none');
                         var feature_first = this.featuresNhaMay.find(f =>
@@ -95,7 +96,7 @@ define([
                         );
                         var longitude_first = feature_first.geometry.centroid.x, latitude_first = feature_first.geometry.centroid.y;
                         var objectId_second = evt.currentTarget.attributes.alt.nodeValue;
-                        if(objectId_first != objectId_second){
+                        if (objectId_first != objectId_second) {
                             var feature_second = this.featuresNhaMay.find(f =>
                                 f.attributes['OBJECTID'] == objectId_second
                             );
@@ -157,11 +158,100 @@ define([
                     this.layerEditor.editor();
                 });
 
-                $("#statistics-widget").click(()=>{
+                $("#statistics-widget").click(() => {
                     this.queryLayer.start();
                 })
 
+                $("#pane > div > div.widget_item.close").click(() => {
+                    $("div#pane-storm").addClass("hidden");
+                });
 
+                var point1tmp,
+                    widthtmp, heighttmp;
+
+
+                this.view.watch('zoom', () => {
+                    var screenCoods = this.view.toScreen(point1tmp);
+                    console.log(screenCoods);
+                });
+                $("#pane > div > div.widget_item.check").click(() => {
+                    var pane = $('#pane');
+                    let screenCoods = pane.position();
+                    console.log(screenCoods);
+                    let width = pane.width(), height = pane.height();
+                    console.log(width, height);
+                    var top = screenCoods.top - 70;
+                    widthtmp = width, heighttmp = height;
+                    var point1 = this.view.toMap({
+                        x: screenCoods.left,
+                        y: top
+                    });
+                    point1tmp = point1;
+                    var point2 = this.view.toMap({
+                        x: screenCoods.left + width,
+                        y: top
+                    });
+                    var point3 = this.view.toMap({
+                        x: screenCoods.left + width,
+                        y: top + height
+                    });
+                    var point4 = this.view.toMap({
+                        x: screenCoods.left,
+                        y: top + height
+                    });
+                    var polygon = {
+                        type: "polygon", // autocasts as new Polygon()
+                        rings: [
+                            [  // first ring
+                                [point1.longitude, point1.latitude],
+                                [point2.longitude, point2.latitude],
+                                [point3.longitude, point3.latitude],
+                                [point4.longitude, point4.latitude],
+                            ]
+                        ]
+                    };
+                    var img = $('#pane img')[0];
+                    var fillSymbol = {
+                        type: "picture-fill", // autocasts as new SimpleFillSymbol()
+                        url: img.src,
+                        width,
+                        height
+                    };
+                    // Create a symbol for rendering the graphic
+                    // Add the geometry and symbol to a new graphic
+                    var polygonGraphic = new Graphic({
+                        geometry: polygon,
+                        symbol: fillSymbol
+                    });
+                    var markerSymbol = {
+                        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+                        color: [255, 255, 255],
+                        outline: { // autocasts as new SimpleLineSymbol()
+                            color: [255, 255, 255],
+                            width: 2
+                        }
+                    };
+
+                    // Create a graphic and add the geometry and symbol to it
+                    var pointGraphic = new Graphic({
+                        geometry: polygonGraphic.geometry.extent.center,
+                        symbol: markerSymbol
+                    });
+                    console.log(polygonGraphic);
+                    this.view.graphics.addMany([polygonGraphic]);
+
+                });
+
+                $("#inputFiles").change(function (evt) {
+                    $("div#pane-storm").toggleClass("hidden");
+                    var img = $('#pane img')[0];
+                    var file = evt.currentTarget.files[0];
+                    var reader = new FileReader();
+                    reader.onloadend = function () {
+                        img.src = reader.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
                 // map - tools (zoom in, out, location)
                 $("#zoom-in").click(() => {
                     this.view.zoom += 1;
@@ -229,6 +319,7 @@ define([
                 document.getElementById("legend-symbols").innerHTML += resultHtml;
 
             }
+
             async danhsachnhamay() {
                 var displayResults = await this.queryListNhaMay();
                 this.featuresNhaMay = displayResults.features;

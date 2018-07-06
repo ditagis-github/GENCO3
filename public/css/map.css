@@ -360,6 +360,37 @@ button.methods {
     text-shadow: rgba(0,0,0,0.7) 0px 1px 8px;
     background: url(../images/map/icon-swap.jpg) no-repeat 1px 1px/20px;
 }
+.widget_item.check {
+    cursor: pointer;
+    color: #3498db;
+    font-size: 18px;
+    position: absolute;
+    line-height: normal;
+    top: 2px;
+    right: 30px;
+    width: 30px;
+    height: 30px;
+    text-indent: 6px;
+
+}
+.widget_item.close {
+    cursor: pointer;
+    color: #e74c3c;
+    font-size: 18px;
+    position: absolute;
+    line-height: normal;
+    top: 2px;
+    right: 2px;
+    width: 30px;
+    height: 30px;
+    text-indent: 6px;
+}
+div#pane > .btn-group{
+    border: #000 solid 1px;
+    top: 0px;
+    right: 0;
+    position: absolute;
+}
 .caption-image{
     cursor: pointer;
     color: white;
@@ -780,7 +811,12 @@ i.fa.fa-map-marker {
 	border: 50px solid transparent;
 	border-top-color: red;
 }
-
+.control_item label {
+    color: #fff;
+    font-size: 15px;
+    text-align: center;
+    margin-top: 7px;
+}
 .control_item span {
     color: #fff;
     font-size: 15px;
