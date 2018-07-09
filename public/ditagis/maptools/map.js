@@ -1,24 +1,16 @@
 define([
-    "esri/Graphic",
-    "esri/layers/FeatureLayer",
-    "esri/geometry/Extent",
-    "esri/geometry/Polygon",
-    "esri/layers/GraphicsLayer",
-    "esri/core/watchUtils",
     "esri/widgets/Locate",
     "esri/widgets/Locate/LocateViewModel",
     "esri/widgets/Legend",
-    "esri/widgets/Expand",
     "esri/widgets/Print",
     "ditagis/maptools/thoitiet",
-    "ditagis/widgets/ExpandTools",
     "ditagis/widgets/LayerEditor",
     "ditagis/widgets/QueryLayer",
     "ditagis/toolview/PaneManager",
 
 
-], function (Graphic, FeatureLayer, Extent, Polygon, GraphicsLayer, watchUtils, Locate, LocateViewModel, Legend, Expand, Print, ThoiTiet,
-    ExpandTools, LayerEditor,
+], function (Locate, LocateViewModel, Legend, Print, ThoiTiet,
+    LayerEditor,
     QueryLayer,
     PaneManager,
     ) {
@@ -26,11 +18,6 @@ define([
         return class {
             constructor(view, layerNhaMay) {
                 this.view = view;
-                this.graphicsLayer = new GraphicsLayer({
-                    listMode: 'hide',
-                    opacity: 0.6
-                });
-                this.view.map.add(this.graphicsLayer);
                 this.layerNhaMay = layerNhaMay
                 this.featuresNhaMay;
                 this.startup();
@@ -46,10 +33,6 @@ define([
                     view: this.view,
                     container: "legend-symbols",
                 });
-                var expandTools = new ExpandTools(view, {
-                    position: 'top-left',
-                });
-
                 this.layerEditor = new LayerEditor(view);
                 this.layerEditor.on("click", addPane);
                 this.queryLayer = new QueryLayer(view);
@@ -169,144 +152,7 @@ define([
                 $("#statistics-widget").click(() => {
                     this.queryLayer.start();
                 })
-
-                $("#pane > div > div.widget_item.close").click(() => {
-                    $("div#pane-storm").addClass("hidden");
-                });
-
-                var point1tmp,
-                    widthtmp, heighttmp, tmpScale, tmpPolygonGraphic;
-
-
-                this.view.watch('scale', (newVal, oldVal) => {
-                    var screen1 = this.view.toScreen(this.point1);
-                    var screen2 = this.view.toScreen(this.point2);
-                    var screen3 = this.view.toScreen(this.point3);
-                    var width = screen2.longitude - screen1.longitude;
-                    var height = screen3.latitude - screen2.latitude;
-                    if (this.graphic_polygon) {
-                        this.graphicsLayer.remove(this.graphic_polygon);
-                        this.graphic_polygon = null;
-                    }
-                    var img = $('#pane img')[0];
-                    var fillSymbol = {
-                        type: "picture-marker", // autocasts as new SimpleFillSymbol()
-                        url: img.src,
-                        width: width + "px",
-                        height: height + "px",
-                    };
-                    // Create a symbol for rendering the graphic
-                    // Add the geometry and symbol to a new graphic
-                    if (this.polygonGraphic) {
-                        this.graphic_polygon = new Graphic({
-                            geometry: this.polygonGraphic.geometry,
-                            symbol: fillSymbol
-                        });
-                        this.graphicsLayer.add(this.graphic_polygon);
-                    }
-
-                });
-
-
-                $("#pane > div > div.widget_item.check").click(() => {
-                    var pane = $('#pane');
-                    let screenCoods = pane.position();
-                    console.log(screenCoods);
-                    let width = pane.width(), height = pane.height();
-                    console.log(width, height);
-                    var top = screenCoods.top - 70;
-                    this.point1 = this.view.toMap({
-                        x: screenCoods.left,
-                        y: top
-                    });
-                    this.point2 = this.view.toMap({
-                        x: screenCoods.left + width,
-                        y: top
-                    });
-                    this.point3 = this.view.toMap({
-                        x: screenCoods.left + width,
-                        y: top + height
-                    });
-                    var point4 = this.view.toMap({
-                        x: screenCoods.left,
-                        y: top + height
-                    });
-                    var polygon = new Polygon({
-                        rings: [
-                            [  // first ring
-                                [this.point1.longitude, this.point1.latitude],
-                                [this.point2.longitude, this.point2.latitude],
-                                [this.point3.longitude, this.point3.latitude],
-                                [point4.longitude, point4.latitude],
-                            ]
-                        ]
-                    });
-                    this.polygonGraphic = new Graphic({
-                        geometry: polygon.extent.center,
-                        symbol: fillSymbol
-                    });
-                    var img = $('#pane img')[0];
-                    var fillSymbol = {
-                        type: "picture-marker", // autocasts as new SimpleFillSymbol()
-                        url: img.src,
-                        width: width + "px",
-                        height: height + "px",
-                    };
-                    // Create a symbol for rendering the graphic
-                    // Add the geometry and symbol to a new graphic
-                    if (this.polygonGraphic) {
-                        this.graphic_polygon = new Graphic({
-                            geometry: this.polygonGraphic.geometry,
-                            symbol: fillSymbol
-                        });
-
-                        this.graphicsLayer.add(this.graphic_polygon);
-                    }
-
-
-                    // this.graphicsLayer.add(this.polygonGraphic);
-
-
-                    var markerSymbol = {
-                        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-                        color: [255, 0, 0],
-                        outline: { // autocasts as new SimpleLineSymbol()
-                            color: [255, 0, 0],
-                            width: 2
-                        }
-                    };
-
-                    // Create a graphic and add the geometry and symbol to it
-                    var pointGraphic = new Graphic({
-                        geometry: this.point1,
-                        symbol: markerSymbol
-                    });
-                    var pointGraphic1 = new Graphic({
-                        geometry: this.point2,
-                        symbol: markerSymbol
-                    });
-                    var pointGraphic2 = new Graphic({
-                        geometry: this.point3,
-                        symbol: markerSymbol
-                    });
-                    var pointGraphic3 = new Graphic({
-                        geometry: point4,
-                        symbol: markerSymbol
-                    });
-                    this.view.graphics.addMany([pointGraphic, pointGraphic1, pointGraphic2, pointGraphic3]);
-
-                });
-
-                $("#inputFiles").change(function (evt) {
-                    $("div#pane-storm").toggleClass("hidden");
-                    var img = $('#pane img')[0];
-                    var file = evt.currentTarget.files[0];
-                    var reader = new FileReader();
-                    reader.onloadend = function () {
-                        img.src = reader.result;
-                    };
-                    reader.readAsDataURL(file);
-                });
+                
                 // map - tools (zoom in, out, location)
                 $("#zoom-in").click(() => {
                     this.view.zoom += 1;

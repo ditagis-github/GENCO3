@@ -45,7 +45,6 @@ require([
         hiddenmap.start();
         view.ui.move(["zoom"]);
 
-        last_ext = view.extent;
         var basemapToggle = new BasemapToggle({
             view: view,
             nextBasemap: "satellite",

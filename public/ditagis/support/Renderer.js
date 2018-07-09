@@ -1,6 +1,6 @@
 define([
     "esri/layers/GraphicsLayer",
-    "esri/layers/FeatureLayer",
+    "ditagis/layers/FeatureLayer",
     "esri/core/watchUtils",
     "esri/Graphic",
 ], function (GraphicsLayer, FeatureLayer, watchUtils, Graphic) {
