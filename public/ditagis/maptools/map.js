@@ -192,9 +192,8 @@ define([
                     var fillSymbol = {
                         type: "picture-marker", // autocasts as new SimpleFillSymbol()
                         url: img.src,
-
-                        width,
-                        height
+                        width: width + "px",
+                        height: height + "px",
                     };
                     // Create a symbol for rendering the graphic
                     // Add the geometry and symbol to a new graphic
@@ -250,9 +249,8 @@ define([
                     var fillSymbol = {
                         type: "picture-marker", // autocasts as new SimpleFillSymbol()
                         url: img.src,
-
-                        width,
-                        height
+                        width: width + "px",
+                        height: height + "px",
                     };
                     // Create a symbol for rendering the graphic
                     // Add the geometry and symbol to a new graphic
