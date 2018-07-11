@@ -105,7 +105,10 @@ define([
         }
         queryListNhaMay() {
             var query = this.featureLayer.createQuery();
-            query.where = "1=1";
+            query.where ="1=1";
+                if(this.featureLayer.definitionExpression != null){
+                    query.where = this.featureLayer.definitionExpression;
+                }
             return this.featureLayer.queryFeatures(query);
         }
     }

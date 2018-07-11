@@ -61,7 +61,7 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                                 className: "esri-icon-erase",
                             });
                         }
-                        if (layer.id == 'Camera') {
+                        if (layer.id == 'cameraLYR') {
                             layer.popupTemplate = new PopupTemplate({
                                 content: (target) => {
                                     return this.contentImages(target);
@@ -261,39 +261,19 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                 }, container);
                 divInfo.innerHTML += '<legend>Thông tin</legend>';
                 let model = {};
-                let inputHTML = '';
+                var outFields = this.layer.outFields;
                 for (let field of this.layer.fields) {
-                    if (field.type === 'oid'
-                        || this.isFireField(field.name)
-                        || (this.view.systemVariable.user.GroupRole !== "STTTT" && field.name === "TenDoanhNghiep"))
-                        continue;
-                    if (field.domain && field.domain.type === "codedValue") {
-                        let domain = field.domain, codedValues = domain.codedValues;
-                        let optionHTML = codedValues.map(m => `<option value="${m.code}">${m.name}</option>`);
-                        inputHTML = `
-          <select class="form-control" data-bind="value:${field.name}">
-            <option value='-1'>Chọn ${field.alias}</option>
-            ${optionHTML}
-          </select>
-          `;
+                    if (outFields && outFields.length > 1) {
+                        for (let outField of outFields) {
+                            if (outField == field.name) {
+                                this.editField(field,model,divInfo);
+                            }
+                        }
                     }
-                    else {
-                        let inputType = field.type === "string" ? "text" :
-                            field.type === "date" ? "date" : "number";
-                        inputHTML = `<input class="form-control" type="${inputType}" data-bind="value:${field.name}">`;
+                    else if (outFields[0] == "*") {
+                        this.editField(field,model,divInfo);
                     }
-                    let html = `
-        <div class="form-group">
-          <label class="col-sm-4 control-label" for="textinput">${field.alias}</label>
-          <div class="col-sm-8">
-            ${inputHTML}
-          </div>
-        </div>`;
-                    if (field.type === "date")
-                        model[field.name] = new Date(this.attributes[field.name]);
-                    else
-                        model[field.name] = this.attributes[field.name];
-                    divInfo.innerHTML += html;
+                    
                 }
                 if (this.layer.hasAttachments) {
                     divInfo.innerHTML += `<legend>Tệp đính kèm</legend>
@@ -331,6 +311,38 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                 watchUtils.once(this.view.popup, 'visible').then(result => {
                     updateAction.className = 'esri-icon-edit';
                 });
+            }
+            editField(field,model,divInfo) {
+                let inputHTML = '';
+                if (field.type === 'oid' || this.isFireField(field.name))
+                    return;
+                if (field.domain && field.domain.type === "codedValue") {
+                    let domain = field.domain, codedValues = domain.codedValues;
+                    let optionHTML = codedValues.map(m => `<option value="${m.code}">${m.name}</option>`);
+                    inputHTML = `
+                                        <select class="form-control" data-bind="value:${field.name}">
+                                            <option value='-1'>Chọn ${field.alias}</option>
+                                            ${optionHTML}
+                                        </select>
+                                    `;
+                }
+                else {
+                    let inputType = field.type === "string" ? "text" :
+                        field.type === "date" ? "date" : "number";
+                    inputHTML = `<input class="form-control" type="${inputType}" data-bind="value:${field.name}">`;
+                }
+                let html = `
+                            <div class="form-group">
+                            <label class="col-sm-4 control-label" for="textinput">${field.alias}</label>
+                            <div class="col-sm-8">
+                                ${inputHTML}
+                            </div>
+                            </div>`;
+                if (field.type === "date")
+                    model[field.name] = new Date(this.attributes[field.name]);
+                else
+                    model[field.name] = this.attributes[field.name];
+                divInfo.innerHTML += html;
             }
             onInputAttachmentChangeHandler(e) {
                 let fileInput = e.target;
@@ -392,6 +404,7 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
             contentPopup(target) {
                 return __awaiter(this, void 0, void 0, function* () {
                     const graphic = target.graphic, layer = graphic.layer, attributes = graphic.attributes;
+                    var outFields = layer.outFields;
                     this.hightlightGraphic.clear();
                     this.hightlightGraphic.add(graphic);
                     let container = $('<div/>', {
@@ -399,41 +412,17 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                     });
                     let table = $('<table/>', {}).appendTo(container);
                     for (let field of layer.fields) {
-                        let value = attributes[field.name];
-                        if (field.type === 'oid')
-                            continue;
-                        let row = $('<tr/>').appendTo(table);
-                        let tdName = $('<th/>', {
-                            text: field.alias
-                        }).appendTo(row);
-                        let tdValue = $('<td/>').appendTo(row);
-                        if (field.name == 'CongSuat') {
-                            var manhamay = attributes["Ma"];
-                            tdValue[0].id = manhamay;
-                            if (manhamay) {
-                                var interval = setInterval(() => {
-                                    $.ajax({
-                                        url: `http://localhost:2005/congsuat/${manhamay}`, success: function (result) {
-                                            $(`#${manhamay}`).text(result);
-                                        }
-                                    });
-                                }, 1000);
-                                this.listInterval.push(interval);
+                        if (outFields && outFields.length > 1) {
+                            for (let outField of outFields) {
+                                if (outField == field.name) {
+                                    this.showField(field, attributes, table);
+                                }
                             }
+                        }
+                        else if (outFields[0] == "*") {
+                            this.showField(field, attributes, table);
+                        }
 
-                        }
-                        else if (value) {
-                            let input, content = value, formatString;
-                            if (field.domain && field.domain.type === "codedValue") {
-                                const codedValues = field.domain.codedValues;
-                                content = codedValues.find(f => { return f.code === value; }).name;
-                            }
-                            else if (field.type === 'date')
-                                formatString = 'DateFormat';
-                            if (formatString)
-                                content = `{${field.name}:${formatString}}`;
-                            tdValue.text(content);
-                        }
                     }
                     if (layer.hasAttachments) {
                         layer.getAttachments(attributes['OBJECTID']).then(res => {
@@ -454,6 +443,43 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                     }
                     return container[0].outerHTML;
                 });
+            }
+            showField(field, attributes, table) {
+                let value = attributes[field.name];
+                if (field.type === 'oid')
+                    return;
+                let row = $('<tr/>').appendTo(table);
+                let tdName = $('<th/>', {
+                    text: field.alias
+                }).appendTo(row);
+                let tdValue = $('<td/>').appendTo(row);
+                if (field.name == 'CongSuat') {
+                    var manhamay = attributes["Ma"];
+                    tdValue[0].id = manhamay;
+                    if (manhamay) {
+                        var interval = setInterval(() => {
+                            $.ajax({
+                                url: `http://localhost:2005/congsuat/${manhamay}`, success: function (result) {
+                                    $(`#${manhamay}`).text(result);
+                                }
+                            });
+                        }, 1000);
+                        this.listInterval.push(interval);
+                    }
+
+                }
+                else if (value) {
+                    let input, content = value, formatString;
+                    if (field.domain && field.domain.type === "codedValue") {
+                        const codedValues = field.domain.codedValues;
+                        content = codedValues.find(f => { return f.code === value; }).name;
+                    }
+                    else if (field.type === 'date')
+                        formatString = 'DateFormat';
+                    if (formatString)
+                        content = `{${field.name}:${formatString}}`;
+                    tdValue.text(content);
+                }
             }
             editFeature() {
                 let applyAttributes = {

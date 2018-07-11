@@ -64,8 +64,7 @@ define(["../core/Base",
         var attributeslayer = $("<div/>");
         if (!evt) return;
         var selected = evt.sender._old;
-        // let layer = this.view.map.findLayerById(selected);
-        let layer = this.view.map.findLayerById('nhamayLYR');
+        let layer = this.view.map.findLayerById(selected);
         if (layer) {
           let ul = $('<ul/>', {
             class: 'fieldList'
