@@ -1,6 +1,9 @@
+if (!localStorage.login_code) {
+    location.href = '/login.html'
+}
 require([
     "esri/Map",
-    "esri/views/MapView",
+    "ditagis/views/MapView",
     "esri/Graphic",
     "esri/layers/GroupLayer",
     "esri/geometry/Polyline",
@@ -39,8 +42,8 @@ require([
             zoom: MapConfigs.zoom,
             center: MapConfigs.center,
         });
-        view.systemVariable = new SystemStatusObject();
-        view.systemVariable.user = MapConfigs.user;
+
+
         var hiddenmap = new HiddenMap(view);
         hiddenmap.start();
         view.ui.move(["zoom"]);
@@ -54,17 +57,38 @@ require([
             hiddenmap.toogleGraphics();
         });
         view.ui.components = ["attribution"];
-        initFeatureLayer();
+
+
+        view.systemVariable = new SystemStatusObject();
+        view.systemVariable.user = MapConfigs.user;
+        view.session().then(function (user) {
+            initFeatureLayer();
+        });
         function initFeatureLayer() {
             let gr = new GroupLayer({
                 title: 'Dữ liệu chuyên đề',
-                id: "chuyendehientrang"
+                id: "chuyende"
             });
             map.add(gr);
-            for (const layerCfg of MapConfigs.layers) {
-                if (layerCfg.groupLayer === 'chuyendehientrang' && layerCfg.permission.view) {
-                    let fl = new FeatureLayer(layerCfg);
-                    if (fl.id != "NhaMay") {
+            for (const layerCfg of view.systemVariable.user.Layers) {
+                // for (const layerCfg of MapConfigs.layers) {
+                if (layerCfg.GroupName === 'chuyende' && layerCfg.IsView) {
+                    let fl = new FeatureLayer({
+                        url: 'https://'+layerCfg.Url,
+                        title: layerCfg.LayerTitle,
+                        id: layerCfg.LayerID,
+                        outFields: layerCfg.OutFields ? layerCfg.OutFields.split(',') : ['*'],
+                        permission: {
+                            create: layerCfg.IsCreate,
+                            delete: layerCfg.IsDelete,
+                            edit: layerCfg.IsEdit,
+                            view: layerCfg.IsView,
+                        },
+                    });
+                    if(layerCfg.Definition != null){
+                        fl.definitionExpression = layerCfg.Definition;
+                    }
+                    if (fl.id != "nhamayLYR") {
                         fl.minScale = 30000;
                         fl.minScale = 36111.909643;
                     }
@@ -79,7 +103,7 @@ require([
 
         var layerNhaMay;
         view.on("layerview-create", function (event) {
-            if (event.layer.id === "NhaMay") {
+            if (event.layer.id === "nhamayLYR") {
                 layerNhaMay = event.layerView.layer;
 
                 new Renderer(view, layerNhaMay);

@@ -1,3 +1,7 @@
+if (!localStorage.login_code) {
+    location.href = '/login.html'
+}
+
 require([
     "esri/Map",
     "esri/views/MapView",

@@ -266,7 +266,10 @@ define([
             }
             queryListNhaMay() {
                 var query = this.layerNhaMay.createQuery();
-                query.where = "1=1";
+                query.where ="1=1";
+                if(this.layerNhaMay.definitionExpression != null){
+                    query.where = this.layerNhaMay.definitionExpression;
+                }
                 return this.layerNhaMay.queryFeatures(query);
             }
         }

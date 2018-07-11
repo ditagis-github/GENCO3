@@ -13,7 +13,12 @@ define(["require", "exports", "../core/Base", "dojo/dom-construct", "../core/Con
             super();
             this.view = view;
             this.displayFields = {
-                OngKhoi: [
+                nhamayLYR: [
+                    { width: 60, title: "STT", field: "STT" },
+                    { width: 60, title: "Tên", field: "Ten" },
+                    { width: 60, title: "Mã", field: "Ma" },
+                ],
+                ongkhoiLYR: [
                     { width: 60, title: "STT", field: "STT" },
                     { width: 60, title: "MaNhaMay",field:"MaNhaMay"},
                     { width: 60, title: "ChieuCao",field:"ChieuCao"},

@@ -44,15 +44,15 @@ define(["../core/Base",
         }).appendTo(this.pane);
       }
       bindingDataSource() {
-        this.view.on('layerview-create', (evt) => {
-          const layer = evt.layer;
-          if (layer.type === 'feature' && layer.permission && layer.permission.view) {
+        for (const layer of view.systemVariable.user.Layers) {
+          if (layer.IsView) {
             this.layerListContent.push({
-              title: layer.title,
-              id: layer.id,
+              title: layer.LayerTitle,
+              id: layer.LayerID,
             });
           }
-        });
+
+        }
       }
       onCbChangeQueryLayer(evt) {
         var div = this.dropDownLayers_change(evt);
@@ -64,7 +64,8 @@ define(["../core/Base",
         var attributeslayer = $("<div/>");
         if (!evt) return;
         var selected = evt.sender._old;
-        let layer = this.view.map.findLayerById(selected);
+        // let layer = this.view.map.findLayerById(selected);
+        let layer = this.view.map.findLayerById('nhamayLYR');
         if (layer) {
           let ul = $('<ul/>', {
             class: 'fieldList'
