@@ -20,7 +20,7 @@ require([
 ], function (
     Map, MapView, Graphic,
     BasemapToggle, MapConfigs, HiddenMap, FeatureLayer,
-    Print, Locate, Polygon, Point, GraphicsLayer,Query
+    Print, Locate, Polygon, Point, GraphicsLayer, Query
 ) {
         var map = new Map({
             basemap: "osm"
@@ -78,6 +78,23 @@ require([
         $("#printer-widget").click(() => {
             $("div#print-panel").toggleClass("hidden");
         });
+
+        $("#clear-data").click(() => {
+            layDanhSachDiemBao(baoFL).then((displayResults) => {
+                this.graphicsLayer.removeAll();
+                var features = displayResults.features;
+                for (var i = 0; i < features.length; i++) {
+                    let feature = features[i];
+                    let edits = {
+                        deleteFeatures: [{
+                            objectId: feature.attributes['OBJECTID']
+                        }]
+                    };
+                    baoFL.applyEdits(edits);
+                }
+
+            });
+        });
         $(".closePanel_print").click(function () {
             $("div#print-panel").toggleClass("hidden");
         });
@@ -92,38 +109,13 @@ require([
             html: `<input value="json" name="f" hidden/>`
         }).appendTo(attachmentPopup);
         let fileInput = $("#inputFiles");
-        // fileInput.change(onInputAttachmentChangeHandler.bind(this));
         form.append(fileInput);
-
-
-
-        // let fileInput = $("#inputFiles");
-
         fileInput.change(onInputAttachmentChangeHandler.bind(this));
-        form.append(fileInput);
-        // this.form.append(fileInput);
-        // fileInput.change(function (evt) {
-        //     $("div#pane-storm").toggleClass("hidden");
-        //     var img = $('#pane img')[0];
-        //     var file = evt.currentTarget.files[0];
-        //     var reader = new FileReader();
-        //     reader.onloadend = function () {
-        //         img.src = reader.result;
-        //     };
-        //     reader.readAsDataURL(file);
-        // });
-        view.then(()=>{
-            layDanhSachDiemBao(baoFL).then((displayResults) => {
-                this.graphicsLayer.removeAll();
-                var features = displayResults.features;
-                for (var i = 0; i < features.length; i++) {
-                    let feature = features[i];
-                    showSymbolFeature(feature);
-                }
-    
-            });
+
+        view.then(() => {
+            showSymbolFeature();
         })
-        
+
         view.watch('scale', (newVal, oldVal) => {
             var items = this.graphicsLayer.graphics.items;
             for (const i in items) {
@@ -136,35 +128,9 @@ require([
             }
 
         });
-        // view.watch('scale', (newVal, oldVal) => {
-        //     var screen1 = view.toScreen(this.point1);
-        //     var screen2 = view.toScreen(this.point2);
-        //     var screen3 = view.toScreen(this.point3);
-        //     var width = screen2.longitude - screen1.longitude;
-        //     var height = screen3.latitude - screen2.latitude;
-        //     if (this.graphic_polygon) {
-        //         this.graphicsLayer.removeAll();
-        //         this.graphic_polygon = null;
-        //     }
-        //     var img = $('#pane img')[0];
-        //     var fillSymbol = {
-        //         type: "picture-marker", // autocasts as new SimpleFillSymbol()
-        //         url: img.src,
-        //         width: width + "px",
-        //         height: height + "px",
-        //     };
-        //     // Create a symbol for rendering the graphic
-        //     // Add the geometry and symbol to a new graphic
-        //     if (this.polygonGraphic) {
-        //         this.graphic_polygon = new Graphic({
-        //             geometry: this.polygonGraphic.geometry,
-        //             symbol: fillSymbol
-        //         });
-        //         this.graphicsLayer.add(this.graphic_polygon);
-        //     }
 
-        // });
         $("#pane > div > div.widget_item.check").click(() => {
+
             let attributes = {};
             var pane = $('#pane');
             let screenCoods = pane.position();
@@ -200,65 +166,51 @@ require([
                 }]
             };
             baoFL.applyEdits(edits).then((result) => {
-                console.log(edits);
+                $("div#pane-storm").addClass("hidden");
                 baoFL.addAttachments(result.addFeatureResults[0].objectId, this.fileInput_form).then((addRes) => {
                     if (addRes.addAttachmentResult.success) {
-                        layDanhSachDiemBao(baoFL).then((displayResults) => {
-                            this.graphicsLayer.removeAll();
-                            var features = displayResults.features;
-                            for (var i = 0; i < features.length; i++) {
-                                let feature = features[i];
-                                showSymbolFeature(feature);
-                            }
-
-                        });
+                        showSymbolFeature();
                     }
                 });
             });
         });
         var hiddenmap = new HiddenMap(view);
         hiddenmap.start();
-        function hightlightPoint(point) {
-            var markerSymbol = {
-                type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-                color: [226, 119, 40],
-                outline: { // autocasts as new SimpleLineSymbol()
-                    color: [255, 255, 255],
-                    width: 2
-                }
-            };
-            var pointGraphic = new Graphic({
-                geometry: point,
-                symbol: markerSymbol
-            });
-            view.graphics.add(pointGraphic);
-        }
-        function showSymbolFeature(feature) {
-            let attr = feature.attributes;
-            feature.layer.getAttachments(attr["OBJECTID"]).then((imageResults) => {
-                if (imageResults && imageResults.attachmentInfos && imageResults.attachmentInfos.length > 0) {
-                    src = imageResults.attachmentInfos[0].src;
-                    var point1 = latLngToPoint(attr.D1_Lat, attr.D1_Lng);
-                    var point2 = latLngToPoint(attr.D2_Lat, attr.D2_Lng);
-                    var point3 = latLngToPoint(attr.D3_Lat, attr.D3_Lng);
-                    let width = getDistance2Point(point1, point2);
-                    let height = getDistance2Point(point2, point3);
-                    var markerSimbol = {
-                        type: "picture-marker",
-                        url: src,
-                        width: width + "px",
-                        height: height + "px",
-                    };
-                    var points = [];
-                    points.push(point1, point2, point3);
-                    this.graphic = new Graphic({
-                        geometry: feature.geometry,
-                        symbol: markerSimbol,
-                        points: points
+        function showSymbolFeature() {
+            layDanhSachDiemBao(baoFL).then((displayResults) => {
+                this.graphicsLayer.removeAll();
+                var features = displayResults.features;
+                for (var i = 0; i < features.length; i++) {
+                    let feature = features[i];
+                    let attr = feature.attributes;
+                    feature.layer.getAttachments(attr["OBJECTID"]).then((imageResults) => {
+                        if (imageResults && imageResults.attachmentInfos && imageResults.attachmentInfos.length > 0) {
+                            src = imageResults.attachmentInfos[0].src;
+                            var point1 = latLngToPoint(attr.D1_Lat, attr.D1_Lng);
+                            var point2 = latLngToPoint(attr.D2_Lat, attr.D2_Lng);
+                            var point3 = latLngToPoint(attr.D3_Lat, attr.D3_Lng);
+                            let width = getDistance2Point(point1, point2);
+                            let height = getDistance2Point(point2, point3);
+                            var markerSimbol = {
+                                type: "picture-marker",
+                                url: src,
+                                width: width + "px",
+                                height: height + "px",
+                            };
+                            var points = [];
+                            points.push(point1, point2, point3);
+                            this.graphic = new Graphic({
+                                geometry: feature.geometry,
+                                symbol: markerSimbol,
+                                points: points
+                            });
+                            this.graphicsLayer.add(this.graphic);
+                        }
                     });
-                    this.graphicsLayer.add(this.graphic);
                 }
+
             });
+
         }
         function layDanhSachDiemBao(layer) {
             var query = new Query();
@@ -267,18 +219,6 @@ require([
             query.returnGeometry = true;
             query.outSpatialReference = view.spatialReference;
             return layer.queryFeatures(query);
-        }
-        function lngLatToTopLeft(lng, lat) {
-            var screen = view.toScreen(new Point({
-                latitude: lng,
-                longitude: lat,
-                spatialReference: view.spatialReference
-            }));
-            return {
-                Top: screen.latitude,
-                Left: screen.longitude
-            }
-
         }
         function getDistance2Point(point1, point2) {
             var screen1 = view.toScreen(point1);
@@ -310,8 +250,6 @@ require([
                 img.src = reader.result;
             };
             reader.readAsDataURL(file1);
-
-
             let fileInput = e.target;
             let file = fileInput.files[0];
             if (file.size > 20000000) {
@@ -319,6 +257,5 @@ require([
                 return;
             }
             this.fileInput_form = fileInput.form;
-            return fileInput.form;
         }
     });
