@@ -21,7 +21,7 @@ define([
                 if (this.manhamay)
                     for (const chiso of cacchiso) {
                         $.ajax({
-                            url: `http://localhost:2005/thongtinmoitruong/${this.manhamay}?id=${chiso}`, 
+                            url: `https://ditagis.com/genco3/thongtinmoitruong/${this.manhamay}?id=${chiso}`, 
                             success: function (result) {
                                 document.getElementById("thongtinmoitruong").innerHTML += `
                                 <div class="row-item">

@@ -12,7 +12,7 @@ $('#remember').click(function () {
     input.val(val);
 })
 function login() {
-    $.ajax("http://localhost:2005/api/Login", {
+    $.ajax("https://ditagis.com/genco3/api/Login", {
         contentType: 'application/json',
         dataType: 'json',
         type: 'POST',

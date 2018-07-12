@@ -7,7 +7,7 @@ define(["require", "exports", "esri/views/MapView", "ditagis/classes/SystemStatu
         }
         session() {
             return new Promise((resolve, reject) => {
-                $.ajax("http://localhost:2005/api/layerinfo/ditagis", {
+                $.ajax("https://ditagis.com/genco3/api/layerinfo", {
                     contentType: 'application/json',
                     dataType: 'json',
                     type: 'GET',

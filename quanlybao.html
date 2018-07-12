@@ -43,9 +43,14 @@
                 <div id="import-image-widget" class="control_item item ">
                     <label for="inputFiles" class="esri-icon-media" title="Đưa dữ liệu bão">
                     </label>
-                    <input hidden id="inputFiles" type='file' />
+                    <input hidden id="inputFiles" type="file" name="attachment" multiple="multiple">
+                </div>
+                <div id="clear-data" class="control_item item ">
+                    <span class="esri-icon-trash" title="Xóa dữ liệu bão">
+                    </span>
                 </div>
             </div>
+
         </div>
     </div>
     <div id="tools_template">
@@ -73,11 +78,15 @@
 
     <div id="viewDiv">
     </div>
+    <div class="panel panel-info" id="aaa">
+        <span class="btn-danger pull-right closePanel closePanel_print">X</span>
+    </div>
     <div class="panel panel-info hidden" id="print-panel">
         <span class="btn-danger pull-right closePanel closePanel_print">X</span>
         <div class="panel-primary" id="print-widget">
         </div>
     </div>
+
     <div class="panel panel-info hidden" id="pane-storm">
         <div id="pane">
             <img src="../public/images/logo.jpg">

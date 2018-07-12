@@ -9,20 +9,23 @@ require([
     "esri/widgets/BasemapToggle",
     "ditagis/MapConfigs",
     "ditagis/maptools/hiddenmap",
+    "ditagis/layers/FeatureLayer",
     "esri/widgets/Print",
     "esri/widgets/Locate",
     "esri/geometry/Polygon",
+    "esri/geometry/Point",
     "esri/layers/GraphicsLayer",
+    "esri/tasks/support/Query",
     "dojo/domReady!"
 ], function (
     Map, MapView, Graphic,
-    BasemapToggle, MapConfigs, HiddenMap,
-    Print,Locate, Polygon, GraphicsLayer
+    BasemapToggle, MapConfigs, HiddenMap, FeatureLayer,
+    Print, Locate, Polygon, Point, GraphicsLayer,Query
 ) {
         var map = new Map({
             basemap: "osm"
         });
-        view = new MapView({
+        var view = new MapView({
             container: "viewDiv",
             map: map,
             zoom: MapConfigs.zoom,
@@ -32,12 +35,18 @@ require([
             listMode: 'hide',
             opacity: 0.6
         });
-        
+        var baoFL = new FeatureLayer({
+            url: 'https://ditagis.com:6443/arcgis/rest/services/GENCO3/QuanLyBao/FeatureServer/0',
+            id: "BAOLYR",
+            outFields: ["*"],
+        });
+        // map.add(baoFL);
+
         view.map.add(graphicsLayer);
         locateBtn = new Locate({
             view: view,
         });
-        
+
         view.ui.move(["zoom"]);
         var basemapToggle = new BasemapToggle({
             view: view,
@@ -62,7 +71,7 @@ require([
 
         // print tools
         var print = new Print({
-            view: this.view,
+            view: view,
             container: $("#print-widget")[0],
             printServiceUrl: "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
         });
@@ -77,97 +86,211 @@ require([
         $("#pane > div > div.widget_item.close").click(() => {
             $("div#pane-storm").addClass("hidden");
         });
-        $("#inputFiles").change(function (evt) {
-            $("div#pane-storm").toggleClass("hidden");
-            var img = $('#pane img')[0];
-            var file = evt.currentTarget.files[0];
-            var reader = new FileReader();
-            reader.onloadend = function () {
-                img.src = reader.result;
-            };
-            reader.readAsDataURL(file);
-        });
-        this.view.watch('scale', (newVal, oldVal) => {
-            var screen1 = this.view.toScreen(this.point1);
-            var screen2 = this.view.toScreen(this.point2);
-            var screen3 = this.view.toScreen(this.point3);
-            var width = screen2.longitude - screen1.longitude;
-            var height = screen3.latitude - screen2.latitude;
-            if (this.graphic_polygon) {
+        let attachmentPopup = $("#import-image-widget");
+        this.form = $("<form/>", {
+            enctype: "multipart/form-data", method: "post",
+            html: `<input value="json" name="f" hidden/>`
+        }).appendTo(attachmentPopup);
+        let fileInput = $("#inputFiles");
+        // fileInput.change(onInputAttachmentChangeHandler.bind(this));
+        form.append(fileInput);
+
+
+
+        // let fileInput = $("#inputFiles");
+
+        fileInput.change(onInputAttachmentChangeHandler.bind(this));
+        form.append(fileInput);
+        // this.form.append(fileInput);
+        // fileInput.change(function (evt) {
+        //     $("div#pane-storm").toggleClass("hidden");
+        //     var img = $('#pane img')[0];
+        //     var file = evt.currentTarget.files[0];
+        //     var reader = new FileReader();
+        //     reader.onloadend = function () {
+        //         img.src = reader.result;
+        //     };
+        //     reader.readAsDataURL(file);
+        // });
+        view.then(()=>{
+            layDanhSachDiemBao(baoFL).then((displayResults) => {
                 this.graphicsLayer.removeAll();
-                this.graphic_polygon = null;
-            }
-            var img = $('#pane img')[0];
-            var fillSymbol = {
-                type: "picture-marker", // autocasts as new SimpleFillSymbol()
-                url: img.src,
-                width: width + "px",
-                height: height + "px",
-            };
-            // Create a symbol for rendering the graphic
-            // Add the geometry and symbol to a new graphic
-            if (this.polygonGraphic) {
-                this.graphic_polygon = new Graphic({
-                    geometry: this.polygonGraphic.geometry,
-                    symbol: fillSymbol
-                });
-                this.graphicsLayer.add(this.graphic_polygon);
+                var features = displayResults.features;
+                for (var i = 0; i < features.length; i++) {
+                    let feature = features[i];
+                    showSymbolFeature(feature);
+                }
+    
+            });
+        })
+        
+        view.watch('scale', (newVal, oldVal) => {
+            var items = this.graphicsLayer.graphics.items;
+            for (const i in items) {
+                var item = items[i];
+                var points = item.points;
+                let width = getDistance2Point(points[0], points[1]);
+                let height = getDistance2Point(points[1], points[2]);
+                item.symbol.width = width + "px";
+                item.symbol.height = height + "px";
             }
 
         });
         $("#pane > div > div.widget_item.check").click(() => {
+            let attributes = {};
             var pane = $('#pane');
             let screenCoods = pane.position();
             console.log(screenCoods);
             let width = pane.width(), height = pane.height();
             console.log(width, height);
             var top = screenCoods.top - 70;
-            this.point1 = this.view.toMap({
-                x: screenCoods.left,
-                y: top
-            });
-            this.point2 = this.view.toMap({
-                x: screenCoods.left + width,
-                y: top
-            });
-            this.point3 = this.view.toMap({
-                x: screenCoods.left + width,
-                y: top + height
-            });
-            var point4 = this.view.toMap({
-                x: screenCoods.left,
-                y: top + height
-            });
+            var left = screenCoods.left;
+            var point1 = topLeftToPoint(top, left);
+            var point2 = topLeftToPoint(top, left + width);
+            var point3 = topLeftToPoint(top + height, left + width);
+            var point4 = topLeftToPoint(top + height, left);
+            attributes.D1_Lat = point1.latitude;
+            attributes.D1_Lng = point1.longitude;
+            attributes.D2_Lat = point2.latitude;
+            attributes.D2_Lng = point2.longitude;
+            attributes.D3_Lat = point3.latitude;
+            attributes.D3_Lng = point3.longitude;
             var polygon = new Polygon({
                 rings: [
                     [  // first ring
-                        [this.point1.longitude, this.point1.latitude],
-                        [this.point2.longitude, this.point2.latitude],
-                        [this.point3.longitude, this.point3.latitude],
+                        [point1.longitude, point1.latitude],
+                        [point2.longitude, point2.latitude],
+                        [point3.longitude, point3.latitude],
                         [point4.longitude, point4.latitude],
                     ]
                 ]
             });
-            this.polygonGraphic = new Graphic({
-                geometry: polygon.extent.center,
-                symbol: fillSymbol
-            });
-            var img = $('#pane img')[0];
-            var fillSymbol = {
-                type: "picture-marker", // autocasts as new SimpleFillSymbol()
-                url: img.src,
-                width: width + "px",
-                height: height + "px",
+            let edits = {
+                addFeatures: [{
+                    geometry: polygon.extent.center,
+                    attributes: attributes
+                }]
             };
-            if (this.polygonGraphic) {
-                this.graphic_polygon = new Graphic({
-                    geometry: this.polygonGraphic.geometry,
-                    symbol: fillSymbol
-                });
+            baoFL.applyEdits(edits).then((result) => {
+                console.log(edits);
+                baoFL.addAttachments(result.addFeatureResults[0].objectId, this.fileInput_form).then((addRes) => {
+                    if (addRes.addAttachmentResult.success) {
+                        layDanhSachDiemBao(baoFL).then((displayResults) => {
+                            this.graphicsLayer.removeAll();
+                            var features = displayResults.features;
+                            for (var i = 0; i < features.length; i++) {
+                                let feature = features[i];
+                                showSymbolFeature(feature);
+                            }
 
-                graphicsLayer.add(this.graphic_polygon);
-            }
+                        });
+                    }
+                });
+            });
         });
         var hiddenmap = new HiddenMap(view);
         hiddenmap.start();
+        function hightlightPoint(point) {
+            var markerSymbol = {
+                type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+                color: [226, 119, 40],
+                outline: { // autocasts as new SimpleLineSymbol()
+                    color: [255, 255, 255],
+                    width: 2
+                }
+            };
+            var pointGraphic = new Graphic({
+                geometry: point,
+                symbol: markerSymbol
+            });
+            view.graphics.add(pointGraphic);
+        }
+        function showSymbolFeature(feature) {
+            let attr = feature.attributes;
+            feature.layer.getAttachments(attr["OBJECTID"]).then((imageResults) => {
+                if (imageResults && imageResults.attachmentInfos && imageResults.attachmentInfos.length > 0) {
+                    src = imageResults.attachmentInfos[0].src;
+                    var point1 = latLngToPoint(attr.D1_Lat, attr.D1_Lng);
+                    var point2 = latLngToPoint(attr.D2_Lat, attr.D2_Lng);
+                    var point3 = latLngToPoint(attr.D3_Lat, attr.D3_Lng);
+                    let width = getDistance2Point(point1, point2);
+                    let height = getDistance2Point(point2, point3);
+                    var markerSimbol = {
+                        type: "picture-marker",
+                        url: src,
+                        width: width + "px",
+                        height: height + "px",
+                    };
+                    var points = [];
+                    points.push(point1, point2, point3);
+                    this.graphic = new Graphic({
+                        geometry: feature.geometry,
+                        symbol: markerSimbol,
+                        points: points
+                    });
+                    this.graphicsLayer.add(this.graphic);
+                }
+            });
+        }
+        function layDanhSachDiemBao(layer) {
+            var query = new Query();
+            query.where = "1=1";
+            query.outFields = ["*"];
+            query.returnGeometry = true;
+            query.outSpatialReference = view.spatialReference;
+            return layer.queryFeatures(query);
+        }
+        function lngLatToTopLeft(lng, lat) {
+            var screen = view.toScreen(new Point({
+                latitude: lng,
+                longitude: lat,
+                spatialReference: view.spatialReference
+            }));
+            return {
+                Top: screen.latitude,
+                Left: screen.longitude
+            }
+
+        }
+        function getDistance2Point(point1, point2) {
+            var screen1 = view.toScreen(point1);
+            var screen2 = view.toScreen(point2);
+            let x1 = screen1.longitude, x2 = screen2.longitude,
+                y1 = screen1.latitude, y2 = screen2.latitude;
+            return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
+        }
+        function latLngToPoint(D1_Lat, D1_Lng) {
+            return new Point({
+                latitude: D1_Lat,
+                longitude: D1_Lng,
+                spatialReference: view.spatialReference
+            });
+        }
+        function topLeftToPoint(top, left) {
+            return view.toMap({
+                x: left,
+                y: top
+            });
+
+        }
+        function onInputAttachmentChangeHandler(e) {
+            $("div#pane-storm").toggleClass("hidden");
+            var img = $('#pane img')[0];
+            var file1 = e.currentTarget.files[0];
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(file1);
+
+
+            let fileInput = e.target;
+            let file = fileInput.files[0];
+            if (file.size > 20000000) {
+                kendo.alert("Dung lượng tệp quá lớn");
+                return;
+            }
+            this.fileInput_form = fileInput.form;
+            return fileInput.form;
+        }
     });

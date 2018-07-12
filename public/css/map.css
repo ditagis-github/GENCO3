@@ -114,6 +114,16 @@ span.btn-danger.pull-right.closePanel.closePanel_print{
     z-index: 999;
     overflow: hidden;
 }
+#aaa{
+    width: 320px;
+    background-color: #f9f9f9;
+    float: right;
+    position: absolute;
+    right: 15px;
+    top: 75px;
+    z-index: 999;
+    overflow: hidden;
+}
 #listNhaMay {
     display: block;
     position: absolute;

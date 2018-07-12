@@ -459,7 +459,7 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                     if (manhamay) {
                         var interval = setInterval(() => {
                             $.ajax({
-                                url: `http://localhost:2005/congsuat/${manhamay}`, success: function (result) {
+                                url: `https://ditagis.com/genco3/congsuat/${manhamay}`, success: function (result) {
                                     $(`#${manhamay}`).text(result);
                                 }
                             });

@@ -62,6 +62,7 @@ require([
         view.systemVariable = new SystemStatusObject();
         view.systemVariable.user = MapConfigs.user;
         view.session().then(function (user) {
+            console.log(user);
             initFeatureLayer();
         });
         function initFeatureLayer() {
