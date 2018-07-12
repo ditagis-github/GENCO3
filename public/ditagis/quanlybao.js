@@ -149,6 +149,8 @@ require([
             attributes.D2_Lng = point2.longitude;
             attributes.D3_Lat = point3.latitude;
             attributes.D3_Lng = point3.longitude;
+            attributes.NguoiCapNhat = localStorage.username;
+            attributes.NgayCapNhat = new Date().getTime();
             var polygon = new Polygon({
                 rings: [
                     [  // first ring

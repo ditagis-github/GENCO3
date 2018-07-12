@@ -24,6 +24,7 @@ function login() {
         .then(rs => {
             if (rs) {
                 localStorage.setItem("login_code", rs);
+                localStorage.setItem("username",$("#user-tf").val())
                 console.log(rs);
                 location.href = '/index.html'
             }
