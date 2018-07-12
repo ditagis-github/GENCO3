@@ -136,6 +136,34 @@ require([
             }
 
         });
+        // view.watch('scale', (newVal, oldVal) => {
+        //     var screen1 = view.toScreen(this.point1);
+        //     var screen2 = view.toScreen(this.point2);
+        //     var screen3 = view.toScreen(this.point3);
+        //     var width = screen2.longitude - screen1.longitude;
+        //     var height = screen3.latitude - screen2.latitude;
+        //     if (this.graphic_polygon) {
+        //         this.graphicsLayer.removeAll();
+        //         this.graphic_polygon = null;
+        //     }
+        //     var img = $('#pane img')[0];
+        //     var fillSymbol = {
+        //         type: "picture-marker", // autocasts as new SimpleFillSymbol()
+        //         url: img.src,
+        //         width: width + "px",
+        //         height: height + "px",
+        //     };
+        //     // Create a symbol for rendering the graphic
+        //     // Add the geometry and symbol to a new graphic
+        //     if (this.polygonGraphic) {
+        //         this.graphic_polygon = new Graphic({
+        //             geometry: this.polygonGraphic.geometry,
+        //             symbol: fillSymbol
+        //         });
+        //         this.graphicsLayer.add(this.graphic_polygon);
+        //     }
+
+        // });
         $("#pane > div > div.widget_item.check").click(() => {
             let attributes = {};
             var pane = $('#pane');
