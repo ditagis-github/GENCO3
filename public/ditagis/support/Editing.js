@@ -33,6 +33,36 @@ define([
           created_date: new Date().getTime(),
         }
     }
+    getMaNhaMay(options){
+      return new Promise((resolve, reject) => {
+        try {
+          if (!options.geometry)
+            reject('geometry is null')
+          if (!this.queryNhaMay)
+            this.queryNhaMay = new QueryTask({
+              url: this.view.map.findLayerById(constName.NHAMAY).url + "/" + this.view.map.findLayerById(constName.NHAMAY).layerId
+            });
+          this.queryNhaMay.execute({
+            outFields: ['Ma'],
+            geometry: options.geometry
+          }).then(res => {
+            if (res) {
+              let ft = res.features[0];
+              if (ft && ft.attributes) {
+                resolve({
+                  MaNhaMay: ft.attributes['Ma'],
+                });
+              }
+            } else {
+              resolve(null);
+            }
+          });
+        } catch (error) {
+          console.log(error)
+          reject(error);
+        }
+      });
+    }
     getLocationInfo(options) {
 
       return new Promise((resolve, reject) => {

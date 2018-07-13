@@ -9,7 +9,8 @@ define(["require", "exports"], function (require, exports) {
         DIEMDICHVU: "DiemDichVu",
         TUYENCAPNGAM: 'TuyenCapNgam',
         CHUYEN_DE_HT: 'chuyendehientrang',
-        OSM: "osm"
+        OSM: "osm",
+        NHAMAY:"nhamayLYR"
     };
     return constName;
 });

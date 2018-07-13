@@ -69,11 +69,6 @@ define([
                     if (result.addFeatureResults.length > 0) {
                         let objectId = result.addFeatureResults[0].objectId;
                         if (objectId) {
-                            //lấy thông tin xã huyện
-                            // if(notify)
-                            // notify.update({ 'type': 'info', 'message': 'Đang lấy vị trí...!', 'progress': 55 });
-
-                            //POPUP OPEN
                             layer.queryFeatures({
                                 returnGeometry: true,
                                 outSpatialReference: this.view.spatialReference,
@@ -83,22 +78,18 @@ define([
                                 //neu tim duoc
                                 if (res.features[0]) {
                                     let ft = res.features[0];
-                                    this.editingSupport.getLocationInfo({
+                                    this.editingSupport.getMaNhaMay({
                                         geometry: ft.geometry
-                                    }).then(locationInfo => {
-                                        // if(notify) notify.update({ 'type': 'info', 'message': 'Lấy vị trí thành công!', 'progress': 80 });
-                                        for (let i in locationInfo) {
-                                            ft.attributes[i] = locationInfo[i];
+                                    }).then(nhaMayInfo => {
+                                        for (let i in nhaMayInfo) {
+                                            ft.attributes[i] = nhaMayInfo[i];
                                         }
                                         layer.applyEdits({
                                             updateFeatures: [{
                                                 attributes: ft.attributes
                                             }]
                                         }).then((result) => {
-                                            // if (!result.updateFeatureResults[0].error)
-                                            // if(notify) notify.update({ 'type': 'success', 'message': 'Cập nhật vị trí thành công!', 'progress': 100 });
-                                            // else
-                                            // if(notify) notify.update({ 'type': 'danger', 'message': 'Cập nhật vị trí không thành công', 'progress': 100 });
+                                            console.log(result);
                                         });
                                     })
                                     this.view.popup.open({
