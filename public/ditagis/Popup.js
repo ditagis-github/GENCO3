@@ -6,11 +6,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports", "dojo/on", "dojo/dom-construct",
+define([
+    "ditagis/core/LinkAPI",
+    "dojo/on", "dojo/dom-construct",
     "ditagis/support/HightlightGraphic",
     "ditagis/support/Editing",
     "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate"],
-    function (require, exports, on, domConstruct, HightlightGraphic, EditingSupport,
+    function (LinkAPI, on, domConstruct, HightlightGraphic, EditingSupport,
         SimpleLineSymbol, watchUtils, PopupTemplate) {
         "use strict";
         class Popup {
@@ -61,7 +63,7 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                                 className: "esri-icon-erase",
                             });
                         }
-                        if (layer.id == 'cameraLYR') {
+                        if (layer.id.includes("camera")) {
                             layer.popupTemplate = new PopupTemplate({
                                 content: (target) => {
                                     return this.contentImages(target);
@@ -124,129 +126,6 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                             this.deleteFeature();
                         }
                         break;
-                    case "hoan-cong":
-                        kendo.confirm("Xác nhận hoàn công trạm BTS").then(f => {
-                            layer.applyEdits({
-                                updateFeatures: [{
-                                    attributes: {
-                                        objectId: objectid,
-                                        TinhTrang: 3
-                                    }
-                                }]
-                            }).then(r => {
-                                if (r.updateFeatureResults[0].error) {
-                                    kendo.alert("Có lỗi xảy ra trong quá trình thực hiện");
-                                }
-                                else {
-                                    kendo.alert("Thao tác thành công");
-                                }
-                            });
-                        });
-                        break;
-                    case "cap-phep":
-                        if (attributes.TenDoanhNghiep) {
-                            kendo.confirm("Chấp nhận cấp phép trạm BTS").then(f => {
-                                layer.applyEdits({
-                                    updateFeatures: [{
-                                        attributes: {
-                                            objectId: objectid,
-                                            TinhTrang: 2
-                                        }
-                                    }]
-                                }).then(r => {
-                                    if (r.updateFeatureResults[0].error) {
-                                        kendo.alert("Có lỗi xảy ra trong quá trình thực hiện");
-                                    }
-                                    else {
-                                        kendo.alert("Cấp phép thành công");
-                                    }
-                                });
-                            }, e => {
-                                layer.applyEdits({
-                                    updateFeatures: [{
-                                        attributes: {
-                                            objectId: objectid,
-                                            TinhTrang: 4
-                                        }
-                                    }]
-                                }).then(r => {
-                                    if (r.updateFeatureResults[0].error) {
-                                        kendo.alert("Có lỗi xảy ra trong quá trình thực hiện");
-                                    }
-                                    else {
-                                        kendo.alert("Thao tác thành công");
-                                    }
-                                });
-                            });
-                        }
-                        else {
-                            const codedValues = layer.fields.find(f => f.name === "TenDoanhNghiep").domain.codedValues;
-                            let dialog = $("<div/>").appendTo(document.body);
-                            dialog.kendoDialog({
-                                width: "400px",
-                                title: "Chọn doanh nghiệp",
-                                closable: false,
-                                modal: false,
-                                content: "<input style='width:100%'></input>",
-                                actions: [{
-                                    text: 'Cấp phép',
-                                    action: function () {
-                                        let val = dialog.find('input').val();
-                                        layer.applyEdits({
-                                            updateFeatures: [{
-                                                attributes: {
-                                                    objectId: objectid,
-                                                    TinhTrang: 2,
-                                                    TenDoanhNghiep: val
-                                                }
-                                            }]
-                                        }).then(r => {
-                                            if (r.updateFeatureResults[0].error) {
-                                                kendo.alert("Có lỗi xảy ra trong quá trình thực hiện");
-                                            }
-                                            else {
-                                                kendo.alert("Thao tác thành công");
-                                            }
-                                        });
-                                    }
-                                },
-                                {
-                                    text: 'Không cấp phép',
-                                    action: function () {
-                                        layer.applyEdits({
-                                            updateFeatures: [{
-                                                attributes: {
-                                                    objectId: objectid,
-                                                    TinhTrang: 4,
-                                                }
-                                            }]
-                                        }).then(r => {
-                                            if (r.updateFeatureResults[0].error) {
-                                                kendo.alert("Có lỗi xảy ra trong quá trình thực hiện");
-                                            }
-                                            else {
-                                                kendo.alert("Thao tác thành công");
-                                            }
-                                        });
-                                    }
-                                },
-                                {
-                                    text: 'Đóng',
-                                }
-                                ],
-                                close: function () {
-                                    dialog.data("kendoDialog").destroy();
-                                    dialog.remove();
-                                }
-                            });
-                            let cb = dialog.find('input');
-                            cb.kendoDropDownList({
-                                dataSource: codedValues,
-                                dataTextField: "name",
-                                dataValueField: "code"
-                            });
-                        }
-                        break;
                     default:
                         break;
                 }
@@ -266,14 +145,14 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                     if (outFields && outFields.length > 1) {
                         for (let outField of outFields) {
                             if (outField == field.name) {
-                                this.editField(field,model,divInfo);
+                                this.editField(field, model, divInfo);
                             }
                         }
                     }
                     else if (outFields[0] == "*") {
-                        this.editField(field,model,divInfo);
+                        this.editField(field, model, divInfo);
                     }
-                    
+
                 }
                 if (this.layer.hasAttachments) {
                     divInfo.innerHTML += `<legend>Tệp đính kèm</legend>
@@ -312,7 +191,7 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                     updateAction.className = 'esri-icon-edit';
                 });
             }
-            editField(field,model,divInfo) {
+            editField(field, model, divInfo) {
                 let inputHTML = '';
                 if (field.type === 'oid' || this.isFireField(field.name))
                     return;
@@ -393,12 +272,41 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                 return itemDiv;
             }
             contentImages(target) {
+                const graphic = target.graphic, attributes = graphic.attributes;
                 let container = $('<div/>', {
                     class: 'popup-content',
                 });
-                let image = $('<img/>', {
-                    src: "../public/images/genco3.jpg"
+                var image = $('<img/>', {
+                    id: "img_camera",
                 }).appendTo(container);
+                var link_url = attributes["LinkAPI"];
+
+                var interval = setInterval(() => {
+                    $.ajax({
+                        url: `${LinkAPI.CAMERA}${link_url}/`, success: (result) => {
+                            if (result) {
+                                var img = new Image();
+                                img.src = 'https://' + result;
+                                if (img.height > 0) {
+                                    $("#img_camera")[0].setAttribute('src', result);
+                                }
+                                else {
+                                    $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                }
+                                console.log(result);
+
+                            }
+                            else {
+                                $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
+                                this.listInterval = []; // xóa hết giá trị
+                            }
+
+
+                        }
+                    });
+                }, 5000);
+                this.listInterval.push(interval);
                 return container[0].outerHTML;
             }
             contentPopup(target) {
@@ -458,89 +366,91 @@ define(["require", "exports", "dojo/on", "dojo/dom-construct",
                     tdValue[0].id = manhamay;
                     if (manhamay) {
                         var interval = setInterval(() => {
+
                             $.ajax({
-                                url: `https://ditagis.com/genco3/congsuat/${manhamay}`, success: function (result) {
+                                url: `${LinkAPI.CONGSUAT}${ manhamay }`, 
+                                success: function (result) {
                                     $(`#${manhamay}`).text(result);
                                 }
                             });
-                        }, 1000);
-                        this.listInterval.push(interval);
+                    }, 1000);
+this.listInterval.push(interval);
                     }
 
                 }
                 else if (value) {
-                    let input, content = value, formatString;
-                    if (field.domain && field.domain.type === "codedValue") {
-                        const codedValues = field.domain.codedValues;
-                        content = codedValues.find(f => { return f.code === value; }).name;
-                    }
-                    else if (field.type === 'date')
-                        formatString = 'DateFormat';
-                    if (formatString)
-                        content = `{${field.name}:${formatString}}`;
-                    tdValue.text(content);
-                }
+    let input, content = value, formatString;
+    if (field.domain && field.domain.type === "codedValue") {
+        const codedValues = field.domain.codedValues;
+        content = codedValues.find(f => { return f.code === value; }).name;
+    }
+    else if (field.type === 'date')
+        formatString = 'DateFormat';
+    if (formatString)
+        content = `{${field.name}:${formatString}}`;
+    tdValue.text(content);
+}
             }
-            editFeature() {
-                let applyAttributes = {
-                    objectId: this.attributes.OBJECTID
-                };
-                if (!this.attributes || !this.kendoModel)
-                    kendo.alert("Có lỗi xảy ra trong quá trình cập nhật");
-                if (this.kendoModel.get('deleteAttachment') && this.kendoModel.get('deleteAttachment').length > 0) {
-                    this.layer.deleteAttachments({
-                        objectId: this.attributes.OBJECTID,
-                        deletes: this.kendoModel.get('deleteAttachment')
-                    });
-                    this.kendoModel.set('deleteAttachment', []);
-                }
-                for (let field of this.layer.fields) {
-                    let value = this.kendoModel.get(field.name);
-                    if (!value ||
-                        (value && value == -1))
-                        continue;
-                    if (field.type === 'date') {
-                        if (value.getTime() <= 0)
-                            continue;
-                        applyAttributes[field.name] = value.getTime();
-                    }
-                    else
-                        applyAttributes[field.name] = value;
-                }
-                const updatedInfo = this.editingSupport.getUpdatedInfo(this.view);
-                for (let i in updatedInfo) {
-                    applyAttributes[i] = updatedInfo[i];
-                }
-                this.layer.applyEdits({
-                    updateFeatures: [{
-                        attributes: applyAttributes
-                    }]
-                }).then((res) => {
-                    let updateFeatureResults = res.updateFeatureResults;
-                    if (updateFeatureResults[0].objectId) {
-                        let query = this.layer.createQuery();
-                        query.outFields = ['*'];
-                        query.where = 'OBJECTID=' + this.attributes['OBJECTID'];
-                        this.layer.queryFeatures(query).then(res => {
-                            this.view.popup.open({
-                                features: res.features
-                            });
-                        });
-                    }
+editFeature() {
+    let applyAttributes = {
+        objectId: this.attributes.OBJECTID
+    };
+    if (!this.attributes || !this.kendoModel)
+        kendo.alert("Có lỗi xảy ra trong quá trình cập nhật");
+    if (this.kendoModel.get('deleteAttachment') && this.kendoModel.get('deleteAttachment').length > 0) {
+        this.layer.deleteAttachments({
+            objectId: this.attributes.OBJECTID,
+            deletes: this.kendoModel.get('deleteAttachment')
+        });
+        this.kendoModel.set('deleteAttachment', []);
+    }
+    for (let field of this.layer.fields) {
+        let value = this.kendoModel.get(field.name);
+        if (!value ||
+            (value && value == -1))
+            continue;
+        if (field.type === 'date') {
+            if (value.getTime() <= 0)
+                continue;
+            applyAttributes[field.name] = value.getTime();
+        }
+        else
+            applyAttributes[field.name] = value;
+    }
+    const updatedInfo = this.editingSupport.getUpdatedInfo(this.view);
+    for (let i in updatedInfo) {
+        applyAttributes[i] = updatedInfo[i];
+    }
+    this.layer.applyEdits({
+        updateFeatures: [{
+            attributes: applyAttributes
+        }]
+    }).then((res) => {
+        let updateFeatureResults = res.updateFeatureResults;
+        if (updateFeatureResults[0].objectId) {
+            let query = this.layer.createQuery();
+            query.outFields = ['*'];
+            query.where = 'OBJECTID=' + this.attributes['OBJECTID'];
+            this.layer.queryFeatures(query).then(res => {
+                this.view.popup.open({
+                    features: res.features
                 });
-            }
-            deleteFeature() {
-                this.layer.applyEdits({
-                    deleteFeatures: [{
-                        objectId: this.attributes.OBJECTID
-                    }]
-                }).then((res) => {
-                    if (res.deleteFeatureResults.length > 0 && !res.deleteFeatureResults[0].error) {
-                        this.view.popup.close();
-                    }
-                });
-            }
+            });
+        }
+    });
+}
+deleteFeature() {
+    this.layer.applyEdits({
+        deleteFeatures: [{
+            objectId: this.attributes.OBJECTID
+        }]
+    }).then((res) => {
+        if (res.deleteFeatureResults.length > 0 && !res.deleteFeatureResults[0].error) {
+            this.view.popup.close();
+        }
+    });
+}
 
         }
-        return Popup;
+return Popup;
     });

@@ -1,4 +1,4 @@
-define(["require", "exports", "esri/views/MapView", "ditagis/classes/SystemStatusObject", "esri/request"], function (require, exports, MapView, SystemStatusObject, esriRequest) {
+define(["ditagis/core/LinkAPI","esri/views/MapView", "ditagis/classes/SystemStatusObject", "esri/request"], function (LinkAPI, MapView, SystemStatusObject, esriRequest) {
     "use strict";
     class MapViewDTG extends MapView {
         constructor(params) {
@@ -7,7 +7,7 @@ define(["require", "exports", "esri/views/MapView", "ditagis/classes/SystemStatu
         }
         session() {
             return new Promise((resolve, reject) => {
-                $.ajax("https://ditagis.com/genco3/api/layerinfo", {
+                $.ajax(LinkAPI.LAYER_INFOS, {
                     contentType: 'application/json',
                     dataType: 'json',
                     type: 'GET',

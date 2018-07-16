@@ -53,7 +53,7 @@ define([
                     var feature = this.featuresNhaMay.find(f => {
                         return f.attributes['OBJECTID'] == value;
                     });
-                    this.view.center = [feature.geometry.centroid.x, feature.geometry.centroid.y];
+                    this.view.center = [feature.geometry.centroid.longitude, feature.geometry.centroid.latitude];
                     this.view.zoom = 14;
                     var manhamay = feature.attributes["Ma"];
                     this.thoitiet.laythongtinthoitiet(this.view.center, manhamay);
@@ -66,7 +66,7 @@ define([
                         f.attributes['OBJECTID'] == value
                     );
                     // toa do nha may
-                    var longitude = feature.geometry.centroid.x, latitude = feature.geometry.centroid.y;
+                    var longitude = feature.geometry.centroid.longitude, latitude = feature.geometry.centroid.latitude;
                     this.locateViewModel.locate().then((response) => {
                         var coords = response.coords;// toa do hien tai
                         var url = `https://www.google.com/maps/dir/${coords.latitude},${coords.longitude}/${latitude},${longitude}`;
@@ -85,13 +85,13 @@ define([
                         var feature_first = this.featuresNhaMay.find(f =>
                             f.attributes['OBJECTID'] == objectId_first
                         );
-                        var longitude_first = feature_first.geometry.centroid.x, latitude_first = feature_first.geometry.centroid.y;
+                        var longitude_first = feature_first.geometry.centroid.longitude, latitude_first = feature_first.geometry.centroid.latitude;
                         var objectId_second = evt.currentTarget.attributes.alt.nodeValue;
                         if (objectId_first != objectId_second) {
                             var feature_second = this.featuresNhaMay.find(f =>
                                 f.attributes['OBJECTID'] == objectId_second
                             );
-                            var longitude_second = feature_second.geometry.centroid.x, latitude_second = feature_second.geometry.centroid.y;
+                            var longitude_second = feature_second.geometry.centroid.longitude, latitude_second = feature_second.geometry.centroid.latitude;
                             var url = `https://www.google.com/maps/dir/${latitude_second},${longitude_second}/${latitude_first},${longitude_first}`;
                             var win = window.open(url, '_blank');
                             win.focus();
@@ -266,6 +266,7 @@ define([
             }
             queryListNhaMay() {
                 var query = this.layerNhaMay.createQuery();
+                query.outSpatialReference = this.view.spatialReference;
                 query.where ="1=1";
                 if(this.layerNhaMay.definitionExpression != null){
                     query.where = this.layerNhaMay.definitionExpression;

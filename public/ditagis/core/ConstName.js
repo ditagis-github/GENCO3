@@ -6,11 +6,10 @@ define(["require", "exports"], function (require, exports) {
         INDEX_TIMDUONG: 1,
         BASEMAP: 'dulieunen',
         TramBTS: 'TramBTS',
-        DIEMDICHVU: "DiemDichVu",
         TUYENCAPNGAM: 'TuyenCapNgam',
         CHUYEN_DE_HT: 'chuyendehientrang',
         OSM: "osm",
-        NHAMAY:"nhamayLYR"
+        NHAMAY:"NhaMayDienLYR"
     };
     return constName;
 });

@@ -863,3 +863,7 @@ label {
     font-weight: bold;
     font-size: 12px;
 }
+img#img_camera {
+    height: 200px;
+    width: 300px;
+}

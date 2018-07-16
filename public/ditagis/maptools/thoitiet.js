@@ -1,6 +1,7 @@
 define([
     "dojo/dom-construct",
-], function (domConstruct) {
+    "ditagis/core/LinkAPI",
+], function (domConstruct,LinkAPI) {
 
     return class ThoiTiet {
         constructor() {
@@ -21,7 +22,7 @@ define([
                 if (this.manhamay)
                     for (const chiso of cacchiso) {
                         $.ajax({
-                            url: `https://ditagis.com/genco3/thongtinmoitruong/${this.manhamay}?id=${chiso}`, 
+                            url: `${LinkAPI.THOITIET_THONGTINMOITRUONG}${this.manhamay}?id=${chiso}`, 
                             success: function (result) {
                                 document.getElementById("thongtinmoitruong").innerHTML += `
                                 <div class="row-item">

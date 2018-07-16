@@ -1,14 +1,10 @@
 define([], function () {
     const linkAPI = {
-        INDEX_HANHCHINHHUYEN: 7,
-        INDEX_HANHCHINHXA: 4,
-        INDEX_TIMDUONG: 1,
-        BASEMAP: 'dulieunen',
-        TramBTS: 'TramBTS',
-        DIEMDICHVU: "DiemDichVu",
-        TUYENCAPNGAM: 'TuyenCapNgam',
-        CHUYEN_DE_HT: 'chuyendehientrang',
-        OSM: "osm"
+        CAMERA: "http://ditagis.com/genco3/api/Camera/",
+        LOGIN:"https://ditagis.com/genco3/api/Login",
+        CONGSUAT:"https://ditagis.com/genco3/congsuat/",
+        THOITIET_THONGTINMOITRUONG:'https://ditagis.com/genco3/thongtinmoitruong/',
+        LAYER_INFOS:"https://ditagis.com/genco3/api/layerinfo"
     };
     return linkAPI;
 });

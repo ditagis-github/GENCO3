@@ -48,17 +48,6 @@ define([
                 for (let i in createdInfo) {
                     attributes[i] = createdInfo[i];
                 }
-                // if(notify)
-                // notify.update({ 'type': 'info', 'message': 'Lấy định danh thành công', 'progress': 30 });
-                // point.attributes = attributes;
-                if (layer.id === constName.TramBTS) {
-                    attributes.TinhTrang = 1;
-                    if (layer.drawingAttributes['TenDoanhNghiep'])
-                        attributes.TenDoanhNghiep = layer.drawingAttributes['TenDoanhNghiep'].split(", ")[0];
-                }
-                if (this.systemVariable.user.GroupRole === 'DN') {
-                    attributes.TenDoanhNghiep = this.systemVariable.user.Role;
-                }
                 let edits = {
                     addFeatures: [{
                         geometry: graphic.geometry,

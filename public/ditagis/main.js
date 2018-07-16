@@ -86,10 +86,10 @@ require([
                             view: layerCfg.IsView,
                         },
                     });
-                    if(layerCfg.Definition != null){
+                    if(layerCfg.Definition != null && layerCfg.Definition != ""){
                         fl.definitionExpression = layerCfg.Definition;
                     }
-                    if (fl.id != "nhamayLYR") {
+                    if (fl.id != "NhaMayDienLYR") {
                         fl.minScale = 30000;
                         fl.minScale = 36111.909643;
                     }
@@ -104,7 +104,7 @@ require([
 
         var layerNhaMay;
         view.on("layerview-create", function (event) {
-            if (event.layer.id === "nhamayLYR") {
+            if (event.layer.id === "NhaMayDienLYR") {
                 layerNhaMay = event.layerView.layer;
 
                 new Renderer(view, layerNhaMay);
