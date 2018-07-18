@@ -7,18 +7,18 @@ define([
     "ditagis/widgets/LayerEditor",
     "ditagis/widgets/QueryLayer",
     "ditagis/toolview/PaneManager",
-
+    "esri/widgets/LayerList",
 
 ], function (Locate, LocateViewModel, Legend, Print, ThoiTiet,
     LayerEditor,
     QueryLayer,
-    PaneManager,
+    PaneManager,LayerList
     ) {
 
         return class {
             constructor(view, layerNhaMay) {
                 this.view = view;
-                this.layerNhaMay = layerNhaMay
+                this.layerNhaMay = layerNhaMay;
                 this.featuresNhaMay;
                 this.startup();
                 this.thoitiet = new ThoiTiet();
@@ -37,7 +37,15 @@ define([
                 this.layerEditor.on("click", addPane);
                 this.queryLayer = new QueryLayer(view);
                 this.queryLayer.on("click", addPane);
-
+                this.layerList = new LayerList({
+                    view: view,
+                });
+                this.view.ui.add(this.layerList, {
+                    position: "top-right",
+                });
+                $(".esri-ui-top-right.esri-ui-corner").toggleClass("hidden");
+                // Adds widget below other elements in the top left corner of the view
+                
                 var paneManager = new PaneManager({
                     element: "#pane-tools"
                 })
@@ -110,6 +118,7 @@ define([
                 // hien thi cac widget ban do
                 $("#map-tools").click(() => {
                     $("div.map-tool").toggleClass("hidden");
+                    
                 });
 
                 // hien thi thong tin thoi tiet
@@ -153,6 +162,11 @@ define([
                     this.queryLayer.start();
                 })
                 
+                // Hiển thị ẩn lớp dữ liệu
+                $("#layer-list-widget").click(()=>{
+                    $(".esri-ui-top-right.esri-ui-corner").toggleClass("hidden");
+                    
+                });
                 // map - tools (zoom in, out, location)
                 $("#zoom-in").click(() => {
                     this.view.zoom += 1;

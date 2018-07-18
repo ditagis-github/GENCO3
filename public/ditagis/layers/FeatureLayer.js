@@ -39,20 +39,22 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/request"], funct
             return fields;
         }
         getAttachments(id) {
-            return new Promise((resolve, reject) => {
-                var url = this.url + "/" + this.layerId + "/" + id;
-                esriRequest(url + "/attachments?f=json", {
-                    responseType: 'json',
-                    method: 'get'
-                }).then(result => {
-                    let data = result.data;
-                    const url = `${this.url}/${this.layerId}/${id}`;
-                    data.attachmentInfos.forEach(f => {
-                        f.src = `${url}/attachments/${f.id}`;
+            if (this.hasAttachments) {
+                return new Promise((resolve, reject) => {
+                    var url = this.url + "/" + this.layerId + "/" + id;
+                    esriRequest(url + "/attachments?f=json", {
+                        responseType: 'json',
+                        method: 'get'
+                    }).then(result => {
+                        let data = result.data;
+                        const url = `${this.url}/${this.layerId}/${id}`;
+                        data.attachmentInfos.forEach(f => {
+                            f.src = `${url}/attachments/${f.id}`;
+                        });
+                        resolve(data);
                     });
-                    resolve(data);
                 });
-            });
+            }
         }
         applyEdits(options) {
             let prm = super.applyEdits(options);
@@ -60,7 +62,7 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/request"], funct
                 function updateOBJECTID(featureResults) {
                     let optionRst = featureResults == r.addFeatureResults ?
                         options.addFeatures : featureResults == r.updateFeatureResults ?
-                        options.updateFeatures : options.deleteFeatures;
+                            options.updateFeatures : options.deleteFeatures;
                     for (let i = 0; i < featureResults.length; i++) {
                         const element = featureResults[i], objectId = element.objectId;
                         if (objectId) {

@@ -22,6 +22,7 @@ require([
     "ditagis/classes/SystemStatusObject",
     "dojo/dom-construct",
     "esri/widgets/Print",
+    "esri/widgets/LayerList",
     "dojo/domReady!"
 ], function (
     Map, MapView, Graphic, GroupLayer,
@@ -31,7 +32,7 @@ require([
     Extent, Popup, MapConfigs, ThoiTiet, HiddenMap,
     MapTools,
     watchUtils, Renderer, SystemStatusObject,
-    domConstruct, Print
+    domConstruct, Print, LayerList
 ) {
         var map = new Map({
             basemap: "osm"
@@ -42,8 +43,7 @@ require([
             zoom: MapConfigs.zoom,
             center: MapConfigs.center,
         });
-
-
+        
         var hiddenmap = new HiddenMap(view);
         hiddenmap.start();
         view.ui.move(["zoom"]);
@@ -75,7 +75,7 @@ require([
                 // for (const layerCfg of MapConfigs.layers) {
                 if (layerCfg.GroupName === 'chuyende' && layerCfg.IsView) {
                     let fl = new FeatureLayer({
-                        url: 'https://'+layerCfg.Url,
+                        url: 'https://' + layerCfg.Url,
                         title: layerCfg.LayerTitle,
                         id: layerCfg.LayerID,
                         outFields: layerCfg.OutFields ? layerCfg.OutFields.split(',') : ['*'],
@@ -86,7 +86,7 @@ require([
                             view: layerCfg.IsView,
                         },
                     });
-                    if(layerCfg.Definition != null && layerCfg.Definition != ""){
+                    if (layerCfg.Definition != null && layerCfg.Definition != "") {
                         fl.definitionExpression = layerCfg.Definition;
                     }
                     if (fl.id != "NhaMayDienLYR") {

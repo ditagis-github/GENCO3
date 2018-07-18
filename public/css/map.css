@@ -867,3 +867,11 @@ img#img_camera {
     height: 200px;
     width: 300px;
 }
+span.esri-layer-list__item-toggle-icon.esri-icon-visible:before {
+    padding-top: -2px;
+    width: 10px;
+}
+.esri-layer-list__item-toggle{
+    margin: 0px 0 0 0;
+    overflow: inherit;
+}
