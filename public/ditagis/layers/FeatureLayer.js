@@ -74,14 +74,14 @@ define(["require", "exports", "esri/layers/FeatureLayer", "esri/request"], funct
                 updateOBJECTID(r.addFeatureResults);
                 updateOBJECTID(r.updateFeatureResults);
                 updateOBJECTID(r.deleteFeatureResults);
-                let tmpOptions = options;
-                tmpOptions.layer = {
-                    layerID: this.id, type: this.type
-                };
-                esriRequest("/applyEdits", {
-                    method: 'post',
-                    query: { data: JSON.stringify(tmpOptions) }
-                });
+                // let tmpOptions = options;
+                // tmpOptions.layer = {
+                //     layerID: this.id, type: this.type
+                // };
+                // esriRequest("/applyEdits", {
+                //     method: 'post',
+                //     query: { data: JSON.stringify(tmpOptions) }
+                // });
             });
             return prm;
         }

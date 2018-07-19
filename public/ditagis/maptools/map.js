@@ -12,8 +12,8 @@ define([
 ], function (Locate, LocateViewModel, Legend, Print, ThoiTiet,
     LayerEditor,
     QueryLayer,
-    PaneManager,LayerList
-    ) {
+    PaneManager, LayerList
+) {
 
         return class {
             constructor(view, layerNhaMay) {
@@ -39,13 +39,13 @@ define([
                 this.queryLayer.on("click", addPane);
                 this.layerList = new LayerList({
                     view: view,
+                    container:"layer-list-panel"
                 });
-                this.view.ui.add(this.layerList, {
-                    position: "top-right",
-                });
-                $(".esri-ui-top-right.esri-ui-corner").toggleClass("hidden");
-                // Adds widget below other elements in the top left corner of the view
                 
+                  
+                $(".esri-component.esri-layer-list.esri-widget.esri-widget--panel").toggleClass("hidden");
+                // Adds widget below other elements in the top left corner of the view
+
                 var paneManager = new PaneManager({
                     element: "#pane-tools"
                 })
@@ -54,7 +54,7 @@ define([
                 }
 
             }
-
+            
             startup() {
                 $("#danhsachnhamay").on("click", "span.viewData", (result) => {
                     var value = result.currentTarget.attributes.alt.nodeValue;
@@ -118,7 +118,7 @@ define([
                 // hien thi cac widget ban do
                 $("#map-tools").click(() => {
                     $("div.map-tool").toggleClass("hidden");
-                    
+
                 });
 
                 // hien thi thong tin thoi tiet
@@ -161,11 +161,11 @@ define([
                 $("#statistics-widget").click(() => {
                     this.queryLayer.start();
                 })
-                
+
                 // Hiển thị ẩn lớp dữ liệu
-                $("#layer-list-widget").click(()=>{
-                    $(".esri-ui-top-right.esri-ui-corner").toggleClass("hidden");
-                    
+                $("#layer-list-widget").click(() => {
+                    $("#layer-list-panel").toggleClass("hidden");
+
                 });
                 // map - tools (zoom in, out, location)
                 $("#zoom-in").click(() => {
@@ -281,8 +281,8 @@ define([
             queryListNhaMay() {
                 var query = this.layerNhaMay.createQuery();
                 query.outSpatialReference = this.view.spatialReference;
-                query.where ="1=1";
-                if(this.layerNhaMay.definitionExpression != null){
+                query.where = "1=1";
+                if (this.layerNhaMay.definitionExpression != null) {
                     query.where = this.layerNhaMay.definitionExpression;
                 }
                 return this.layerNhaMay.queryFeatures(query);

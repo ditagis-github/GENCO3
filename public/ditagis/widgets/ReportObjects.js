@@ -13,10 +13,28 @@ define(["require", "exports", "../core/Base", "dojo/dom-construct", "../core/Con
             super();
             this.view = view;
             this.displayFields = {
-                nhamayLYR: [
+                NhaMayDienLYR: [
                     { width: 60, title: "STT", field: "STT" },
                     { width: 60, title: "Tên", field: "Ten" },
                     { width: 60, title: "Mã", field: "Ma" },
+                ],
+                bonChuaLYR: [
+                    { width: 60, title: "STT", field: "STT" },
+                    { width: 60, title: "Mã nhà máy", field: "MaNhaMay " },
+                    { width: 60, title: "Mã", field: "Ma" },
+                    { width: 60, title: "Ghi chú", field: "GhiChu" },
+                ],
+                tuabinLYR: [
+                    { width: 60, title: "STT", field: "STT" },
+                    { width: 60, title: "Mã nhà máy", field: "MaNhaMay " },
+                    { width: 60, title: "Mã", field: "Ma" },
+                    { width: 60, title: "Ghi chú", field: "GhiChu" },
+                ],
+                lohoiLYR: [
+                    { width: 60, title: "STT", field: "STT" },
+                    { width: 60, title: "Mã nhà máy", field: "MaNhaMay " },
+                    { width: 60, title: "Mã", field: "Ma" },
+                    { width: 60, title: "Ghi chú", field: "GhiChu" },
                 ],
                 ongkhoiLYR: [
                     { width: 60, title: "STT", field: "STT" },

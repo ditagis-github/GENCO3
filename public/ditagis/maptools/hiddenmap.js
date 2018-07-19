@@ -1,55 +1,54 @@
 define([
   "esri/Graphic",
+  "esri/layers/GraphicsLayer",
   "esri/geometry/Polygon",
   "esri/geometry/SpatialReference"
-], function (Graphic, Polygon,SpatialReference) {
+], function (Graphic, GraphicsLayer,
+  Polygon, SpatialReference) {
 
-  return class {
-    constructor(view) {
-      this.view = view;
+    return class {
+      constructor(view) {
+        this.view = view;
+        this.graphicsLayer = new GraphicsLayer({
+          listMode: 'hide',
+          opacity: 1
+        });
+        this.view.map.add(this.graphicsLayer);
 
-
-    }
-    start() {
-      var vertices = [[
-        [12198024.45, 1966413.55],
-        [12670099.54, 1976197.49],
-        [12646862.68, 1716923.09],
-        [12221261.31, 1682679.3],
-        [12198024.45, 1966413.55],
-      ],
-      [[12474475.69, 1306741.65],
-      [12976880.75, 1310182.34],
-      [12960040.36, 921384.84],
-      [12513769.94, 897300.04],
-      [12474475.69, 1306741.65],]
-      ];
-      var fillSymbol = {
-        type: "simple-fill", // autocasts as new SimpleFillSymbol()
-        color: [170, 211, 223],
-        outline: { // autocasts as new SimpleLineSymbol()
+      }
+      start() {
+        var vertices = [[
+          [12198024.45, 1966413.55],
+          [12670099.54, 1976197.49],
+          [12646862.68, 1716923.09],
+          [12221261.31, 1682679.3],
+          [12198024.45, 1966413.55],
+        ],
+        [[12474475.69, 1306741.65],
+        [12976880.75, 1310182.34],
+        [12960040.36, 921384.84],
+        [12513769.94, 897300.04],
+        [12474475.69, 1306741.65],]
+        ];
+        var fillSymbol = {
+          type: "simple-fill", // autocasts as new SimpleFillSymbol()
           color: [170, 211, 223],
-          // width: 1
-        }
-      };
-      this.graphic = new Graphic({
-        geometry: new Polygon({
-          rings: vertices,
-          spatialReference: new SpatialReference(102100)
-        }),
-        symbol: fillSymbol
-      });
-      this.view.graphics.add(this.graphic);
-    }
-    toogleGraphics() {
-      
-      var items = this.view.graphics.items;
-      if (items.length > 0) {
-        this.view.graphics.remove(this.graphic);
+          outline: { // autocasts as new SimpleLineSymbol()
+            color: [170, 211, 223],
+            // width: 1
+          }
+        };
+        this.graphic = new Graphic({
+          geometry: new Polygon({
+            rings: vertices,
+            spatialReference: new SpatialReference(102100)
+          }),
+          symbol: fillSymbol
+        });
+        this.graphicsLayer.add(this.graphic);
       }
-      else {
-        this.view.graphics.add(this.graphic);
+      toogleGraphics() {
+        this.graphicsLayer.visible = !this.graphicsLayer.visible;
       }
     }
-  }
-});
+  });

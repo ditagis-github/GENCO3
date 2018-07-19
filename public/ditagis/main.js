@@ -11,12 +11,14 @@ require([
     "esri/widgets/BasemapToggle",
     "esri/widgets/Zoom",
     "ditagis/layers/FeatureLayer",
+    "esri/layers/MapImageLayer",
     "esri/geometry/Extent",
     "ditagis/Popup",
     "ditagis/MapConfigs",
     "ditagis/maptools/thoitiet",
     "ditagis/maptools/hiddenmap",
     "ditagis/maptools/map",
+    "ditagis/maptools/hienthibao",
     "esri/core/watchUtils",
     "ditagis/support/Renderer",
     "ditagis/classes/SystemStatusObject",
@@ -28,9 +30,9 @@ require([
     Map, MapView, Graphic, GroupLayer,
     Polyline, geometryEngine,
     BasemapToggle, Zoom,
-    FeatureLayer,
+    FeatureLayer,MapImageLayer,
     Extent, Popup, MapConfigs, ThoiTiet, HiddenMap,
-    MapTools,
+    MapTools,HienThiBao,
     watchUtils, Renderer, SystemStatusObject,
     domConstruct, Print, LayerList
 ) {
@@ -43,7 +45,7 @@ require([
             zoom: MapConfigs.zoom,
             center: MapConfigs.center,
         });
-        
+
         var hiddenmap = new HiddenMap(view);
         hiddenmap.start();
         view.ui.move(["zoom"]);
@@ -62,7 +64,6 @@ require([
         view.systemVariable = new SystemStatusObject();
         view.systemVariable.user = MapConfigs.user;
         view.session().then(function (user) {
-            console.log(user);
             initFeatureLayer();
         });
         function initFeatureLayer() {
@@ -73,6 +74,17 @@ require([
             map.add(gr);
             for (const layerCfg of view.systemVariable.user.Layers) {
                 // for (const layerCfg of MapConfigs.layers) {
+                if (layerCfg.GroupName === 'basemap' && layerCfg.IsView) {
+                    if (layerCfg.LayerID == "baoLYR") {
+                        var baoFL = new FeatureLayer({
+                            url: 'https://' + layerCfg.Url,
+                            id: layerCfg.LayerID,
+                            outFields: ["*"],
+                            title: layerCfg.LayerTitle,
+                        });
+                        new HienThiBao(view,baoFL);
+                    }
+                }
                 if (layerCfg.GroupName === 'chuyende' && layerCfg.IsView) {
                     let fl = new FeatureLayer({
                         url: 'https://' + layerCfg.Url,

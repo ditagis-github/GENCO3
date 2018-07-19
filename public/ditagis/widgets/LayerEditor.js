@@ -284,7 +284,6 @@ define([
         case 'point':
           this.pointDrawingTools.startup();
           if (!this.view.isMobile) {
-            this.pointDrawingTools.expandWidget.expand();
             if (this.polylineDrawingTools.expandWidget)
               this.polylineDrawingTools.expandWidget.collapse();
           }

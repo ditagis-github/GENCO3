@@ -4,12 +4,13 @@ if (!localStorage.login_code) {
 
 require([
     "esri/Map",
-    "esri/views/MapView",
+    "ditagis/views/MapView",
     "esri/Graphic",
     "esri/widgets/BasemapToggle",
     "ditagis/MapConfigs",
     "ditagis/maptools/hiddenmap",
     "ditagis/layers/FeatureLayer",
+    "ditagis/classes/SystemStatusObject",
     "esri/widgets/Print",
     "esri/widgets/Locate",
     "esri/geometry/Polygon",
@@ -19,33 +20,54 @@ require([
     "dojo/domReady!"
 ], function (
     Map, MapView, Graphic,
-    BasemapToggle, MapConfigs, HiddenMap, FeatureLayer,
+    BasemapToggle, MapConfigs, HiddenMap, FeatureLayer, SystemStatusObject,
     Print, Locate, Polygon, Point, GraphicsLayer, Query
 ) {
         var map = new Map({
             basemap: "osm"
         });
-        var view = new MapView({
+        view = new MapView({
             container: "viewDiv",
             map: map,
             zoom: MapConfigs.zoom,
             center: MapConfigs.center,
         });
-        graphicsLayer = new GraphicsLayer({
-            listMode: 'hide',
-            opacity: 0.6
-        });
-        var baoFL = new FeatureLayer({
-            url: 'https://ditagis.com:6443/arcgis/rest/services/GENCO3/QuanLyBao/FeatureServer/0',
-            id: "BAOLYR",
-            outFields: ["*"],
-        });
-        // map.add(baoFL);
 
-        view.map.add(graphicsLayer);
-        locateBtn = new Locate({
-            view: view,
+        view.systemVariable = new SystemStatusObject();
+        view.systemVariable.user = MapConfigs.user;
+        view.session().then(() => {
+            initFeatureLayer();
         });
+        function initFeatureLayer() {
+            for (const layerCfg of view.systemVariable.user.Layers) {
+                if (layerCfg.GroupName === 'basemap' && layerCfg.IsView) {
+                    if (layerCfg.LayerID == "baoLYR") {
+                        this.baoFL = new FeatureLayer({
+                            url: 'https://' + layerCfg.Url,
+                            id: layerCfg.LayerID,
+                            outFields: ["*"],
+                            title: layerCfg.LayerTitle,
+                        });
+                    }
+                }
+            }
+            var hiddenmap = new HiddenMap(view);
+            hiddenmap.start();
+            this.graphicsLayer = new GraphicsLayer({
+                listMode: 'hide',
+                opacity: 0.6
+            });
+
+
+            view.map.add(this.graphicsLayer);
+            locateBtn = new Locate({
+                view: view,
+            });
+            view.then(() => {
+                showSymbolFeature();
+            })
+        }
+
 
         view.ui.move(["zoom"]);
         var basemapToggle = new BasemapToggle({
@@ -80,7 +102,7 @@ require([
         });
 
         $("#clear-data").click(() => {
-            layDanhSachDiemBao(baoFL).then((displayResults) => {
+            layDanhSachDiemBao(this.baoFL).then((displayResults) => {
                 this.graphicsLayer.removeAll();
                 var features = displayResults.features;
                 for (var i = 0; i < features.length; i++) {
@@ -90,7 +112,7 @@ require([
                             objectId: feature.attributes['OBJECTID']
                         }]
                     };
-                    baoFL.applyEdits(edits);
+                    this.baoFL.applyEdits(edits);
                 }
 
             });
@@ -112,21 +134,20 @@ require([
         form.append(fileInput);
         fileInput.change(onInputAttachmentChangeHandler.bind(this));
 
-        view.then(() => {
-            showSymbolFeature();
-        })
+
 
         view.watch('scale', (newVal, oldVal) => {
-            var items = this.graphicsLayer.graphics.items;
-            for (const i in items) {
-                var item = items[i];
-                var points = item.points;
-                let width = getDistance2Point(points[0], points[1]);
-                let height = getDistance2Point(points[1], points[2]);
-                item.symbol.width = width + "px";
-                item.symbol.height = height + "px";
+            if (this.graphicsLayer) {
+                var items = this.graphicsLayer.graphics.items;
+                for (const i in items) {
+                    var item = items[i];
+                    var points = item.points;
+                    let width = getDistance2Point(points[0], points[1]);
+                    let height = getDistance2Point(points[1], points[2]);
+                    item.symbol.width = width + "px";
+                    item.symbol.height = height + "px";
+                }
             }
-
         });
 
         $("#pane > div > div.widget_item.check").click(() => {
@@ -167,19 +188,18 @@ require([
                     attributes: attributes
                 }]
             };
-            baoFL.applyEdits(edits).then((result) => {
+            this.baoFL.applyEdits(edits).then((result) => {
                 $("div#pane-storm").addClass("hidden");
-                baoFL.addAttachments(result.addFeatureResults[0].objectId, this.fileInput_form).then((addRes) => {
+                this.baoFL.addAttachments(result.addFeatureResults[0].objectId, this.fileInput_form).then((addRes) => {
                     if (addRes.addAttachmentResult.success) {
                         showSymbolFeature();
                     }
                 });
             });
         });
-        var hiddenmap = new HiddenMap(view);
-        hiddenmap.start();
+
         function showSymbolFeature() {
-            layDanhSachDiemBao(baoFL).then((displayResults) => {
+            layDanhSachDiemBao(this.baoFL).then((displayResults) => {
                 this.graphicsLayer.removeAll();
                 var features = displayResults.features;
                 for (var i = 0; i < features.length; i++) {
@@ -187,7 +207,7 @@ require([
                     let attr = feature.attributes;
                     feature.layer.getAttachments(attr["OBJECTID"]).then((imageResults) => {
                         if (imageResults && imageResults.attachmentInfos && imageResults.attachmentInfos.length > 0) {
-                            src = imageResults.attachmentInfos[0].src;
+                            var src = imageResults.attachmentInfos[0].src;
                             var point1 = latLngToPoint(attr.D1_Lat, attr.D1_Lng);
                             var point2 = latLngToPoint(attr.D2_Lat, attr.D2_Lng);
                             var point3 = latLngToPoint(attr.D3_Lat, attr.D3_Lng);
@@ -260,4 +280,5 @@ require([
             }
             this.fileInput_form = fileInput.form;
         }
+
     });

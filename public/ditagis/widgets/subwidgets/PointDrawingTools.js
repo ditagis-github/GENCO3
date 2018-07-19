@@ -34,30 +34,21 @@ define([
                     //khi giá trị thay đổi thì cập nhật cho drawManager
                     this.drawManager.drawLayer = this.drawLayer;
                 });
-                this.initView();
+                this.setupWindowKendo();
             }
             startup() {
-                if (!this.isStartup) {
-                    if (this.view.isMobile) {
-                        this.drawManager.drawSimple();
-                    } else {
-                        this.view.ui.add(this.expandWidget, "top-right");
-                    }
-
-                    this.isStartup = true;
-                }
+                this.clearEvents();
+                this.inputWindow.open();
             }
-            clearEvents(){
+            clearEvents() {
                 if (!this.drawLayer || this.drawLayer.geometryType !== 'point') return;
-               this.drawManager.clearEvents();
-               this.view.ui.remove(this.expandWidget);
-               this.isStartup = false;
+                this.drawManager.clearEvents();
+                this.isStartup = false;
             }
             destroy() {
                 if (this.isStartup) {
 
                     if (!this.view.isMobile) {
-                        this.view.ui.remove(this.expandWidget);
                         this.destroyView();
                     }
                     this.isStartup = false;
@@ -68,9 +59,8 @@ define([
                 if (this.container && document.body.contains(this.container))
                     document.body.removeChild(this.container);
             }
-            initView() {
-                // this.container = domConstruct.create("div");
-                this.container = $("#type-draw-tools")[0];
+            setupWindowKendo() {
+                this.container = $("#draw-method")[0];
                 for (let drawingMethod of this.drawingMethods) {
                     let btn = domConstruct.create("button", {
                         class: 'methods type-draw',
@@ -78,21 +68,32 @@ define([
                     }, this.container);
                     this.clickBtnEvt = on(btn, 'click', () => {
                         this.clickBtnFunc(drawingMethod.type);
+
                     })
 
                 }
                 domConstruct.place(this.container, document.body)
-                this.expandWidget = new Expand({
-                    expandIconClass: "esri-icon-layer-list",
-                    view: this.view,
-                    content: this.container
-                });
-
+                this.inputWindow = $('#draw-method').kendoWindow({
+                    title: "Chọn cách thêm điểm",
+                    position: {
+                        top: '10%',
+                        left: 'calc(50% - 200px)'
+                    },
+                    visible: false,
+                    actions: [
+                        "Close"
+                    ],
+                    close: this.closeWindowKendo.bind(this)
+                }).data("kendoWindow").center();
+            }
+            closeWindowKendo() {
+                this.clearEvents();
             }
             get drawLayer() {
                 return this.systemVariable.selectedFeature;
             }
             clickBtnFunc(drawingMethod) {
+                this.inputWindow.close();
                 if (!this.drawLayer || this.drawLayer.geometryType !== 'point') return;
                 switch (drawingMethod) {
                     case this.drawingMethods[0].type:
@@ -105,7 +106,6 @@ define([
                     default:
                         break;
                 }
-                this.expandWidget.collapse();
             }
         }
     });
