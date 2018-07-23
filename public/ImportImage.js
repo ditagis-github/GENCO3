@@ -1,7 +1,3 @@
-/*
- * @author https://twitter.com/blurspline / https://github.com/zz85
- * See post @ http://www.lab4games.net/zz85/blog/2014/11/15/resizing-moving-snapping-windows-with-js-css/
- */
 
 "use strict";
 

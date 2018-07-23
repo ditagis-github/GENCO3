@@ -41,19 +41,6 @@ define([
                             }
                         });
                     }
-                // document.getElementById("thongtinmoitruong").innerHTML = resultHtml;
-                // var interval = setInterval(() => {
-                //     $.ajax({
-                //         url: `http://localhost:2005/thongtinmoitruong/vinhtan2_s1?id=CO2`, success: function (result) {
-                //             $(`#${manhamay}`).text(result);
-                //         }
-                //     });
-                // }, 1000);
-
-
-
-
-
 
             };
             this.start();
@@ -63,7 +50,7 @@ define([
             this.script;
             this.script = document.createElement('script');
             var encodedQuery = "select atmosphere.humidity, wind.speed, item.condition.temp from weather.forecast where woeid in (select woeid from geo.places(1) where text='(" + view.center.latitude + "," + view.center.longitude + ")')";
-            this.script.src = 'http://query.yahooapis.com/v1/public/yql?q='
+            this.script.src = 'https://query.yahooapis.com/v1/public/yql?q='
                 + encodedQuery + "&format=json&callback=laydulieuthoitiet";
             document.head.appendChild(this.script);
 
@@ -75,7 +62,7 @@ define([
             }
             this.script = document.createElement('script');
             var encodedQuery = "select atmosphere.humidity, wind.speed, item.condition.temp from weather.forecast where woeid in (select woeid from geo.places(1) where text='(" + location.latitude + "," + location.longitude + ")')";
-            this.script.src = 'http://query.yahooapis.com/v1/public/yql?q='
+            this.script.src = 'https://query.yahooapis.com/v1/public/yql?q='
                 + encodedQuery + "&format=json&callback=laydulieuthoitiet";
             document.head.appendChild(this.script);
         }
