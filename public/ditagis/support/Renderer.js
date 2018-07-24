@@ -1,9 +1,9 @@
 define([
-    "esri/layers/GraphicsLayer",
     "ditagis/layers/FeatureLayer",
     "esri/core/watchUtils",
     "esri/Graphic",
-], function (GraphicsLayer, FeatureLayer, watchUtils, Graphic) {
+    "esri/tasks/support/Query",
+], function (FeatureLayer, watchUtils, Graphic, Query) {
 
     return class {
         constructor(view, featureLayer) {
@@ -13,13 +13,9 @@ define([
             this.createGraphicLayer();
         }
         createGraphicLayer() {
-            // var renderer = {
-            //     type: "simple",  // autocasts as new SimpleRenderer()
-            //     symbol: SYMBOL
-            // };
             var renderer = {
                 type: "unique-value",
-                field: 'LoaiHinhSX',
+                field: 'PhanLoaiNhaMay',
                 uniqueValueInfos: [{
                     value: 1,
                     symbol: {
@@ -72,14 +68,14 @@ define([
                     var pointGraphic = new Graphic({
                         geometry: {
                             type: "point", // autocasts as new Point()
-                            longitude: feature.geometry.centroid.x,
-                            latitude: feature.geometry.centroid.y
+                            longitude: feature.geometry.centroid.longitude,
+                            latitude: feature.geometry.centroid.latitude
                         },
                         attributes: feature.attributes,
                     });
                     this.graphicLayer.source.add(pointGraphic);
                 }
-                this.graphicLayer.renderer = renderer;
+                // this.graphicLayer.renderer = renderer;
             });
         }
 
@@ -104,11 +100,14 @@ define([
 
         }
         queryListNhaMay() {
-            var query = this.featureLayer.createQuery();
-            query.where ="1=1";
-                if(this.featureLayer.definitionExpression != null){
-                    query.where = this.featureLayer.definitionExpression;
-                }
+            var query = new Query();
+            query.where = "1=1";
+            query.outFields = ["*"];
+            query.returnGeometry = true;
+            query.outSpatialReference = view.spatialReference;
+            if (this.featureLayer.definitionExpression != null) {
+                query.where = this.featureLayer.definitionExpression;
+            }
             return this.featureLayer.queryFeatures(query);
         }
     }
