@@ -60,7 +60,7 @@ define([
                     view: true,
                 },
             });
-            
+            this.featureLayer.visible = false;
             this.view.map.add(this.graphicLayer);
             this.queryListNhaMay().then((displayResults) => {
                 var features = displayResults.features;
