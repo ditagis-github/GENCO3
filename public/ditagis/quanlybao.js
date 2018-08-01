@@ -40,8 +40,12 @@ require([
         });
         function initFeatureLayer() {
             for (const layerCfg of view.systemVariable.user.Layers) {
-                if (layerCfg.GroupName === 'basemap' && layerCfg.IsView) {
-                    if (layerCfg.LayerID == "baoLYR") {
+                if (layerCfg.GroupName === 'basemap' && layerCfg.LayerID == "baoLYR") {
+                    if (!layerCfg.IsCreate) {
+                        location.href = '/index.html';
+                        return;
+                    }
+                    if (layerCfg.IsView) {
                         this.baoFL = new FeatureLayer({
                             url: 'https://' + layerCfg.Url,
                             id: layerCfg.LayerID,
@@ -49,8 +53,66 @@ require([
                             title: layerCfg.LayerTitle,
                         });
                     }
+                    if (layerCfg.IsCreate) {
+                        var import_image_widget = $("<div/>", {
+                            id: "import-image-widget",
+                            class: "control_item item"
+                        });
+                        $('#control_toolbar').append(import_image_widget);
+                        var label = $("<label/>", {
+                            title: 'Đưa dữ liệu bão',
+                            class: "esri-icon-media",
+                            for: 'inputFiles'
+                        });
+                        var input = $("<input/>", {
+                            id: 'inputFiles',
+                            type: 'file',
+                            name: 'attachment',
+                            multiple: 'multiple',
+                        });
+                        input.attr("hidden", "true")
+                        import_image_widget.append(label);
+                        this.form = $("<form/>", {
+                            enctype: "multipart/form-data", method: "post",
+                            html: `<input value="json" name="f" hidden/>`
+                        }).appendTo(import_image_widget);
+                        form.append(input);
+                        input.change(onInputAttachmentChangeHandler.bind(this));
+
+                    }
+                    if (layerCfg.IsDelete) {
+                        var clear_data = $("<div/>", {
+                            id: "clear-data",
+                            class: "control_item item"
+                        });
+                        $('#control_toolbar').append(clear_data);
+                        var span = $("<span/>", {
+                            title: 'Xóa dữ liệu bão',
+                            class: "esri-icon-trash",
+                        });
+                        clear_data.append(span);
+                        clear_data.click(() => {
+                            layDanhSachDiemBao(this.baoFL).then((displayResults) => {
+                                this.graphicsLayer.removeAll();
+                                var features = displayResults.features;
+                                for (var i = 0; i < features.length; i++) {
+                                    let feature = features[i];
+                                    let edits = {
+                                        deleteFeatures: [{
+                                            objectId: feature.attributes['OBJECTID']
+                                        }]
+                                    };
+                                    this.baoFL.applyEdits(edits);
+                                }
+
+                            });
+                        });
+                    }
+
                 }
+
             }
+
             var hiddenmap = new HiddenMap(view);
             hiddenmap.start();
             this.graphicsLayer = new GraphicsLayer({
@@ -101,22 +163,7 @@ require([
             $("div#print-panel").toggleClass("hidden");
         });
 
-        $("#clear-data").click(() => {
-            layDanhSachDiemBao(this.baoFL).then((displayResults) => {
-                this.graphicsLayer.removeAll();
-                var features = displayResults.features;
-                for (var i = 0; i < features.length; i++) {
-                    let feature = features[i];
-                    let edits = {
-                        deleteFeatures: [{
-                            objectId: feature.attributes['OBJECTID']
-                        }]
-                    };
-                    this.baoFL.applyEdits(edits);
-                }
 
-            });
-        });
         $(".closePanel_print").click(function () {
             $("div#print-panel").toggleClass("hidden");
         });
@@ -125,16 +172,16 @@ require([
         $("#pane > div > div.widget_item.close").click(() => {
             $("div#pane-storm").addClass("hidden");
         });
-        let attachmentPopup = $("#import-image-widget");
-        this.form = $("<form/>", {
-            enctype: "multipart/form-data", method: "post",
-            html: `<input value="json" name="f" hidden/>`
-        }).appendTo(attachmentPopup);
-        let fileInput = $("#inputFiles");
-        form.append(fileInput);
-        fileInput.change(onInputAttachmentChangeHandler.bind(this));
 
 
+        // let attachmentPopup = $("#import-image-widget");
+        // this.form = $("<form/>", {
+        //     enctype: "multipart/form-data", method: "post",
+        //     html: `<input value="json" name="f" hidden/>`
+        // }).appendTo(attachmentPopup);
+        // let fileInput = $("#inputFiles");
+        // form.append(fileInput);
+        // fileInput.change(onInputAttachmentChangeHandler.bind(this));
 
         view.watch('scale', (newVal, oldVal) => {
             if (this.graphicsLayer) {
