@@ -30,9 +30,9 @@ require([
     Map, MapView, Graphic, GroupLayer,
     Polyline, geometryEngine,
     BasemapToggle, Zoom,
-    FeatureLayer,MapImageLayer,
+    FeatureLayer, MapImageLayer,
     Extent, Popup, MapConfigs, ThoiTiet, HiddenMap,
-    MapTools,HienThiBao,
+    MapTools, HienThiBao,
     watchUtils, Renderer, SystemStatusObject,
     domConstruct, Print, LayerList
 ) {
@@ -67,51 +67,81 @@ require([
             initFeatureLayer();
         });
         function initFeatureLayer() {
-            let gr = new GroupLayer({
-                title: 'Dữ liệu chuyên đề',
-                id: "chuyende"
-            });
-            map.add(gr);
+
             for (const layerCfg of view.systemVariable.user.Layers) {
-                // for (const layerCfg of MapConfigs.layers) {
-                if (layerCfg.GroupName === 'basemap' && layerCfg.IsView) {
-                    if (layerCfg.LayerID == "baoLYR") {
-                        var baoFL = new FeatureLayer({
-                            url: 'https://' + layerCfg.Url,
-                            id: layerCfg.LayerID,
-                            outFields: ["*"],
-                            title: layerCfg.LayerTitle,
-                        });
-                        new HienThiBao(view,baoFL);
-                    }
+                // tạo layer
+                if (!layerCfg.IsView) continue;
+                let fl = new FeatureLayer({
+                    url: layerCfg.Url,
+                    title: layerCfg.LayerTitle,
+                    id: layerCfg.LayerID,
+                    outFields: layerCfg.OutFields ? layerCfg.OutFields.split(',') : ['*'],
+                    permission: {
+                        create: layerCfg.IsCreate,
+                        delete: layerCfg.IsDelete,
+                        edit: layerCfg.IsEdit,
+                        view: layerCfg.IsView,
+                    },
+                });
+                if (layerCfg.Definition != null && layerCfg.Definition != "") {
+                    fl.definitionExpression = layerCfg.Definition;
                 }
-                if (layerCfg.GroupName === 'chuyende' && layerCfg.IsView) {
-                    let fl = new FeatureLayer({
-                        url: 'https://' + layerCfg.Url,
-                        title: layerCfg.LayerTitle,
-                        id: layerCfg.LayerID,
-                        outFields: layerCfg.OutFields ? layerCfg.OutFields.split(',') : ['*'],
-                        permission: {
-                            create: layerCfg.IsCreate,
-                            delete: layerCfg.IsDelete,
-                            edit: layerCfg.IsEdit,
-                            view: layerCfg.IsView,
-                        },
-                    });
-                    if (layerCfg.Definition != null && layerCfg.Definition != "") {
-                        fl.definitionExpression = layerCfg.Definition;
+                if (fl.id != "NhaMayDienLYR") {
+                    fl.minScale = 30000;
+                    fl.minScale = 36111.909643;
+                }
+
+
+                // nếu layer tồn tại group
+                if (layerCfg.GroupID) {
+                    // nếu chưa có group trong map thì thêm vào
+                    let gr = map.findLayerById(layerCfg.GroupID);
+                    if (!gr) {
+                        gr = new GroupLayer({
+                            title: layerCfg.GroupName,
+                            id: layerCfg.GroupID
+                        });
+                        map.add(gr);
                     }
-                    if (fl.id != "NhaMayDienLYR") {
-                        fl.minScale = 30000;
-                        fl.minScale = 36111.909643;
-                    }
+                    // thêm layer vào group
                     gr.add(fl);
+                }
+                // nếu không có group thì add như bình thường
+                else {
+                    map.add(fl);
                 }
             }
         }
-
+        var thoitiet = new ThoiTiet();
         var popup = new Popup(view);
         popup.startup();
+
+        view.popup.watch('selectedFeature', (newVal, oldVal) => {
+            // khi mà người dùng chọn đối tượng mới
+            // thì kiểm tra đối tượng có phải là nhà máy hay không
+            // nếu là nhà máy thì hiển thị thời tiết lên
+            if (newVal && newVal.layer.id == "NhaMayLYR") {
+                var manhamay = newVal.attributes["Ma"];
+                thoitiet.laythongtinthoitiet(newVal.geometry, manhamay);
+            }
+            else if (newVal && newVal.layer.id == "NhaMayDienLYR") {
+                var manhamay = newVal.attributes["Ma"];
+                thoitiet.laythongtinthoitiet(newVal.geometry.centroid, manhamay);
+            }
+            // nếu không phải là nhà máy hoặc là không có đối tượng nào cả thì tắt thời tiết
+            else thoitiet.close();
+        });
+        view.popup.watch('visible', (rs) => {
+            !rs && thoitiet.close();
+        });
+
+        // if (layer.id == "NhaMayLYR" || layer.id == "NhaMayDienLYR") {
+        //     var manhamay = graphic.attributes["Ma"];
+        //     this.thoitiet.laythongtinthoitiet(graphic.geometry, manhamay);
+        // }
+        // else if (layer.id == "NhaMayDienLYR") {
+
+        // }
         var count = 0;
 
         var layerNhaMay;

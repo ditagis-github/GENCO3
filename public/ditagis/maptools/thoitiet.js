@@ -65,6 +65,10 @@ define([
             this.script.src = 'https://query.yahooapis.com/v1/public/yql?q='
                 + encodedQuery + "&format=json&callback=laydulieuthoitiet";
             document.head.appendChild(this.script);
+            $("div#weather-panel").removeClass("hidden");
+        }
+        close(){
+            $("div#weather-panel").addClass("hidden");
         }
 
     }

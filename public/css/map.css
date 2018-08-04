@@ -31,7 +31,7 @@
     position: fixed;
     z-index: 99999;
     left: 5px;
-    top: 75px;
+    top: 55px;
     border-radius: 3px;
     font-weight: 700;
 }
@@ -286,33 +286,31 @@ button.methods {
     max-width: 100%;
 }
 .widget-list-factory {
-    left: 50px;
+    left: 20px;
     opacity: 1;
-    bottom: -10px;
+    top: 120px;
     z-index: 6;
-    height: 118px;
+    max-height: calc(100vh - 247px);
     position: absolute;
-    overflow-x: auto;
-    max-height: 300px;
-    overflow-y: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     white-space: nowrap;
     transition-property: opacity,left;
     transition-duration: 0.4s;
 }
+.widget-runway-all-cards{
+    margin: 0;padding: 0;list-style: none;
+}
 .item-nhamay{
-    display: inline-block;
     margin-right: 3px;
-    height: 100px;
-    width: 207px;
+    height: 207px;
+    width: 100px;
     position: relative;
-
-    
 }
 .item-nhamay > li{
     cursor: pointer;
     width: 203px;
     height: 100px;
-    display: inline-block;
     position: relative;
     background-size: cover;
     background-repeat: no-repeat;
@@ -432,8 +430,8 @@ div#pane > .btn-group{
     display: block;
     cursor: pointer;
     position: absolute;
-    top: 0px;
-    left: 10px;
+    top: -8px;
+    left: 3px;
     width: 175px;
     height: 15px;
     overflow: hidden;
@@ -886,3 +884,32 @@ span.esri-layer-list__item-toggle-icon.esri-icon-visible:before {
     margin: 0px 0 0 0;
     overflow: inherit;
 }
+
+::-webkit-scrollbar{width:2px;height:2px;}
+
+div{
+  box-sizing:border-box;
+}
+
+.horizontal-scroll-wrapper{
+    top: -4px;
+    position: absolute;
+    display: block;
+    left: 34px;
+    height: 92vw;
+    margin: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transform: rotate(-90deg) translateY(-80px);
+    transform-origin: right top;
+}
+.horizontal-scroll-wrapper > ul > span{
+  display:block;
+  transform:rotate(90deg);
+  transform-origin: right top;
+  padding-left: 90px;
+}
+
+
+
+

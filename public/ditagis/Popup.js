@@ -11,9 +11,11 @@ define([
     "dojo/on", "dojo/dom-construct",
     "ditagis/support/HightlightGraphic",
     "ditagis/support/Editing",
-    "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate"],
+    "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
+    ],
     function (LinkAPI, on, domConstruct, HightlightGraphic, EditingSupport,
-        SimpleLineSymbol, watchUtils, PopupTemplate) {
+        SimpleLineSymbol, watchUtils, PopupTemplate,
+        ) {
         "use strict";
         class Popup {
 
@@ -368,89 +370,89 @@ define([
                         var interval = setInterval(() => {
 
                             $.ajax({
-                                url: `${LinkAPI.CONGSUAT}${ manhamay }`, 
+                                url: `${LinkAPI.CONGSUAT}${manhamay}`,
                                 success: function (result) {
                                     $(`#${manhamay}`).text(result);
                                 }
                             });
-                    }, 1000);
-this.listInterval.push(interval);
+                        }, 1000);
+                        this.listInterval.push(interval);
                     }
 
                 }
                 else if (value) {
-    let input, content = value, formatString;
-    if (field.domain && field.domain.type === "codedValue") {
-        const codedValues = field.domain.codedValues;
-        content = codedValues.find(f => { return f.code === value; }).name;
-    }
-    else if (field.type === 'date')
-        formatString = 'DateFormat';
-    if (formatString)
-        content = `{${field.name}:${formatString}}`;
-    tdValue.text(content);
-}
+                    let input, content = value, formatString;
+                    if (field.domain && field.domain.type === "codedValue") {
+                        const codedValues = field.domain.codedValues;
+                        content = codedValues.find(f => { return f.code === value; }).name;
+                    }
+                    else if (field.type === 'date')
+                        formatString = 'DateFormat';
+                    if (formatString)
+                        content = `{${field.name}:${formatString}}`;
+                    tdValue.text(content);
+                }
             }
-editFeature() {
-    let applyAttributes = {
-        objectId: this.attributes.OBJECTID
-    };
-    if (!this.attributes || !this.kendoModel)
-        kendo.alert("Có lỗi xảy ra trong quá trình cập nhật");
-    if (this.kendoModel.get('deleteAttachment') && this.kendoModel.get('deleteAttachment').length > 0) {
-        this.layer.deleteAttachments({
-            objectId: this.attributes.OBJECTID,
-            deletes: this.kendoModel.get('deleteAttachment')
-        });
-        this.kendoModel.set('deleteAttachment', []);
-    }
-    for (let field of this.layer.fields) {
-        let value = this.kendoModel.get(field.name);
-        if (!value ||
-            (value && value == -1))
-            continue;
-        if (field.type === 'date') {
-            if (value.getTime() <= 0)
-                continue;
-            applyAttributes[field.name] = value.getTime();
-        }
-        else
-            applyAttributes[field.name] = value;
-    }
-    const updatedInfo = this.editingSupport.getUpdatedInfo(this.view);
-    for (let i in updatedInfo) {
-        applyAttributes[i] = updatedInfo[i];
-    }
-    this.layer.applyEdits({
-        updateFeatures: [{
-            attributes: applyAttributes
-        }]
-    }).then((res) => {
-        let updateFeatureResults = res.updateFeatureResults;
-        if (updateFeatureResults[0].objectId) {
-            let query = this.layer.createQuery();
-            query.outFields = ['*'];
-            query.where = 'OBJECTID=' + this.attributes['OBJECTID'];
-            this.layer.queryFeatures(query).then(res => {
-                this.view.popup.open({
-                    features: res.features
+            editFeature() {
+                let applyAttributes = {
+                    objectId: this.attributes.OBJECTID
+                };
+                if (!this.attributes || !this.kendoModel)
+                    kendo.alert("Có lỗi xảy ra trong quá trình cập nhật");
+                if (this.kendoModel.get('deleteAttachment') && this.kendoModel.get('deleteAttachment').length > 0) {
+                    this.layer.deleteAttachments({
+                        objectId: this.attributes.OBJECTID,
+                        deletes: this.kendoModel.get('deleteAttachment')
+                    });
+                    this.kendoModel.set('deleteAttachment', []);
+                }
+                for (let field of this.layer.fields) {
+                    let value = this.kendoModel.get(field.name);
+                    if (!value ||
+                        (value && value == -1))
+                        continue;
+                    if (field.type === 'date') {
+                        if (value.getTime() <= 0)
+                            continue;
+                        applyAttributes[field.name] = value.getTime();
+                    }
+                    else
+                        applyAttributes[field.name] = value;
+                }
+                const updatedInfo = this.editingSupport.getUpdatedInfo(this.view);
+                for (let i in updatedInfo) {
+                    applyAttributes[i] = updatedInfo[i];
+                }
+                this.layer.applyEdits({
+                    updateFeatures: [{
+                        attributes: applyAttributes
+                    }]
+                }).then((res) => {
+                    let updateFeatureResults = res.updateFeatureResults;
+                    if (updateFeatureResults[0].objectId) {
+                        let query = this.layer.createQuery();
+                        query.outFields = ['*'];
+                        query.where = 'OBJECTID=' + this.attributes['OBJECTID'];
+                        this.layer.queryFeatures(query).then(res => {
+                            this.view.popup.open({
+                                features: res.features
+                            });
+                        });
+                    }
                 });
-            });
-        }
-    });
-}
-deleteFeature() {
-    this.layer.applyEdits({
-        deleteFeatures: [{
-            objectId: this.attributes.OBJECTID
-        }]
-    }).then((res) => {
-        if (res.deleteFeatureResults.length > 0 && !res.deleteFeatureResults[0].error) {
-            this.view.popup.close();
-        }
-    });
-}
+            }
+            deleteFeature() {
+                this.layer.applyEdits({
+                    deleteFeatures: [{
+                        objectId: this.attributes.OBJECTID
+                    }]
+                }).then((res) => {
+                    if (res.deleteFeatureResults.length > 0 && !res.deleteFeatureResults[0].error) {
+                        this.view.popup.close();
+                    }
+                });
+            }
 
         }
-return Popup;
+        return Popup;
     });

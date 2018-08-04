@@ -30,21 +30,22 @@
                     Tổng công ty phát điện 3
                 </div>
             </div>
+            <div class="user-setting">
+                <div>
+                        <a class="menu" href="/login.html">Đăng xuất</a>
+                </div>
+            </div>
         </div>
     </nav>
     <div id="header_template">
         <div id="text_head">
             <div id="control_toolbar">
-                <div id="map-tools" class="control_item item">
-                    <span class="esri-icon-applications" title="Chức năng bản đồ">
+                <div id="home" class="control_item item">
+                    <span class="esri-icon-home" title="Trang chủ">
                     </span>
                 </div>
                 <div id="factorylist" class="control_item item">
                     <span class="esri-icon-organization" title="Danh sách nhà máy">
-                    </span>
-                </div>
-                <div id="weather" class="control_item item ">
-                    <span class="esri-icon-chart" title="Thời tiết">
                     </span>
                 </div>
                 <div id="legend-widget" class="control_item item ">
@@ -55,7 +56,7 @@
                     <span class="esri-icon-printer" title="In bản đồ">
                     </span>
                 </div>
-                
+
                 <div id="layer-list-widget" class="control_item item ">
                     <span class="esri-icon-layer-list" title="Bật tắt lớp dữ liệu">
                     </span>
@@ -68,7 +69,7 @@
                     <span class="esri-icon-review" title="Báo cáo, thống kê">
                     </span>
                 </div>
-                <a  target="_blank" href="/quanlybao.html" id="storm-widget" class="control_item item ">
+                <a target="_blank" href="/quanlybao.html" id="storm-widget" class="control_item item ">
                     <span class="esri-icon-environment-settings" title="Đưa dữ liệu bão">
                     </span>
                 </a>
@@ -150,16 +151,21 @@
     </div>
     <div class="panel panel-info hidden" id="layer-list-panel">
     </div>
+
     <div class="panel panel-info" id="pane-tools">
     </div>
     <div class="panel panel-info" id="type-draw-tools">
     </div>
     <div class="panel panel-info" id="draw-method">
     </div>
+    <div class="widget-list-factory hidden" id="danhsachnhamay">
+    </div>
     <div class="widget-list">
         <div id="toggle-basemap"></div>
-        <div class="widget-list-factory hidden" id="danhsachnhamay">
-        </div>
+
+        <!-- <div class="horizontal-scroll-wrapper squares" id="danhsachnhamay">
+
+        </div> -->
     </div>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2018.2.620/js/jquery.min.js"></script>

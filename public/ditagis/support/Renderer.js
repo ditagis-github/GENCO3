@@ -53,6 +53,8 @@ define([
                 renderer: renderer,
                 title: "Nhà máy",
                 outFields: ['*'],
+                listMode:'hide',
+                id:"NhaMayLYR",
                 permission: {
                     create: false,
                     delete: false,

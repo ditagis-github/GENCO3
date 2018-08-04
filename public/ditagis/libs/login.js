@@ -1,3 +1,4 @@
+localStorage.clear();
 let input = $('input[name="remember"]');
 $('#remember').click(function () {
     let val = input.val() === "true" ? false : true;

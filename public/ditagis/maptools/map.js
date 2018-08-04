@@ -3,13 +3,13 @@ define([
     "esri/widgets/Locate/LocateViewModel",
     "esri/widgets/Legend",
     "esri/widgets/Print",
-    "ditagis/maptools/thoitiet",
+    "esri/widgets/Home",
     "ditagis/widgets/LayerEditor",
     "ditagis/widgets/QueryLayer",
     "ditagis/toolview/PaneManager",
     "esri/widgets/LayerList",
 
-], function (Locate, LocateViewModel, Legend, Print, ThoiTiet,
+], function (Locate, LocateViewModel, Legend, Print, Home,
     LayerEditor,
     QueryLayer,
     PaneManager, LayerList
@@ -21,7 +21,6 @@ define([
                 this.layerNhaMay = layerNhaMay;
                 this.featuresNhaMay;
                 this.startup();
-                this.thoitiet = new ThoiTiet();
                 this.locateBtn = new Locate({
                     view: view,
                 });
@@ -39,10 +38,10 @@ define([
                 this.queryLayer.on("click", addPane);
                 this.layerList = new LayerList({
                     view: view,
-                    container:"layer-list-panel"
+                    container: "layer-list-panel"
                 });
-                
-                  
+
+
                 $(".esri-component.esri-layer-list.esri-widget.esri-widget--panel").toggleClass("hidden");
                 // Adds widget below other elements in the top left corner of the view
 
@@ -54,21 +53,22 @@ define([
                 }
 
             }
-            
+
             startup() {
                 $("#danhsachnhamay").on("click", "span.viewData", (result) => {
                     var value = result.currentTarget.attributes.alt.nodeValue;
                     var feature = this.featuresNhaMay.find(f => {
                         return f.attributes['OBJECTID'] == value;
                     });
-                    this.view.center = [feature.geometry.centroid.longitude, feature.geometry.centroid.latitude];
-                    this.view.zoom = 14;
-                    var manhamay = feature.attributes["Ma"];
-                    this.thoitiet.laythongtinthoitiet(this.view.center, manhamay);
-                    $("div#weather-panel").removeClass("hidden");
+                    this.view.popup.open({
+                        features: [feature],  // array of graphics
+                        updateLocationEnabled: true
+                    });
+
                 });
 
                 $("#danhsachnhamay").on("click", "div.goToDirection", (result) => {
+                    result.stopPropagation();
                     var value = result.currentTarget.attributes.alt.nodeValue;
                     var feature = this.featuresNhaMay.find(f =>
                         f.attributes['OBJECTID'] == value
@@ -85,11 +85,11 @@ define([
                 $("#danhsachnhamay").on("click", "div.goToDirection1", (result) => {
                     result.stopPropagation();
                     var objectId_first = result.currentTarget.attributes.alt.nodeValue;
-                    $('.item-nhamay').css('border', 'red solid 2px');
-                    $(`.item-nhamay[alt="${objectId_first}"]`).css('border', 'none');
+                    $('.item-nhamay li').css('border', 'red solid 2px');
+                    $(`.item-nhamay[alt="${objectId_first}"] li`).css('border', 'none');
                     $("#danhsachnhamay").one("click", ".item-nhamay", (evt) => {
                         evt.stopPropagation();
-                        $(`.item-nhamay`).css('border', 'none');
+                        $(`.item-nhamay li`).css('border', 'none');
                         var feature_first = this.featuresNhaMay.find(f =>
                             f.attributes['OBJECTID'] == objectId_first
                         );
@@ -114,29 +114,19 @@ define([
                     $("div#danhsachnhamay").toggleClass("hidden");
                     this.danhsachnhamay();
                 });
-
-                // hien thi cac widget ban do
-                $("#map-tools").click(() => {
-                    $("div.map-tool").toggleClass("hidden");
-
-                });
-
-                // hien thi thong tin thoi tiet
-                $("#weather").click(() => {
-                    this.thoitiet.laythongtinthoitiet(this.view.center);
-                    $("div#weather-panel").toggleClass("hidden");
-                });
                 $(".closePanel_weather").click(function () {
                     $("div#weather-panel").toggleClass("hidden");
                 });
 
                 // In bản đồ
 
-                var print = new Print({
+                new Print({
                     view: this.view,
                     container: $("#print-widget")[0],
                     printServiceUrl: "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
                 });
+
+
                 $("#printer-widget").click(() => {
                     $("div#print-panel").toggleClass("hidden");
                 });
@@ -178,6 +168,14 @@ define([
                     this.locateBtn.locate().then((response) => {
                     });
                 });
+                var homeWidget = new Home({
+                    view: view,
+                });
+
+                $("#home").click(() => {
+                    this.view.viewpoint = homeWidget.viewpoint;
+                });
+
 
             }
             showLegend() {
@@ -234,7 +232,6 @@ define([
                 document.getElementById("legend-symbols").innerHTML += resultHtml;
 
             }
-
             async danhsachnhamay() {
                 var displayResults = await this.queryListNhaMay();
                 this.featuresNhaMay = displayResults.features;
@@ -278,6 +275,7 @@ define([
                 resultHtml += "</ul>";
                 document.getElementById("danhsachnhamay").innerHTML = resultHtml;
             }
+
             queryListNhaMay() {
                 var query = this.layerNhaMay.createQuery();
                 query.outSpatialReference = this.view.spatialReference;
