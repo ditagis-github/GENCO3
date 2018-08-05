@@ -476,6 +476,7 @@ div#pane > .btn-group{
   }
   p.esri-legend__service-label{
       order: 2;
+      white-space: pre-line;
   }
   .esri-legend__service.esri-legend__group-layer{
       max-height: 600px;

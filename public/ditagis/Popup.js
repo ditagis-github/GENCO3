@@ -367,12 +367,20 @@ define([
                     var manhamay = attributes["Ma"];
                     tdValue[0].id = manhamay;
                     if (manhamay) {
+                        var p = $('p').appendTo(tdValue);
                         var interval = setInterval(() => {
 
                             $.ajax({
                                 url: `${LinkAPI.CONGSUAT}${manhamay}`,
                                 success: function (result) {
-                                    $(`#${manhamay}`).text(result);
+                                    if(result){
+                                        var text = '';
+                                        for (const key in result) {
+                                        text +=`${key}: ${result[key]}\r\n`
+                                        }
+                                        $(`#${manhamay} p`).text(text);
+                                    }
+                                    
                                 }
                             });
                         }, 1000);

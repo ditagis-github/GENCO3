@@ -13,6 +13,11 @@ define(["ditagis/core/LinkAPI","esri/views/MapView", "ditagis/classes/SystemStat
                     type: 'GET',
                     headers: {
                         "Authorization": localStorage.login_code
+                    },
+                    statusCode:{
+                        0:function(){
+                            location.href='/login.html';
+                        }
                     }
                 })
                     .then(rs => {

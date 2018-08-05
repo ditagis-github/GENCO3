@@ -1,6 +1,3 @@
-if (!localStorage.login_code) {
-    location.href = '/login.html'
-}
 require([
     "esri/Map",
     "ditagis/views/MapView",
