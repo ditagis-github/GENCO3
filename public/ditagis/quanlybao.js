@@ -36,14 +36,14 @@ require([
         });
         function initFeatureLayer() {
             for (const layerCfg of view.systemVariable.user.Layers) {
-                if (layerCfg.GroupName === 'basemap' && layerCfg.LayerID == "baoLYR") {
+                if (layerCfg.GroupID === "ChuyenDe" && layerCfg.LayerID == "baoLYR") {
                     if (!layerCfg.IsCreate) {
                         location.href = '/index.html';
                         return;
                     }
                     if (layerCfg.IsView) {
                         this.baoFL = new FeatureLayer({
-                            url: 'https://' + layerCfg.Url,
+                            url: layerCfg.Url,
                             id: layerCfg.LayerID,
                             outFields: ["*"],
                             title: layerCfg.LayerTitle,
