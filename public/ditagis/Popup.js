@@ -369,7 +369,6 @@ define([
                     if (manhamay) {
                         var p = $('p').appendTo(tdValue);
                         var interval = setInterval(() => {
-
                             $.ajax({
                                 url: `${LinkAPI.CONGSUAT}${manhamay}`,
                                 success: function (result) {
