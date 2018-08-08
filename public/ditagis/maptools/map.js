@@ -28,10 +28,7 @@ define([
                     view: view,
                     goToLocationEnabled: false
                 });
-                this.legend = new Legend({
-                    view: this.view,
-                    container: "legend-symbols",
-                });
+
                 this.layerEditor = new LayerEditor(view);
                 this.layerEditor.on("click", addPane);
                 this.queryLayer = new QueryLayer(view);
@@ -41,8 +38,12 @@ define([
                     container: "layer-list-panel"
                 });
 
-
-                $(".esri-component.esri-layer-list.esri-widget.esri-widget--panel").toggleClass("hidden");
+                this.legend = new Legend({
+                    view: this.view,
+                    container: "legend-layer-list-panel",
+                });
+                // this.view.ui.add(this.legend,"top-right");
+                $(".esri-component.esri-layer-list.esri-widget.esri-widget--panel").show();
                 // Adds widget below other elements in the top left corner of the view
 
                 var paneManager = new PaneManager({
@@ -52,6 +53,22 @@ define([
                     paneManager.add(pane);
                 }
 
+                var element = $("<div/>", {
+                    id: "close-widget",
+                    class: "control_item item"
+                });
+                $('#control_toolbar').append(element);
+                var span = $("<span/>", {
+                    class: "esri-icon-close",
+                    title: "Đóng"
+                });
+                element.append(span);
+                $(".left_panel").hide();
+                $("#close-widget").hide();
+                $("#close-widget").click(() => {
+                    $(".left_panel").hide();
+                    $("#close-widget").hide();
+                });
             }
 
             startup() {
@@ -111,11 +128,10 @@ define([
 
                 // hien thi danh sach nha may
                 $("#factorylist").click(() => {
+                    $(".left_panel").hide();
                     $("div#danhsachnhamay").toggleClass("hidden");
                     this.danhsachnhamay();
-                });
-                $(".closePanel_weather").click(function () {
-                    $("div#weather-panel").toggleClass("hidden");
+
                 });
 
                 // In bản đồ
@@ -128,33 +144,27 @@ define([
 
 
                 $("#printer-widget").click(() => {
-                    $("div#print-panel").toggleClass("hidden");
-                });
-                $(".closePanel_print").click(function () {
-                    $("div#print-panel").toggleClass("hidden");
+                    this.showElement($("div#print-panel"),true);
                 });
 
                 // hien thi chu thich ban do
                 $("#legend-widget").click(() => {
-                    // this.showLegend();
-                    $("div#legend-panel").toggleClass("hidden");
-                });
-                $(".closePanel_legend").click(function () {
-                    $("div#legend-panel").toggleClass("hidden");
-
+                    this.showElement($("#legend-layer-list-panel"),true);
                 });
                 // Biên tập dữ liệu
                 $("#editor-widget").click(() => {
+                    this.showElement($("#pane-tools"));
                     this.layerEditor.editor();
                 });
 
                 $("#statistics-widget").click(() => {
+                    this.showElement($("#pane-tools"));
                     this.queryLayer.start();
                 })
 
                 // Hiển thị ẩn lớp dữ liệu
                 $("#layer-list-widget").click(() => {
-                    $("#layer-list-panel").toggleClass("hidden");
+                    this.showElement($("#layer-list-panel"),true);
 
                 });
                 // map - tools (zoom in, out, location)
@@ -177,6 +187,13 @@ define([
                 });
 
 
+
+            }
+            showElement(element, isClose) {
+                $(".left_panel").hide();
+                element.show();
+                if (isClose)
+                    $("#close-widget").show();
             }
             showLegend() {
                 document.getElementById("legend-symbols").innerHTML = "";

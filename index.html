@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>GENCO3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>if (!localStorage.login_code) {location.href = '/login.html'}</script>
+    <script>if (!localStorage.login_code) { location.href = '/login.html' }</script>
     <link rel="stylesheet" href="https://js.arcgis.com/4.5/esri/css/main.css">
     <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.common-material.min.css" />
     <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.material.min.css" />
@@ -98,10 +98,9 @@
 
     <div id="viewDiv">
     </div>
-    <div class="panel panel-info hidden" id="weather-panel">
+    <div class="panel panel-info left_panel" id="weather-panel">
         <div class="panel-heading">
             <h3 class="panel-title">Thời tiết</h3>
-            <span class="btn-danger pull-right closePanel closePanel_weather">X</span>
         </div>
         <div class="panel-primary" style="max-height:650px;overflow: hidden;">
             <div class="row-item">
@@ -132,30 +131,30 @@
 
         </div>
     </div>
-    <div class="panel panel-info hidden" id="print-panel">
-        <span class="btn-danger pull-right closePanel closePanel_print">X</span>
+    <div class="panel panel-info left_panel" id="print-panel">
         <div class="panel-primary" id="print-widget">
         </div>
     </div>
-    <div class="panel panel-info hidden" id="legend-panel">
+    <div class="panel panel-info left_panel" id="legend-panel">
         <div class="panel-heading">
             <h3 class="panel-title">Chú thích</h3>
-            <span class="btn-danger pull-right closePanel closePanel_legend">X</span>
         </div>
         <div class="panel-primary" id="legend-symbols">
 
         </div>
     </div>
-    <div class="panel panel-info hidden" id="layer-list-panel">
+    <div class="panel panel-info left_panel" id="layer-list-panel">
+    </div>
+    <div class="panel panel-info left_panel" id="legend-layer-list-panel">
     </div>
 
-    <div class="panel panel-info" id="pane-tools">
+    <div class="panel panel-info left_panel" id="pane-tools">
     </div>
-    <div class="panel panel-info" id="type-draw-tools">
+    <div class="panel panel-info left_panel" id="type-draw-tools">
     </div>
-    <div class="panel panel-info" id="draw-method">
+    <div class="panel panel-info left_panel" id="draw-method">
     </div>
-    <div class="widget-list-factory hidden" id="danhsachnhamay">
+    <div class="widget-list-factory" id="danhsachnhamay">
     </div>
     <div class="widget-list">
         <div id="toggle-basemap"></div>

@@ -112,7 +112,7 @@ span.btn-danger.pull-right.closePanel.closePanel_print {
     overflow: hidden;
 }
 
-#layer-list-panel {
+#layer-list-panel ,#legend-layer-list-panel{
     width: 320px;
     background-color: #f9f9f9;
     float: right;
@@ -120,7 +120,7 @@ span.btn-danger.pull-right.closePanel.closePanel_print {
     right: 15px;
     top: 75px;
     z-index: 999;
-    overflow: hidden;
+    max-height: 420px;
 }
 
 #print-panel {
@@ -526,13 +526,13 @@ div#pane>.btn-group {
     color: #fff;
 }
 
-.esri-legend__service {
+/* .esri-legend__service {
     background-color: white;
     color: #000;
     display: flex;
-}
+} */
 
-p.esri-legend__service-label {
+/* p.esri-legend__service-label {
     order: 2;
 }
 
@@ -552,7 +552,7 @@ p.esri-legend__service-label {
 
 .esri-legend__service:last-child {
     display: inherit;
-}
+} */
 
 .esri-popup--content-visible .esri-popup__content {
     margin: 0;
@@ -1025,4 +1025,7 @@ div {
 
 .pre-line {
     white-space: pre-line;
+}
+div#close-widget {
+    background-color: #ff3448;
 }
