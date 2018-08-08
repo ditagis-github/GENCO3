@@ -52,7 +52,7 @@ define([
                 source: [],
                 renderer: renderer,
                 title: "Nhà máy",
-                outFields: ['*'],
+                outFields: this.featureLayer.outFields,
                 listMode:'hide',
                 id:"NhaMayLYR",
                 permission: {

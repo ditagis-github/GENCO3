@@ -69,6 +69,20 @@ require([
         for (const layerCfg of view.systemVariable.user.Layers) {
             // tạo layer
             if (!layerCfg.IsView) continue;
+            if (layerCfg.GroupID === "ChuyenDe" && layerCfg.LayerID == "baoLYR" && layerCfg.IsCreate) {
+                var element = $("<a/>", {
+                    target: "_blank",
+                    href: "/quanlybao.html",
+                    id: "storm-widget",
+                    class: "control_item item "
+                });
+                $('#control_toolbar').append(element);
+                var label = $("<span/>", {
+                    class:"esri-icon-environment-settings",
+                     title:"Đưa dữ liệu bão"
+                });
+                element.append(label);
+            }
             let fl = new FeatureLayer({
                 url: layerCfg.Url,
                 title: layerCfg.LayerTitle,
