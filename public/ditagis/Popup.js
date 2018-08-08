@@ -83,11 +83,17 @@ define([
                                 className: "esri-icon-erase",
                             });
                         }
-                        if (layer.id == "NhaMayLYR"|| (layer.id == "NhaMayDienLYR" && layer.hasAttachments)) {
+                        if (layer.id == "NhaMayLYR" || layer.id == "NhaMayDienLYR") {
                             actions.push({
-                                id: "update-attachment",
+                                id: "add-attachment",
                                 title: "Thêm hình ảnh",
                                 className: "esri-icon-attachment",
+                            });
+                            actions.push({
+                                id: "delete-attachment",
+                                title: "Cập nhật",
+                                className: "esri-icon-check-mark",
+                                visible: false
                             });
                         }
                         if (layer.id.includes("camera")) {
@@ -99,14 +105,25 @@ define([
                                 actions: actions
                             });
                         }
-                        else
+                        else {
+
                             layer.popupTemplate = new PopupTemplate({
                                 content: (target) => {
+                                    if (layer.id == "NhaMayLYR" || layer.id == "NhaMayDienLYR") {
+                                        this.view.popup.actions.find(function (action) {
+                                            return action.id === 'delete-attachment';
+                                        }).visible = false;
+                                        this.view.popup.actions.find(function (action) {
+                                            return action.id === 'add-attachment';
+                                        }).visible = true;
+                                    }
                                     return this.contentPopup(target);
                                 },
                                 title: layer.title,
                                 actions: actions
                             });
+                        }
+
                     }
 
                 });
@@ -130,7 +147,7 @@ define([
                 });
             }
             get layer() {
-                if(this.view.popup.selectedFeature.layer.id == "NhaMayLYR"){
+                if (this.view.popup.selectedFeature.layer.id == "NhaMayLYR") {
                     return this.view.map.findLayerById("NhaMayDienLYR");
                 }
                 return this.view.popup.selectedFeature.layer;
@@ -141,9 +158,7 @@ define([
             triggerActionHandler(event) {
                 let actionId = event.action.id,
                     selectedFeature = this.view.popup.viewModel.selectedFeature,
-                    layer = selectedFeature.layer,
-                    attributes = selectedFeature.attributes,
-                    objectid = attributes.OBJECTID;
+                    layer = selectedFeature.layer;
                 const per = layer.permission;
                 switch (actionId) {
                     case "update":
@@ -160,8 +175,12 @@ define([
                             this.deleteFeature();
                         }
                         break;
-                    case "update-attachment": {
-                        this.updateAttachment();
+                    case "add-attachment": {
+                        this.addAttachments();
+                        break;
+                    }
+                    case "delete-attachment": {
+                        this.deleteAttachments();
                         break;
                     }
                     default:
@@ -193,7 +212,7 @@ define([
                 }
                 if (this.layer.hasAttachments) {
                     divInfo.innerHTML += `<legend>Tệp đính kèm</legend>
-      <div class="attachment-popup" id="attachment-popup"></div>`;
+                    <div class="attachment-popup" id="attachment-popup"></div>`;
                     this.layer.getAttachments(this.attributes['OBJECTID']).then(res => {
                         let attachmentPopup = $("#attachment-popup");
                         let form = $("<form/>", {
@@ -233,7 +252,7 @@ define([
                     updateAction.className = 'esri-icon-edit';
                 });
             }
-            updateAttachment(){
+            addAttachments() {
                 let container = domConstruct.create('div', {
                     id: 'show-edit-container',
                     class: 'popup-content'
@@ -241,9 +260,10 @@ define([
                 let divInfo = domConstruct.create('div', {
                     class: 'form-horizontal'
                 }, container);
+                let model = {};
                 if (this.layer.hasAttachments) {
                     divInfo.innerHTML += `<legend>Tệp đính kèm</legend>
-      <div class="attachment-popup" id="attachment-popup"></div>`;
+                    <div class="attachment-popup" id="attachment-popup"></div>`;
                     this.layer.getAttachments(this.attributes['OBJECTID']).then(res => {
                         let attachmentPopup = $("#attachment-popup");
                         let form = $("<form/>", {
@@ -268,8 +288,16 @@ define([
                         }
                     });
                 }
+                this.kendoModel = kendo.observable(model);
+                kendo.bind($(container), this.kendoModel);
                 this.view.popup.content = container;
                 this.view.popup.title = this.layer.title;
+                this.view.popup.actions.find(function (action) {
+                    return action.id === 'delete-attachment';
+                }).visible = true;
+                this.view.popup.actions.find(function (action) {
+                    return action.id === 'add-attachment';
+                }).visible = false;
             }
             editField(field, model, divInfo) {
                 let inputHTML = '';
@@ -484,6 +512,31 @@ define([
                         content = `{${field.name}:${formatString}}`;
                     tdValue.text(content);
                 }
+            }
+            deleteAttachments() {
+                if (!this.attributes || !this.kendoModel)
+                    kendo.alert("Có lỗi xảy ra trong quá trình cập nhật");
+                if (this.kendoModel.get('deleteAttachment') && this.kendoModel.get('deleteAttachment').length > 0) {
+                    this.layer.deleteAttachments({
+                        objectId: this.attributes.OBJECTID,
+                        deletes: this.kendoModel.get('deleteAttachment')
+                    });
+                    this.kendoModel.set('deleteAttachment', []);
+                }
+                this.view.popup.actions.find(function (action) {
+                    return action.id === 'delete-attachment';
+                }).visible = false;
+                this.view.popup.actions.find(function (action) {
+                    return action.id === 'add-attachment';
+                }).visible = true;
+                let query = this.layer.createQuery();
+                query.outFields = ['*'];
+                query.where = 'OBJECTID=' + this.attributes['OBJECTID'];
+                this.layer.queryFeatures(query).then(res => {
+                    this.view.popup.open({
+                        features: res.features
+                    });
+                });
             }
             editFeature() {
                 let applyAttributes = {
