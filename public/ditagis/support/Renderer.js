@@ -83,10 +83,6 @@ define([
         }
 
         rendererSymbol() {
-            var uniqueValueInfos = this.featureLayer.renderer.uniqueValueInfos;
-            for (const uniqueValueInfo of uniqueValueInfos) {
-                uniqueValueInfo.symbol.color.a = 0.2;
-            }
             watchUtils.whenTrue(this.view, "stationary", (evt) => {
                 if (this.view.zoom >= 14) {
                     this.graphicLayer.visible = false;

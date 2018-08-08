@@ -86,6 +86,7 @@ require([
                 if (fl.id != "NhaMayDienLYR") {
                     fl.minScale = 30000;
                     fl.minScale = 36111.909643;
+                    fl.opacity = 0.2;
                 }
 
 
