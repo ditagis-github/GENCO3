@@ -1,5 +1,5 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new(P || (P = Promise))(function (resolve, reject) {
+    return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) {
             try {
                 step(generator.next(value));
@@ -25,12 +25,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 define([
-        "ditagis/core/LinkAPI",
-        "dojo/on", "dojo/dom-construct",
-        "ditagis/support/HightlightGraphic",
-        "ditagis/support/Editing",
-        "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
-    ],
+    "ditagis/core/LinkAPI",
+    "dojo/on", "dojo/dom-construct",
+    "ditagis/support/HightlightGraphic",
+    "ditagis/support/Editing",
+    "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
+],
     function (LinkAPI, on, domConstruct, HightlightGraphic, EditingSupport,
         SimpleLineSymbol, watchUtils, PopupTemplate,
     ) {
@@ -83,6 +83,13 @@ define([
                                 className: "esri-icon-erase",
                             });
                         }
+                        if (layer.id == "NhaMayLYR"|| (layer.id == "NhaMayDienLYR" && layer.hasAttachments)) {
+                            actions.push({
+                                id: "update-attachment",
+                                title: "Thêm hình ảnh",
+                                className: "esri-icon-attachment",
+                            });
+                        }
                         if (layer.id.includes("camera")) {
                             layer.popupTemplate = new PopupTemplate({
                                 content: (target) => {
@@ -91,7 +98,8 @@ define([
                                 title: layer.title,
                                 actions: actions
                             });
-                        } else
+                        }
+                        else
                             layer.popupTemplate = new PopupTemplate({
                                 content: (target) => {
                                     return this.contentPopup(target);
@@ -100,6 +108,7 @@ define([
                                 actions: actions
                             });
                     }
+
                 });
                 this.view.popup.watch('visible', (newValue) => {
                     if (!newValue) {
@@ -121,6 +130,9 @@ define([
                 });
             }
             get layer() {
+                if(this.view.popup.selectedFeature.layer.id == "NhaMayLYR"){
+                    return this.view.map.findLayerById("NhaMayDienLYR");
+                }
                 return this.view.popup.selectedFeature.layer;
             }
             get attributes() {
@@ -148,6 +160,10 @@ define([
                             this.deleteFeature();
                         }
                         break;
+                    case "update-attachment": {
+                        this.updateAttachment();
+                        break;
+                    }
                     default:
                         break;
                 }
@@ -216,6 +232,44 @@ define([
                 watchUtils.once(this.view.popup, 'visible').then(result => {
                     updateAction.className = 'esri-icon-edit';
                 });
+            }
+            updateAttachment(){
+                let container = domConstruct.create('div', {
+                    id: 'show-edit-container',
+                    class: 'popup-content'
+                });
+                let divInfo = domConstruct.create('div', {
+                    class: 'form-horizontal'
+                }, container);
+                if (this.layer.hasAttachments) {
+                    divInfo.innerHTML += `<legend>Tệp đính kèm</legend>
+      <div class="attachment-popup" id="attachment-popup"></div>`;
+                    this.layer.getAttachments(this.attributes['OBJECTID']).then(res => {
+                        let attachmentPopup = $("#attachment-popup");
+                        let form = $("<form/>", {
+                            enctype: "multipart/form-data",
+                            method: "post",
+                            html: `<input value="json" name="f" hidden/>`
+                        }).appendTo(attachmentPopup);
+                        let fileInput = $("<input/>", {
+                            type: "file",
+                            name: "attachment",
+                            multiple: true
+                        });
+                        fileInput.change(this.onInputAttachmentChangeHandler.bind(this));
+                        form.append(fileInput);
+                        if (res && res.attachmentInfos && res.attachmentInfos.length > 0) {
+                            for (let item of res.attachmentInfos) {
+                                let attachElement = this.renderAttachmentPopup(item, {
+                                    edit: true
+                                });
+                                attachmentPopup.append(attachElement);
+                            }
+                        }
+                    });
+                }
+                this.view.popup.content = container;
+                this.view.popup.title = this.layer.title;
             }
             editField(field, model, divInfo) {
                 let inputHTML = '';
