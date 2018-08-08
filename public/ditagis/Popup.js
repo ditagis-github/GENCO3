@@ -1,21 +1,39 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+    return new(P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) {
+            try {
+                step(generator.next(value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+
+        function rejected(value) {
+            try {
+                step(generator["throw"](value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+
+        function step(result) {
+            result.done ? resolve(result.value) : new P(function (resolve) {
+                resolve(result.value);
+            }).then(fulfilled, rejected);
+        }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 define([
-    "ditagis/core/LinkAPI",
-    "dojo/on", "dojo/dom-construct",
-    "ditagis/support/HightlightGraphic",
-    "ditagis/support/Editing",
-    "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
+        "ditagis/core/LinkAPI",
+        "dojo/on", "dojo/dom-construct",
+        "ditagis/support/HightlightGraphic",
+        "ditagis/support/Editing",
+        "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
     ],
     function (LinkAPI, on, domConstruct, HightlightGraphic, EditingSupport,
         SimpleLineSymbol, watchUtils, PopupTemplate,
-        ) {
+    ) {
         "use strict";
         class Popup {
 
@@ -73,8 +91,7 @@ define([
                                 title: layer.title,
                                 actions: actions
                             });
-                        }
-                        else
+                        } else
                             layer.popupTemplate = new PopupTemplate({
                                 content: (target) => {
                                     return this.contentPopup(target);
@@ -110,15 +127,18 @@ define([
                 return this.view.popup.selectedFeature.attributes;
             }
             triggerActionHandler(event) {
-                let actionId = event.action.id, selectedFeature = this.view.popup.viewModel.selectedFeature, layer = selectedFeature.layer, attributes = selectedFeature.attributes, objectid = attributes.OBJECTID;
+                let actionId = event.action.id,
+                    selectedFeature = this.view.popup.viewModel.selectedFeature,
+                    layer = selectedFeature.layer,
+                    attributes = selectedFeature.attributes,
+                    objectid = attributes.OBJECTID;
                 const per = layer.permission;
                 switch (actionId) {
                     case "update":
                         if (per && per.edit) {
                             if (event.action.className === 'esri-icon-check-mark') {
                                 this.editFeature();
-                            }
-                            else {
+                            } else {
                                 this.showEdit();
                             }
                         }
@@ -150,8 +170,7 @@ define([
                                 this.editField(field, model, divInfo);
                             }
                         }
-                    }
-                    else if (outFields[0] == "*") {
+                    } else if (outFields[0] == "*") {
                         this.editField(field, model, divInfo);
                     }
 
@@ -162,10 +181,15 @@ define([
                     this.layer.getAttachments(this.attributes['OBJECTID']).then(res => {
                         let attachmentPopup = $("#attachment-popup");
                         let form = $("<form/>", {
-                            enctype: "multipart/form-data", method: "post",
+                            enctype: "multipart/form-data",
+                            method: "post",
                             html: `<input value="json" name="f" hidden/>`
                         }).appendTo(attachmentPopup);
-                        let fileInput = $("<input/>", { type: "file", name: "attachment", multiple: true });
+                        let fileInput = $("<input/>", {
+                            type: "file",
+                            name: "attachment",
+                            multiple: true
+                        });
                         fileInput.change(this.onInputAttachmentChangeHandler.bind(this));
                         form.append(fileInput);
                         if (res && res.attachmentInfos && res.attachmentInfos.length > 0) {
@@ -198,7 +222,8 @@ define([
                 if (field.type === 'oid' || this.isFireField(field.name))
                     return;
                 if (field.domain && field.domain.type === "codedValue") {
-                    let domain = field.domain, codedValues = domain.codedValues;
+                    let domain = field.domain,
+                        codedValues = domain.codedValues;
                     let optionHTML = codedValues.map(m => `<option value="${m.code}">${m.name}</option>`);
                     inputHTML = `
                                         <select class="form-control" data-bind="value:${field.name}">
@@ -206,8 +231,7 @@ define([
                                             ${optionHTML}
                                         </select>
                                     `;
-                }
-                else {
+                } else {
                     let inputType = field.type === "string" ? "text" :
                         field.type === "date" ? "date" : "number";
                     inputHTML = `<input class="form-control" type="${inputType}" data-bind="value:${field.name}">`;
@@ -238,17 +262,20 @@ define([
                         this.layer.getAttachments(this.attributes.OBJECTID).then(getRes => {
                             let attachInfo = getRes.attachmentInfos.find(f => f.id === addRes.addAttachmentResult.objectId);
                             if (attachInfo) {
-                                let attachElement = this.renderAttachmentPopup(attachInfo, { edit: true });
+                                let attachElement = this.renderAttachmentPopup(attachInfo, {
+                                    edit: true
+                                });
                                 attachmentPopup.append(attachElement);
                             }
                         });
-                    }
-                    else {
+                    } else {
                         kendo.alert("Không thể thêm tệp đính kèm");
                     }
                 });
             }
-            renderAttachmentPopup(item, props = { edit: false }) {
+            renderAttachmentPopup(item, props = {
+                edit: false
+            }) {
                 let itemDiv = $('<div/>', {
                     class: 'attachment-item'
                 });
@@ -274,7 +301,8 @@ define([
                 return itemDiv;
             }
             contentImages(target) {
-                const graphic = target.graphic, attributes = graphic.attributes;
+                const graphic = target.graphic,
+                    attributes = graphic.attributes;
                 let container = $('<div/>', {
                     class: 'popup-content',
                 });
@@ -282,38 +310,40 @@ define([
                     id: "img_camera",
                 }).appendTo(container);
                 var link_url = attributes["LinkAPI"];
+                if (link_url) {
+                    var interval = setInterval(() => {
+                        $.ajax({
+                            url: `${LinkAPI.CAMERA}${link_url}/`,
+                            success: (result) => {
+                                if (result) {
+                                    var img = new Image();
+                                    img.src = 'https://' + result;
+                                    if (img.height > 0) {
+                                        $("#img_camera")[0].setAttribute('src', result);
+                                    } else {
+                                        $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                    }
+                                    console.log(result);
 
-                var interval = setInterval(() => {
-                    $.ajax({
-                        url: `${LinkAPI.CAMERA}${link_url}/`, success: (result) => {
-                            if (result) {
-                                var img = new Image();
-                                img.src = 'https://' + result;
-                                if (img.height > 0) {
-                                    $("#img_camera")[0].setAttribute('src', result);
-                                }
-                                else {
+                                } else {
                                     $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                    this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
+                                    this.listInterval = []; // xóa hết giá trị
                                 }
-                                console.log(result);
+
 
                             }
-                            else {
-                                $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
-                                this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
-                                this.listInterval = []; // xóa hết giá trị
-                            }
-
-
-                        }
-                    });
-                }, 5000);
-                this.listInterval.push(interval);
+                        });
+                    }, 5000);
+                    this.listInterval.push(interval);
+                }
                 return container[0].outerHTML;
             }
             contentPopup(target) {
                 return __awaiter(this, void 0, void 0, function* () {
-                    const graphic = target.graphic, layer = graphic.layer, attributes = graphic.attributes;
+                    const graphic = target.graphic,
+                        layer = graphic.layer,
+                        attributes = graphic.attributes;
                     var outFields = layer.outFields;
                     this.hightlightGraphic.clear();
                     this.hightlightGraphic.add(graphic);
@@ -328,8 +358,7 @@ define([
                                     this.showField(field, attributes, table);
                                 }
                             }
-                        }
-                        else if (outFields[0] == "*") {
+                        } else if (outFields[0] == "*") {
                             this.showField(field, attributes, table);
                         }
 
@@ -365,6 +394,7 @@ define([
                 let tdValue = $('<td/>').appendTo(row);
                 if (field.name == 'CongSuat') {
                     var manhamay = attributes["Ma"];
+                    tdValue.addClass('pre-line');
                     tdValue[0].id = manhamay;
                     if (manhamay) {
                         var p = $('p').appendTo(tdValue);
@@ -372,28 +402,29 @@ define([
                             $.ajax({
                                 url: `${LinkAPI.CONGSUAT}${manhamay}`,
                                 success: function (result) {
-                                    if(result){
+                                    if (result) {
                                         var text = '';
                                         for (const key in result) {
-                                        text +=`${key}: ${result[key]}\r\n`
+                                            text += `${key}: ${result[key]}\r\n`
                                         }
-                                        $(`#${manhamay} p`).text(text);
+                                        $(`#${manhamay}`).text(text);
                                     }
-                                    
+
                                 }
                             });
-                        }, 1000);
+                        }, 10000);
                         this.listInterval.push(interval);
                     }
 
-                }
-                else if (value) {
-                    let input, content = value, formatString;
+                } else if (value) {
+                    let input, content = value,
+                        formatString;
                     if (field.domain && field.domain.type === "codedValue") {
                         const codedValues = field.domain.codedValues;
-                        content = codedValues.find(f => { return f.code === value; }).name;
-                    }
-                    else if (field.type === 'date')
+                        content = codedValues.find(f => {
+                            return f.code === value;
+                        }).name;
+                    } else if (field.type === 'date')
                         formatString = 'DateFormat';
                     if (formatString)
                         content = `{${field.name}:${formatString}}`;
@@ -422,8 +453,7 @@ define([
                         if (value.getTime() <= 0)
                             continue;
                         applyAttributes[field.name] = value.getTime();
-                    }
-                    else
+                    } else
                         applyAttributes[field.name] = value;
                 }
                 const updatedInfo = this.editingSupport.getUpdatedInfo(this.view);
