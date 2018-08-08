@@ -280,6 +280,7 @@ define([
                 var query = this.layerNhaMay.createQuery();
                 query.outSpatialReference = this.view.spatialReference;
                 query.where = "1=1";
+                query.outFields = ['*'];
                 if (this.layerNhaMay.definitionExpression != null) {
                     query.where = this.layerNhaMay.definitionExpression;
                 }
