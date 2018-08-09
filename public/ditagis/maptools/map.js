@@ -139,7 +139,7 @@ define([
                 new Print({
                     view: this.view,
                     container: $("#print-widget")[0],
-                    printServiceUrl: "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
+                    printServiceUrl: "https://ditagis.com:6443/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
                 });
 
 
