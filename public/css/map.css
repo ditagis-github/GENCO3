@@ -218,6 +218,35 @@ button.accordion {
     outline: none;
     transition: 0.4s;
 }
+button.accordion.active,
+button.accordion:hover {
+    background-color: rgb(232, 103, 15)
+}
+
+/* Style the accordion panel. Note: hidden by default */
+
+div.panel-accordion {
+    background-color: white;
+    display: none;
+}
+
+button.accordion:before {
+    /* display: inline-block; */
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    content: "\f077";
+    font-size: 13px;
+    color: #fff;
+    float: right;
+    margin-left: 5px;
+}
+
+button.accordion.active:before {
+    content: "\f078";
+    /* Unicode character for "minus" sign (-) */
+}
 
 .ditagis-widget-layer-editor .panel-body {
     padding: 0px;

@@ -8,11 +8,8 @@ define(["../core/Base",
       constructor(view) {
         super();
         this.view = view;
+        this._layerGroups = [];
         this.layerListContent = [];
-        this.layerListContent.push({
-          title: "Chọn lớp dữ liệu",
-          id: "0",
-        });
         this.on("query-start", _ => {
           kendo.ui.progress(this.attributeslayer, true)
         })
@@ -30,12 +27,12 @@ define(["../core/Base",
         this.pane.classList.add('esri-widget', 'ditagis-widget-layer-editor');
         this.select = $("<input/>", {
           style: "width:100%",
-          placeholder: "Chọn lớp dữ liệu",
         }).appendTo(this.pane);
         this.dropDownLayers = this.select.kendoDropDownList({
           dataTextField: "title",
           dataValueField: "id",
-          text: "Chai"
+          text: "Chai",
+          optionLabel: "Chọn lớp dữ liệu"
         }).data("kendoDropDownList");
 
         this.attributeslayer = $("<div/>", {
@@ -44,11 +41,23 @@ define(["../core/Base",
         }).appendTo(this.pane);
       }
       bindingDataSource() {
+        this.view.on('layerview-create', (evt) => {
+          const layer = evt.layer;
+          if (layer.type === 'feature' && layer.permission && layer.permission.create) {
+            if (layer.parent.id) {
+              let panelGroup = this._layerGroups[layer.parent.id];
+              if (!panelGroup) {
+                this._layerGroups[layer.parent.id] = panelGroup;
+              }
+            }
+          }
+        });
         for (const layer of view.systemVariable.user.Layers) {
           if (layer.IsView) {
             this.layerListContent.push({
               title: layer.LayerTitle,
               id: layer.LayerID,
+              group:layer.GroupName
             });
           }
 
@@ -184,8 +193,10 @@ define(["../core/Base",
         }
       }
       start() {
-        this.dropDownLayers.setDataSource(this.layerListContent);
-        this.dropDownLayers.value("0");
+        this.dropDownLayers.setDataSource(new kendo.data.DataSource({
+          group: { field: "group" },
+          data:this.layerListContent
+        }));
         this.fire("click", $(this.pane));
         this.dropDownLayers.bind("change", this.onCbChangeQueryLayer.bind(this))
       }

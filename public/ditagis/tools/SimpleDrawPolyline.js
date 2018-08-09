@@ -32,6 +32,7 @@ define([
       this.graphicNotify;
     }
     draw(layer) {
+      this.view.draw = true;
       this.cancel();
       let action = this.esriDraw.create("polyline")
       this.events.push(action.on("vertex-add", this.updateVertices.bind(this)))
@@ -47,6 +48,7 @@ define([
       let graphic = this.createGraphic(evt.vertices);
       if (evt.type === "draw-complete") {
         this.eventListener.fire('draw-finish', graphic.geometry);
+        this.view.draw = false;
       } else {
         this.graphicsLayer.add(graphic);
       }
