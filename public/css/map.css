@@ -97,7 +97,6 @@ span.btn-danger.pull-right.closePanel.closePanel_print {
     right: 15px;
     top: 75px;
     z-index: 999;
-    margin: 5px 5px 0 0;
     overflow: hidden;
 }
 
@@ -783,8 +782,8 @@ div#report-objects {
 
 .ditagis-widget-layer-editor {
     max-height: 550px;
-    width: 300px;
     max-height: 420px;
+    width: 320px;
     overflow: hidden;
     overflow-y: auto;
     transition: max-height 250ms ease-in-out;

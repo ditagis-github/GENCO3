@@ -173,7 +173,7 @@ require([
             }
             if(event.layer.id === "baoLYR"){
                 var layerBao = event.layerView.layer;
-
+                layerBao.listMode = 'hide';
                 new HienThiBao(view,layerBao)
             }
         });
