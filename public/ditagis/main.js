@@ -63,7 +63,7 @@ require([
         view.session().then(function (user) {
             initFeatureLayer();
         });
-
+        
         function initFeatureLayer() {
 
             for (const layerCfg of view.systemVariable.user.Layers) {
@@ -170,6 +170,11 @@ require([
 
                 new Renderer(view, layerNhaMay);
                 new MapTools(view, layerNhaMay);
+            }
+            if(event.layer.id === "baoLYR"){
+                var layerBao = event.layerView.layer;
+
+                new HienThiBao(view,layerBao)
             }
         });
     });
