@@ -95,6 +95,12 @@ define([
                                 className: "esri-icon-check-mark",
                                 visible: false
                             });
+                            actions.push({
+                                id: "link-website",
+                                title: "Thông số quan trắc",
+                                className: "esri-icon-link",
+                                visible: false
+                            });
                         }
                         if (layer.id.includes("camera")) {
                             layer.popupTemplate = new PopupTemplate({
@@ -181,6 +187,11 @@ define([
                     }
                     case "delete-attachment": {
                         this.deleteAttachments();
+                        break;
+                    }
+                    case "link-website": {
+                        var win = window.open("http://buonkuop.vn:2016/pclb/default.aspx", '_blank');
+                        win.focus();
                         break;
                     }
                     default:
@@ -426,6 +437,18 @@ define([
                     const graphic = target.graphic,
                         layer = graphic.layer,
                         attributes = graphic.attributes;
+                    if (layer.id == "NhaMayLYR" || layer.id == "NhaMayDienLYR") {
+                        if (attributes["Ma"] == "buonkoup" || attributes["Ma"] == "buontuasrah" || attributes["Ma"] == "srepok3") {
+                            this.view.popup.actions.find(function (action) {
+                                return action.id === 'link-website';
+                            }).visible = true;
+                        }
+                        else{
+                            this.view.popup.actions.find(function (action) {
+                                return action.id === 'link-website';
+                            }).visible = false;
+                        }
+                    }
                     var outFields = layer.outFields;
                     this.hightlightGraphic.clear();
                     this.hightlightGraphic.add(graphic);
