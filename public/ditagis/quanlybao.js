@@ -13,11 +13,12 @@ require([
     "esri/geometry/Point",
     "esri/layers/GraphicsLayer",
     "esri/tasks/support/Query",
+    "esri/widgets/Home",
     "dojo/domReady!"
 ], function (
     Map, MapView, Graphic,
     BasemapToggle, MapConfigs, HiddenMap, FeatureLayer, SystemStatusObject,
-    Print, Locate, Polygon, Point, GraphicsLayer, Query
+    Print, Locate, Polygon, Point, GraphicsLayer, Query, Home
 ) {
         var map = new Map({
             basemap: "osm"
@@ -28,12 +29,12 @@ require([
             zoom: MapConfigs.zoom,
             center: MapConfigs.center,
         });
-
         view.systemVariable = new SystemStatusObject();
         view.systemVariable.user = MapConfigs.user;
         view.session().then(() => {
             initFeatureLayer();
         });
+        this.outFields = ['OBJECTID', 'TenBao', 'TrangThai', 'NguoiCapNhat', 'NgayCapNhat', 'GhiChu'];
         function initFeatureLayer() {
             for (const layerCfg of view.systemVariable.user.Layers) {
                 if (layerCfg.GroupID === "ChuyenDe" && layerCfg.LayerID == "baoLYR") {
@@ -46,7 +47,22 @@ require([
                             url: layerCfg.Url,
                             id: layerCfg.LayerID,
                             outFields: ["*"],
-                            title: layerCfg.LayerTitle,
+                            title: layerCfg.LayerTitle
+                        });
+                        let data_bao = $("<div/>", {
+                            class: "control_item item",
+                            id: "show-data"
+                        });
+                        $('#control_toolbar').append(data_bao);
+                        let span = $("<span/>", {
+                            title: 'Danh sách bão',
+                            class: "esri-icon-duplicate",
+                        });
+                        data_bao.append(span);
+                        data_bao.click(() => {
+                            $(".left_panel").hide();
+                            $("div#danhsachdiembao").toggleClass("hidden");
+                            danhsachdiembao();
                         });
                     }
                     if (layerCfg.IsCreate) {
@@ -56,7 +72,7 @@ require([
                         });
                         $('#control_toolbar').append(import_image_widget);
                         var label = $("<label/>", {
-                            title: 'Đưa dữ liệu bão',
+                            title: 'Thêm dữ liệu bão',
                             class: "esri-icon-media",
                             for: 'inputFiles'
                         });
@@ -77,26 +93,29 @@ require([
 
                     }
                     if (layerCfg.IsDelete) {
-                        var clear_data = $("<div/>", {
-                            id: "clear-data",
+                        var store_data = $("<div/>", {
+                            id: "store-data",
                             class: "control_item item"
                         });
-                        $('#control_toolbar').append(clear_data);
+                        $('#control_toolbar').append(store_data);
                         var span = $("<span/>", {
-                            title: 'Xóa dữ liệu bão',
-                            class: "esri-icon-trash",
+                            title: 'Đưa vào lưu trữ',
+                            class: "esri-icon-save",
                         });
-                        clear_data.append(span);
-                        clear_data.click(() => {
-                            layDanhSachDiemBao(this.baoFL).then((displayResults) => {
+                        store_data.append(span);
+                        // thanh đổi trạng thái hiển thị sang lưu trữ
+                        store_data.click(() => {
+                            let where = "TrangThai = 1";
+                            layDanhSachDiemBao(this.baoFL, where).then((displayResults) => {
                                 this.graphicsLayer.removeAll();
                                 var features = displayResults.features;
                                 for (var i = 0; i < features.length; i++) {
                                     let feature = features[i];
+                                    feature.attributes.TrangThai = 2;
                                     let edits = {
-                                        deleteFeatures: [{
-                                            objectId: feature.attributes['OBJECTID']
-                                        }]
+                                        updateFeatures: [{
+                                            attributes: feature.attributes
+                                        }],
                                     };
                                     this.baoFL.applyEdits(edits);
                                 }
@@ -122,7 +141,7 @@ require([
                 view: view,
             });
             view.then(() => {
-                showSymbolFeature();
+                showSymbolFeatures();
             })
         }
 
@@ -148,7 +167,15 @@ require([
             locateBtn.locate().then((response) => {
             });
         });
+        var homeWidget = new Home({
+            view: view,
+        });
 
+        $("#home").click(() => {
+            this.graphicsLayer.removeAll();
+            showSymbolFeatures();
+            this.view.viewpoint = homeWidget.viewpoint;
+        });
         // print tools
         var print = new Print({
             view: view,
@@ -158,26 +185,105 @@ require([
         $("#printer-widget").click(() => {
             $("div#print-panel").toggleClass("hidden");
         });
-
-
-        $(".closePanel_print").click(function () {
-            $("div#print-panel").toggleClass("hidden");
-        });
-
-
         $("#pane > div > div.widget_item.close").click(() => {
             $("div#pane-storm").addClass("hidden");
         });
+        $("#danhsachdiembao").on("click", "span.viewData", (result) => {
+            this.graphicsLayer.removeAll();
+            let objectID = result.currentTarget.attributes.alt.nodeValue;
+            var feature = this.features.find(f => {
+                return f.attributes['OBJECTID'] == objectID;
+            });
+            showSymbolFeature(feature);
+            this.view.goTo({
+                target: feature.geometry
+            });
 
+        });
+        $("#danhsachdiembao").on("click", "div#delete-bao", (result) => {
+            result.stopPropagation();
+            let objectID = result.currentTarget.attributes.alt.nodeValue;
+            this.baoFL.applyEdits({
+                deleteFeatures: [{
+                    objectId: objectID
+                }]
+            }).then((res) => {
+                danhsachdiembao();
+                showSymbolFeatures();
+            });
+        });
+        $("#danhsachdiembao").on("click", "div#edit-bao", (result) => {
+            result.stopPropagation();
+            let objectID = result.currentTarget.attributes.alt.nodeValue;
 
-        // let attachmentPopup = $("#import-image-widget");
-        // this.form = $("<form/>", {
-        //     enctype: "multipart/form-data", method: "post",
-        //     html: `<input value="json" name="f" hidden/>`
-        // }).appendTo(attachmentPopup);
-        // let fileInput = $("#inputFiles");
-        // form.append(fileInput);
-        // fileInput.change(onInputAttachmentChangeHandler.bind(this));
+            if(this.windowKendo && this.windowKendo.data("kendoWindow")){
+                this.windowKendo.data("kendoWindow").close();
+                this.windowKendo = null;
+            }
+            var window = $('<div/>', {
+            });
+            this.windowKendo = window;
+            window.kendoWindow({
+                width: "300px",
+                title: "Dữ liệu bão",
+                visible: false,
+                actions: [
+                    "Edit",
+                    "Delete",
+                    "Close"
+                ],
+                deactivate: function () {
+                    this.destroy();
+                }
+            }).data("kendoWindow").center().open();
+
+            window.data("kendoWindow").wrapper
+                .find(".k-i-edit").parent().click((e) => {
+                    window.empty();
+                    var feature = this.features.find(f => {
+                        return f.attributes['OBJECTID'] == objectID;
+                    });
+                    var attributes = feature.attributes;
+                    let divInfo = $('<div/>', {
+                        class: 'form-horizontal'
+                    }).appendTo(window);
+                    let model = {};
+                    for (let field of this.baoFL.fields) {
+                        for (let outField of this.outFields) {
+                            if (outField == field.name) {
+                                editField(field, attributes, model, divInfo);
+                            }
+                        }
+                    }
+                    var kendoModel = kendo.observable(model);
+                    kendo.bind($(window), kendoModel);
+                    var accept_button = $('<button/>', {
+                        class: "k-button k-primary",
+                        text: "Chấp nhận",
+                        id: "accept-update"
+                    }).appendTo(window);
+                    accept_button.click(() => {
+                        editFeature(attributes, kendoModel, window);
+
+                    });
+
+                });
+            window.data("kendoWindow").wrapper
+                .find(".k-i-delete").parent().click((e) => {
+                    this.baoFL.applyEdits({
+                        deleteFeatures: [{
+                            objectId: objectID
+                        }]
+                    }).then((res) => {
+                        danhsachdiembao();
+                        showSymbolFeatures();
+                        window.data("kendoWindow").close();
+                    });
+                });
+
+            showDetailFeature(objectID, window);
+        });
+
 
         view.watch('scale', (newVal, oldVal) => {
             if (this.graphicsLayer) {
@@ -194,7 +300,6 @@ require([
         });
 
         $("#pane > div > div.widget_item.check").click(() => {
-
             let attributes = {};
             var pane = $('#pane');
             let screenCoods = pane.position();
@@ -215,6 +320,7 @@ require([
             attributes.D3_Lng = point3.longitude;
             attributes.NguoiCapNhat = localStorage.username;
             attributes.NgayCapNhat = new Date().getTime();
+            attributes.TrangThai = 1;
             var polygon = new Polygon({
                 rings: [
                     [  // first ring
@@ -235,51 +341,208 @@ require([
                 $("div#pane-storm").addClass("hidden");
                 this.baoFL.addAttachments(result.addFeatureResults[0].objectId, this.fileInput_form).then((addRes) => {
                     if (addRes.addAttachmentResult.success) {
-                        showSymbolFeature();
+                        showSymbolFeatures();
+                        danhsachdiembao();
                     }
                 });
             });
         });
+        async function showDetailFeature(objectID, window) {
+            let where = "1 = 1";
+            var displayResults = await layDanhSachDiemBao(this.baoFL, where);
+            this.features = displayResults.features;
+            var feature = this.features.find(f => {
+                return f.attributes['OBJECTID'] == objectID;
+            });
+            var attributes = feature.attributes;
+            window.empty();
+            let table = $('<table/>', {}).appendTo(window);
+            table.kendoGrid({
+                sortable: true,
+            });
+            for (let field of this.baoFL.fields) {
+                for (let outField of this.outFields) {
+                    if (outField == field.name) {
+                        let value = attributes[field.name];
+                        let row = $('<tr/>').appendTo(table);
+                        $('<td/>', {
+                            text: field.alias
+                        }).appendTo(row);
+                        let tdValue = $('<td/>').appendTo(row);
+                        if (value) {
+                            let content = value;
+                            if (field.domain && field.domain.type === "codedValue") {
+                                const codedValues = field.domain.codedValues;
+                                content = codedValues.find(f => {
+                                    return f.code === value;
+                                }).name;
+                            } else if (field.type === 'date') {
+                                var date = new Date(value)
+                                var month = date.getMonth() + 1;
+                                var day = date.getDate();
+                                var output = (day < 10 ? '0' : '') + day + "/"
+                                    + (month < 10 ? '0' : '') + month + '/'
+                                    + date.getFullYear();
+                                content = output;
+                            }
 
-        function showSymbolFeature() {
-            layDanhSachDiemBao(this.baoFL).then((displayResults) => {
+                            tdValue.text(content);
+                        }
+                    }
+                }
+            }
+        }
+        function editFeature(attributes, kendoModel, window) {
+
+            let applyAttributes = {
+                objectId: attributes.OBJECTID
+            };
+            if (!attributes || !kendoModel)
+                kendo.alert("Có lỗi xảy ra trong quá trình cập nhật");
+            for (let field of this.baoFL.fields) {
+                let value = kendoModel.get(field.name);
+                if (!value ||
+                    (value && value == -1))
+                    continue;
+                if (field.type === 'date') {
+                    if (value.getTime() <= 0)
+                        continue;
+                    applyAttributes[field.name] = value.getTime();
+                } else
+                    applyAttributes[field.name] = value;
+            }
+            this.baoFL.applyEdits({
+                updateFeatures: [{
+                    attributes: applyAttributes
+                }]
+            }).then((res) => {
+                let updateFeatureResults = res.updateFeatureResults;
+                if (updateFeatureResults[0].objectId) {
+                    showDetailFeature(updateFeatureResults[0].objectId, window);
+                }
+            });
+        }
+        function editField(field, attributes, model, divInfo) {
+            if (field.type === 'oid')
+                return;
+            let inputHTML = '';
+            if (field.domain && field.domain.type === "codedValue") {
+                let domain = field.domain,
+                    codedValues = domain.codedValues;
+                let optionHTML = codedValues.map(m => `<option value="${m.code}">${m.name}</option>`);
+                inputHTML = `
+                                    <select class="form-control" data-bind="value:${field.name}">
+                                        <option value='-1'>Chọn ${field.alias}</option>
+                                        ${optionHTML}
+                                    </select>
+                                `;
+            } else {
+                let inputType = field.type === "string" ? "text" :
+                    field.type === "date" ? "date" : "number";
+                inputHTML = `<input class="form-control" type="${inputType}" data-bind="value:${field.name}">`;
+            }
+            let html = `
+                        <div class="form-group">
+                        <label class="col-sm-4 control-label" for="textinput">${field.alias}</label>
+                        <div class="col-sm-8">
+                            ${inputHTML}
+                        </div>
+                        </div>`;
+            if (field.type === "date")
+                model[field.name] = new Date(attributes[field.name]);
+            else
+                model[field.name] = attributes[field.name];
+            divInfo[0].innerHTML += html;
+        }
+        // lấy tất cả các điểm bão (lịch sử)
+        async function danhsachdiembao() {
+            let where = "1 = 1";
+            var displayResults = await layDanhSachDiemBao(this.baoFL, where);
+            this.features = displayResults.features;
+            var index = 0;
+            var resultHtml = "<ul class='widget-runway-all-cards'>";
+            for (var i = 0; i < this.features.length; i++) {
+                var feature = this.features[i];
+                var attr = feature.attributes;
+                var imageResults = await this.baoFL.getAttachments(attr["OBJECTID"]);
+                var src = "../public/images/factory/EPS1.jpg";
+                let length = imageResults.attachmentInfos.length;
+                if (imageResults && imageResults.attachmentInfos && length > 0) {
+                    src = imageResults.attachmentInfos[0].src;
+                }
+                index = index + 1;
+                resultHtml += `
+                <span alt='${attr["OBJECTID"]}'class="item-nhamay viewData">
+                    <li >
+                        <button>
+                            <div class="image-hack-clip">
+                                <div class="image-hack-wrapper">
+                                    <img src="${src}" alt="Điểm bão">
+                                </div>
+                            </div>
+                            <div alt='${attr["OBJECTID"]}' id="edit-bao" class="bao-item">
+                                <span class="esri-icon-authorize" title="Chỉnh sửa">
+                                </span>
+                            </div>
+                            <div alt='${attr["OBJECTID"]}' id="delete-bao" class="bao-item">
+                                <span class="esri-icon-trash" title="Xóa">
+                                </span>
+                            </div>
+                            <div class="caption-image">
+                                <label class="title-image">${attr["TenBao"]}</label>
+                               
+                            </div>
+                        </button>
+                    </li>
+                </span>
+                `
+            }
+            resultHtml += "</ul>";
+            document.getElementById("danhsachdiembao").innerHTML = resultHtml;
+        }
+        // lấy danh sách các điểm bão có trạng thái hiện thị
+        function showSymbolFeatures() {
+            let where = "TrangThai = 1";
+            layDanhSachDiemBao(this.baoFL, where).then((displayResults) => {
                 this.graphicsLayer.removeAll();
                 var features = displayResults.features;
                 for (var i = 0; i < features.length; i++) {
                     let feature = features[i];
-                    let attr = feature.attributes;
-                    feature.layer.getAttachments(attr["OBJECTID"]).then((imageResults) => {
-                        if (imageResults && imageResults.attachmentInfos && imageResults.attachmentInfos.length > 0) {
-                            var src = imageResults.attachmentInfos[0].src;
-                            var point1 = latLngToPoint(attr.D1_Lat, attr.D1_Lng);
-                            var point2 = latLngToPoint(attr.D2_Lat, attr.D2_Lng);
-                            var point3 = latLngToPoint(attr.D3_Lat, attr.D3_Lng);
-                            let width = getDistance2Point(point1, point2);
-                            let height = getDistance2Point(point2, point3);
-                            var markerSimbol = {
-                                type: "picture-marker",
-                                url: src,
-                                width: width + "px",
-                                height: height + "px",
-                            };
-                            var points = [];
-                            points.push(point1, point2, point3);
-                            this.graphic = new Graphic({
-                                geometry: feature.geometry,
-                                symbol: markerSimbol,
-                                points: points
-                            });
-                            this.graphicsLayer.add(this.graphic);
-                        }
-                    });
+                    showSymbolFeature(feature);
                 }
-
             });
-
         }
-        function layDanhSachDiemBao(layer) {
+        function showSymbolFeature(feature) {
+            let attr = feature.attributes;
+            feature.layer.getAttachments(attr["OBJECTID"]).then((imageResults) => {
+                if (imageResults && imageResults.attachmentInfos && imageResults.attachmentInfos.length > 0) {
+                    var src = imageResults.attachmentInfos[0].src;
+                    var point1 = latLngToPoint(attr.D1_Lat, attr.D1_Lng);
+                    var point2 = latLngToPoint(attr.D2_Lat, attr.D2_Lng);
+                    var point3 = latLngToPoint(attr.D3_Lat, attr.D3_Lng);
+                    let width = getDistance2Point(point1, point2);
+                    let height = getDistance2Point(point2, point3);
+                    var markerSimbol = {
+                        type: "picture-marker",
+                        url: src,
+                        width: width + "px",
+                        height: height + "px",
+                    };
+                    var points = [];
+                    points.push(point1, point2, point3);
+                    this.graphic = new Graphic({
+                        geometry: feature.geometry,
+                        symbol: markerSimbol,
+                        points: points
+                    });
+                    this.graphicsLayer.add(this.graphic);
+                }
+            });
+        }
+
+        function layDanhSachDiemBao(layer, where) {
             var query = new Query();
-            query.where = "1=1";
+            query.where = where;
             query.outFields = ["*"];
             query.returnGeometry = true;
             query.outSpatialReference = view.spatialReference;

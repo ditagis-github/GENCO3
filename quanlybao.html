@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>GENCO3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>if (!localStorage.login_code) {location.href = '/login.html'}</script>
+    <script>if (!localStorage.login_code) { location.href = '/login.html' }</script>
     <link rel="stylesheet" href="https://js.arcgis.com/4.5/esri/css/main.css">
     <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.common-material.min.css" />
     <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.material.min.css" />
@@ -37,6 +37,10 @@
     <div id="header_template">
         <div id="text_head">
             <div id="control_toolbar">
+                <div id="home" class="control_item item">
+                    <span class="esri-icon-home" title="Trang chủ">
+                    </span>
+                </div>
                 <div id="printer-widget" class="control_item item ">
                     <span class="esri-icon-printer" title="In bản đồ">
                     </span>
@@ -46,10 +50,7 @@
                     </label>
                     <input hidden id="inputFiles" type="file" name="attachment" multiple="multiple">
                 </div> -->
-                <!-- <div id="clear-data" class="control_item item ">
-                    <span class="esri-icon-trash" title="Xóa dữ liệu bão">
-                    </span>
-                </div> -->
+
             </div>
 
         </div>
@@ -79,11 +80,12 @@
 
     <div id="viewDiv">
     </div>
-    <div class="panel panel-info" id="aaa">
-        <span class="btn-danger pull-right closePanel closePanel_print">X</span>
+    
+    <div class="widget-list-diembao hidden" id="danhsachdiembao">
+    </div>
+    <div class="widget-list-diembao" id="chitiet-bao">
     </div>
     <div class="panel panel-info hidden" id="print-panel">
-        <span class="btn-danger pull-right closePanel closePanel_print">X</span>
         <div class="panel-primary" id="print-widget">
         </div>
     </div>

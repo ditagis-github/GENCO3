@@ -53,6 +53,13 @@ define(["require", "exports", "../core/Base", "dojo/dom-construct", "../core/Con
                     { width: 60, title: "TinhTrang",field:"TinhTrang"},
                     { width: 60, title: "GhiChi",field:"GhiChi"},
                 ],
+                baoLYR: [
+                    { width: 60, title: "STT", field: "STT" },
+                    { width: 60, title: "Tên bão", field: "TenBao" },
+                    { width: 60, title: "Ngày cập nhật", field: "NgayCapNhat" },
+                    { width: 60, title: "Người cập nhật", field: "NguoiCapNhat" },
+                    { width: 60, title: "Ghi chú", field: "GhiChu" },
+                ],
             };
             this.initWindowKendo();
            

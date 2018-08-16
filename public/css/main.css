@@ -61,3 +61,42 @@ body{
     margin: 14px 10px 0 0;
     font-size: 14px;
 }
+
+div#edit-bao {
+    top: -30px;
+    right: -126px;
+}
+div#chitiet-bao {
+    position: initial;
+    padding: .58em;
+}
+div#delete-bao{
+    top: -30px;
+    right: -126px;
+    background: #c61a16;
+}
+.bao-item {
+    float: left;
+    width: 23px;
+    height: 23px;
+    position: relative;
+    line-height: 23px;
+    cursor: pointer;
+    margin: 2px;
+    border-radius: 3px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    border: solid 1px #ccc;
+    color: #fff;
+    background-color: #4285F4;
+    font-size: 12px;
+    text-indent: 5px;
+    text-shadow: rgba(0, 0, 0, 0.7) 0px 1px 8px;
+}
+
+body > div.k-widget.k-window > div.k-window-content.k-content > div > div.k-grid-content.k-auto-scrollable > table > tbody > tr > td{
+    padding: 10px 12px;
+}
+label.col-sm-4.control-label {
+    text-align: left;
+    font-weight: 300; 
+}

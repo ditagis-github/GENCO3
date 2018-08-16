@@ -359,12 +359,12 @@ fieldset[disabled] .btn-primary.active {
     max-width: 100%;
 }
 
-.widget-list-factory {
+.widget-list-factory,.widget-list-diembao {
     left: 20px;
     opacity: 1;
-    top: 120px;
+    top: 80px;
     z-index: 6;
-    max-height: calc(100vh - 247px);
+    max-height: calc(100vh - 230px);
     position: absolute;
     overflow-x: hidden;
     overflow-y: auto;

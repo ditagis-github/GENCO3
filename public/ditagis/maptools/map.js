@@ -259,7 +259,8 @@ define([
                     var attr = feature.attributes;
                     var imageResults = await this.layerNhaMay.getAttachments(attr["OBJECTID"]);
                     var src = "../public/images/factory/EPS1.jpg";
-                    if (imageResults && imageResults.attachmentInfos && imageResults.attachmentInfos.length > 0) {
+                    let length = imageResults.attachmentInfos.length;
+                    if (imageResults && imageResults.attachmentInfos && length> 0) {
                         src = imageResults.attachmentInfos[0].src;
                     }
                     index = index + 1;
