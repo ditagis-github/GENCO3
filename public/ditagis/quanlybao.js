@@ -546,6 +546,7 @@ require([
             query.outFields = ["*"];
             query.returnGeometry = true;
             query.outSpatialReference = view.spatialReference;
+            query.orderByFields = ["NgayCapNhat DESC"];
             return layer.queryFeatures(query);
         }
         function getDistance2Point(point1, point2) {
