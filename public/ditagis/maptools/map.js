@@ -19,6 +19,7 @@ define([
             constructor(view, layerNhaMay) {
                 this.view = view;
                 this.layerNhaMay = layerNhaMay;
+
                 this.featuresNhaMay;
                 this.startup();
                 this.locateBtn = new Locate({
@@ -99,6 +100,63 @@ define([
                         win.focus();
                     });
                 });
+                $("#danhsachnhamay").on("click", "div#info-hinhanh-nhamay", (result) => {
+                    result.stopPropagation();
+                    var objectId = result.currentTarget.attributes.alt.nodeValue;
+                    var feature = this.featuresNhaMay.find(f =>
+                        f.attributes['OBJECTID'] == objectId
+                    );
+                    let gr = this.view.map.findLayerById(feature.attributes.GroupID);
+                    if (!gr) return;
+                    var layers = gr.layers.items;
+                    if (this.windowKendo && this.windowKendo.data("kendoWindow")) {
+                        this.windowKendo.data("kendoWindow").close();
+                        this.windowKendo = null;
+                    }
+                    var window = $('<div/>', {
+                    });
+                    this.windowKendo = window;
+                    window.kendoWindow({
+                        width: "300px",
+                        maxHeight: 300,
+                        title: "Thông tin hình ảnh",
+                        open: () => {
+                        },
+                        visible: false,
+                        actions: [
+                            "Close"
+                        ],
+                        deactivate: function () {
+                            this.destroy();
+                        }
+                    });
+                    this.ul_treeview = $('<ul/>', {
+                        id: "treeview"
+                    }).appendTo(window);
+
+                    let li_layer = $('<li/>', {
+                    }).appendTo(this.ul_treeview);
+                    $('<span/>', {
+                        class: "fa fa-folder",
+                        text: gr.title
+                    }).appendTo(li_layer)
+                    let ul_layer = $('<ul/>').appendTo(li_layer);
+
+                    if (layers && layers.length > 0) {
+                        for (const index in layers) {
+                            var layer = layers[index];
+                            let li_feature = $('<li/>', {
+                            }).appendTo(ul_layer);
+                            $('<span/>', {
+                                class: "fa fa-folder",
+                                text: layer.title
+                            }).appendTo(li_feature);
+                            this.featuresOfLayer(layer, li_feature);
+                        }
+                    }
+                    window.data("kendoWindow").center().open();
+                    window.find('#treeview').kendoTreeView();
+                });
                 $("#danhsachnhamay").on("click", "div.goToDirection1", (result) => {
                     result.stopPropagation();
                     var objectId_first = result.currentTarget.attributes.alt.nodeValue;
@@ -144,12 +202,12 @@ define([
 
 
                 $("#printer-widget").click(() => {
-                    this.showElement($("div#print-panel"),true);
+                    this.showElement($("div#print-panel"), true);
                 });
 
                 // hien thi chu thich ban do
                 $("#legend-widget").click(() => {
-                    this.showElement($("#legend-layer-list-panel"),true);
+                    this.showElement($("#legend-layer-list-panel"), true);
                 });
                 // Biên tập dữ liệu
                 $("#editor-widget").click(() => {
@@ -164,7 +222,7 @@ define([
 
                 // Hiển thị ẩn lớp dữ liệu
                 $("#layer-list-widget").click(() => {
-                    this.showElement($("#layer-list-panel"),true);
+                    this.showElement($("#layer-list-panel"), true);
 
                 });
                 // map - tools (zoom in, out, location)
@@ -249,8 +307,47 @@ define([
                 document.getElementById("legend-symbols").innerHTML += resultHtml;
 
             }
+            async featuresOfLayer(layer, li_feature) {
+                let ul_feature = $('<ul/>', {
+                }).appendTo(li_feature);
+                var rs = await this.queryFeatureLayer(layer);
+                if (!rs) return;
+                let features = rs.features;
+                if (features.length > 0)
+                    for (var i = 0; i < features.length; i++) {
+                        var feature = features[i];
+                        var attr = feature.attributes;
+                        var image_rs = await layer.getAttachments(attr["OBJECTID"]);
+                        if (image_rs && image_rs.attachmentInfos.length > 0) {
+                            let li_object = $('<li/>', {
+                                class:'folder-objectid'
+                            }).appendTo(ul_feature);
+                            $('<span/>', {
+                                class:"fa fa-folder",
+                                text: attr["OBJECTID"]
+                            }).appendTo(li_object);
+                            if (image_rs && image_rs.attachmentInfos) {
+                                let infos = image_rs.attachmentInfos;
+                                let ul_object = $('<ul/>', {
+                                }).appendTo(li_object);
+                                for (const info of infos) {
+                                    let li_image = $('<li/>', {
+                                        class:'li-image'
+                                    }).appendTo(ul_object);
+                                    $('<a/>', {
+                                        href: info.src,
+                                        text: info.name,
+                                        target: '_blank'
+                                    }).appendTo(li_image);
+                                }
+                            }
+                        }
+                    }
+
+            }
             async danhsachnhamay() {
                 var displayResults = await this.queryListNhaMay();
+                if (!displayResults) return;
                 this.featuresNhaMay = displayResults.features;
                 var index = 0;
                 var resultHtml = "<ul class='widget-runway-all-cards'>";
@@ -260,7 +357,7 @@ define([
                     var imageResults = await this.layerNhaMay.getAttachments(attr["OBJECTID"]);
                     var src = "../public/images/factory/EPS1.jpg";
                     let length = imageResults.attachmentInfos.length;
-                    if (imageResults && imageResults.attachmentInfos && length> 0) {
+                    if (imageResults && imageResults.attachmentInfos && length > 0) {
                         src = imageResults.attachmentInfos[0].src;
                     }
                     index = index + 1;
@@ -272,6 +369,10 @@ define([
                                     <div class="image-hack-wrapper">
                                         <img src="${src}" alt="Nhà máy">
                                     </div>
+                                </div>
+                                <div alt='${attr["OBJECTID"]}' id="info-hinhanh-nhamay" class="nhamay-item">
+                                    <span class="esri-icon-authorize" title="Xem thông tin hình ảnh">
+                                    </span>
                                 </div>
                                 <div class="image-direction">
                                     <div alt='${attr["OBJECTID"]}' class="widget_item goToDirection1"title="Đến nhà máy khác" >
@@ -293,7 +394,13 @@ define([
                 resultHtml += "</ul>";
                 document.getElementById("danhsachnhamay").innerHTML = resultHtml;
             }
-
+            queryFeatureLayer(layer) {
+                var query = layer.createQuery();
+                query.outSpatialReference = this.view.spatialReference;
+                query.where = "1=1";
+                query.outFields = ['*'];
+                return layer.queryFeatures(query);
+            }
             queryListNhaMay() {
                 var query = this.layerNhaMay.createQuery();
                 query.outSpatialReference = this.view.spatialReference;
@@ -304,6 +411,9 @@ define([
                     query.where = this.layerNhaMay.definitionExpression;
                 }
                 return this.layerNhaMay.queryFeatures(query);
+
+
+
             }
         }
     });

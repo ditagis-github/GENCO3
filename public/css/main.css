@@ -66,6 +66,15 @@ div#edit-bao {
     top: -30px;
     right: -126px;
 }
+div#info-hinhanh-nhamay{
+    top: -35px;
+    right: -99px;
+    border-radius: 20px 18px;
+    width: 21px;
+    height: 21px;
+    line-height: 22px;
+    font-size: 11px;
+}
 div#chitiet-bao {
     position: initial;
     padding: .58em;
@@ -92,11 +101,37 @@ div#delete-bao{
     text-indent: 5px;
     text-shadow: rgba(0, 0, 0, 0.7) 0px 1px 8px;
 }
-
+.nhamay-item {
+    float: left;
+    position: relative;
+    cursor: pointer;
+    margin: 2px;
+    border-radius: 3px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    border: solid 1px #ccc;
+    color: #fff;
+    background-color: #4285F4;
+    text-indent: 5px;
+    text-shadow: rgba(0, 0, 0, 0.7) 0px 1px 8px;
+}
 body > div.k-widget.k-window > div.k-window-content.k-content > div > div.k-grid-content.k-auto-scrollable > table > tbody > tr > td{
     padding: 10px 12px;
 }
 label.col-sm-4.control-label {
     text-align: left;
     font-weight: 300; 
+}
+ul{
+    list-style: none
+}
+
+.fa-folder:before {
+    margin-right: 12px;
+    color: #dab56e;
+}
+li.folder-objectid{
+    padding-left: 30px;
+}
+li.li-image{
+    margin-left: -15px;
 }

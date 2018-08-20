@@ -481,7 +481,7 @@ require([
                                 </div>
                             </div>
                             <div alt='${attr["OBJECTID"]}' id="edit-bao" class="bao-item">
-                                <span class="esri-icon-authorize" title="Chỉnh sửa">
+                                <span class="esri-icon-authorize" title="Thông tin">
                                 </span>
                             </div>
                             <div alt='${attr["OBJECTID"]}' id="delete-bao" class="bao-item">
