@@ -128,6 +128,10 @@ define([
                         ],
                         deactivate: function () {
                             this.destroy();
+                        },
+                        position: {
+                            top: 100, // or "100px"
+                            left: 235
                         }
                     });
                     this.ul_treeview = $('<ul/>', {
@@ -155,7 +159,7 @@ define([
                             this.featuresOfLayer(layer, li_feature);
                         }
                     }
-                    window.data("kendoWindow").center().open();
+                    window.data("kendoWindow").open();
                     window.find('#treeview').kendoTreeView();
                 });
                 $("#danhsachnhamay").on("click", "div.goToDirection1", (result) => {
