@@ -149,6 +149,7 @@ define([
                             }).appendTo(ul_layer);
                             $('<span/>', {
                                 class: "fa fa-folder",
+                                id: 'layerID',
                                 text: layer.title
                             }).appendTo(li_feature);
                             this.featuresOfLayer(layer, li_feature);
@@ -310,20 +311,23 @@ define([
             async featuresOfLayer(layer, li_feature) {
                 let ul_feature = $('<ul/>', {
                 }).appendTo(li_feature);
+                var span_LayerID = li_feature.find('span#layerID');
                 var rs = await this.queryFeatureLayer(layer);
                 if (!rs) return;
                 let features = rs.features;
+                var sumImage = 0;
                 if (features.length > 0)
                     for (var i = 0; i < features.length; i++) {
                         var feature = features[i];
                         var attr = feature.attributes;
                         var image_rs = await layer.getAttachments(attr["OBJECTID"]);
                         if (image_rs && image_rs.attachmentInfos.length > 0) {
+                            sumImage += 1;
                             let li_object = $('<li/>', {
-                                class:'folder-objectid'
+                                class: 'folder-objectid'
                             }).appendTo(ul_feature);
                             $('<span/>', {
-                                class:"fa fa-folder",
+                                class: "fa fa-folder",
                                 text: attr["OBJECTID"]
                             }).appendTo(li_object);
                             if (image_rs && image_rs.attachmentInfos) {
@@ -332,7 +336,7 @@ define([
                                 }).appendTo(li_object);
                                 for (const info of infos) {
                                     let li_image = $('<li/>', {
-                                        class:'li-image'
+                                        class: 'li-image'
                                     }).appendTo(ul_object);
                                     $('<a/>', {
                                         href: info.src,
@@ -343,6 +347,8 @@ define([
                             }
                         }
                     }
+                if (sumImage > 0)
+                    li_feature.find('span#layerID').text(layer.title + "  (" + sumImage + " hình ảnh)");
 
             }
             async danhsachnhamay() {
