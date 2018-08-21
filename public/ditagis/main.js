@@ -94,6 +94,7 @@ require([
                         edit: layerCfg.IsEdit,
                         view: layerCfg.IsView,
                     },
+                    visible:false
                 });
                 if (layerCfg.Definition != null && layerCfg.Definition != "") {
                     fl.definitionExpression = layerCfg.Definition;
@@ -103,6 +104,7 @@ require([
                     fl.minScale = 36111.909643;
                 } else {
                     fl.opacity = 0.2;
+                    fl.visible = true;
                 }
 
                 // nếu layer tồn tại group
