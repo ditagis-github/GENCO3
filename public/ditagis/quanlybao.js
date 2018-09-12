@@ -99,7 +99,7 @@ require([
                         });
                         $('#control_toolbar').append(store_data);
                         var span = $("<span/>", {
-                            title: 'Đưa vào lưu trữ',
+                            title: 'Kết thúc bão',
                             class: "esri-icon-save",
                         });
                         store_data.append(span);

@@ -69,7 +69,7 @@ define([
             $("#close-widget").show();
         }
         close(){
-            $(".left_panel").hide();
+            $("#weather-panel").hide();
             $("#close-widget").hide();
         }
 

@@ -93,7 +93,7 @@ define(["../core/Base",
             input = $('<input/>', {
               'data-bind': 'value:' + field.name,
               name: field.name,
-              style: 'width:90%',
+              style: 'width:100%',
               class: 'input-field'
             }).appendTo(li);
             input.keyup((evt) => {

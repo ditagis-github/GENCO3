@@ -69,6 +69,7 @@ define([
                 $("#close-widget").click(() => {
                     $(".left_panel").hide();
                     $("#close-widget").hide();
+                    $("#weather-panel").hide();
                 });
             }
 
@@ -192,6 +193,7 @@ define([
                 // hien thi danh sach nha may
                 $("#factorylist").click(() => {
                     $(".left_panel").hide();
+                    $("#close-widget").hide();
                     $("div#danhsachnhamay").toggleClass("hidden");
                     this.danhsachnhamay();
 
