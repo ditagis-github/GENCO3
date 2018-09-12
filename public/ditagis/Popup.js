@@ -1,5 +1,5 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
+    return new(P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) {
             try {
                 step(generator.next(value));
@@ -25,12 +25,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 define([
-    "ditagis/core/LinkAPI",
-    "dojo/on", "dojo/dom-construct",
-    "ditagis/support/HightlightGraphic",
-    "ditagis/support/Editing",
-    "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
-],
+        "ditagis/core/LinkAPI",
+        "dojo/on", "dojo/dom-construct",
+        "ditagis/support/HightlightGraphic",
+        "ditagis/support/Editing",
+        "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
+    ],
     function (LinkAPI, on, domConstruct, HightlightGraphic, EditingSupport,
         SimpleLineSymbol, watchUtils, PopupTemplate,
     ) {
@@ -110,8 +110,7 @@ define([
                                 title: layer.title,
                                 actions: actions
                             });
-                        }
-                        else {
+                        } else {
 
                             layer.popupTemplate = new PopupTemplate({
                                 content: (target) => {
@@ -181,19 +180,22 @@ define([
                             this.deleteFeature();
                         }
                         break;
-                    case "add-attachment": {
-                        this.addAttachments();
-                        break;
-                    }
-                    case "delete-attachment": {
-                        this.deleteAttachments();
-                        break;
-                    }
-                    case "link-website": {
-                        var win = window.open("http://buonkuop.vn:2016/pclb/default.aspx", '_blank');
-                        win.focus();
-                        break;
-                    }
+                    case "add-attachment":
+                        {
+                            this.addAttachments();
+                            break;
+                        }
+                    case "delete-attachment":
+                        {
+                            this.deleteAttachments();
+                            break;
+                        }
+                    case "link-website":
+                        {
+                            var win = window.open("http://buonkuop.vn:2016/pclb/default.aspx", '_blank');
+                            win.focus();
+                            break;
+                        }
                     default:
                         break;
                 }
@@ -404,31 +406,24 @@ define([
                 }).appendTo(container);
                 var link_url = attributes["LinkAPI"];
                 if (link_url) {
-                    var interval = setInterval(() => {
-                        $.ajax({
-                            url: `${LinkAPI.CAMERA}${link_url}/`,
-                            success: (result) => {
-                                if (result) {
-                                    var img = new Image();
-                                    img.src = 'https://' + result;
-                                    if (img.height > 0) {
-                                        $("#img_camera")[0].setAttribute('src', result);
-                                    } else {
-                                        $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
-                                    }
-                                    console.log(result);
-
-                                } else {
-                                    $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
-                                    this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
-                                    this.listInterval = []; // xóa hết giá trị
-                                }
-
-
+                    $.ajax({
+                        url: `${LinkAPI.CAMERA}${link_url}/`,
+                        success: (result) => {
+                            if (result) {
+                                var interval = setInterval(() => {
+                                    $("#img_camera")[0].setAttribute('src', 'http://' + result);
+                                }, 5000);
+                                this.listInterval.push(interval);
+                            } else {
+                                $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
+                                this.listInterval = []; // xóa hết giá trị
                             }
-                        });
-                    }, 5000);
-                    this.listInterval.push(interval);
+
+
+                        }
+                    });
+
                 }
                 return container[0].outerHTML;
             }
@@ -442,8 +437,7 @@ define([
                             this.view.popup.actions.find(function (action) {
                                 return action.id === 'link-website';
                             }).visible = true;
-                        }
-                        else{
+                        } else {
                             this.view.popup.actions.find(function (action) {
                                 return action.id === 'link-website';
                             }).visible = false;
