@@ -1,5 +1,5 @@
 *{
-    font-family: arial,sans-serif;
+    font-family: Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
 }
 .header-navbar {
     display: grid;
@@ -134,4 +134,82 @@ li.folder-objectid{
 }
 li.li-image{
     margin-left: -15px;
+}
+li.panelGroup {
+    border: solid 1px #ccc;
+    background: #4285f4;
+    color: #fff;
+}
+td.icon-label {
+    line-height: 31px;
+}
+td.symbol-type-point{
+    padding: 8px 12px !important;
+}
+td.symbol-type-polyline{
+    padding: 0 10px !important;
+}
+label.title{
+    margin-top: 2px;
+}
+li.title-widget,div.title-widget {
+    height: 37px;
+    background: #0079c1;
+    line-height: 36px;
+    width: 100%;
+    border-bottom: solid 1px #ccc;
+    border-top: solid 1px #ccc;
+    border-left: solid 1px #ccc;
+    margin: 0px;
+}
+li.title-widget{
+    border: solid 1px #ccc;
+}
+.esri-layer-list__item-container{
+    background: #4285f4;
+    color: #fff;
+}
+.esri-layer-list__item--invisible-at-scale .esri-layer-list__item-container > div > span:nth-child(2){
+    color: #17394d;
+}
+span.esri-layer-list__child-toggle-icon--closed.esri-icon-right-triangle-arrow{
+    color: #fff;
+}
+.esri-layer-list__item--invisible-at-scale .esri-layer-list__item-container {
+    background: #e4f0f6;
+}
+.esri-layer-list__item--invisible-at-scale span.esri-layer-list__item-toggle {
+    color: #17394d;
+}
+.esri-layer-list__item--invisible-at-scale .esri-layer-list__item-container:hover {
+    background-color: #9fd0ec;
+}
+ul.esri-layer-list__list.esri-layer-list__list--root.esri-layer-list__list--independent {
+    margin-top: 0px;
+}
+.esri-print__header-title{
+    display: none;
+}
+div#layer-list,div#legend-layer-list ,.esri-widget.ditagis-widget-layer-editor.pane-item,ul.layer-editor
+{
+    max-height: 450px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.query-method-widget{
+    padding:10px;
+    width:300px;
+    max-height: 345px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+#pane-tools > div > div.btn-accept > button{
+    width: 88%;
+    text-align: center;
+    margin: 0 9px;
+    border-radius: 4px;
+    
+}
+.btn-accept{
+    padding-bottom: 6px;
 }

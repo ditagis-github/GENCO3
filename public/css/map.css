@@ -119,9 +119,10 @@ span.btn-danger.pull-right.closePanel.closePanel_print {
     float: right;
     position: absolute;
     right: 15px;
-    top: 75px;
+    top: 55px;
     z-index: 999;
     max-height: 420px;
+    padding: 0;
 }
 
 #print-panel {
@@ -130,7 +131,7 @@ span.btn-danger.pull-right.closePanel.closePanel_print {
     float: right;
     position: absolute;
     right: 15px;
-    top: 75px;
+    top: 55px;
     z-index: 999;
     overflow: hidden;
 }
@@ -172,21 +173,13 @@ span.btn-danger.pull-right.closePanel.closePanel_print {
 #pane-tools {
     position: absolute;
     right: 15px;
-    top: 75px;
+    top: 55px;
 }
 
 #pane-tools>div {
     height: 100%;
 }
 
-.ditagis-widget-layer-editor {
-    max-height: 550px;
-    width: 250px;
-    max-height: 420px;
-    overflow: hidden;
-    overflow-y: auto;
-    transition: max-height 250ms ease-in-out;
-}
 
 .esri-widget {
     font-family: "Roboto", Helvetica, Arial, sans-serif;
@@ -197,22 +190,16 @@ span.btn-danger.pull-right.closePanel.closePanel_print {
     background-color: #fff;
 }
 
-.ditagis-widget-layer-editor .title {
-    text-align: center;
-    font-weight: bold;
-    padding: 7px;
-}
-
 .esri-widget.ditagis-widget-layer-editor.pane-item>ul {
     list-style: none;
     padding: 0;
 }
 
 button.accordion {
-    background-color: #4285F4;
-    color: #fff;
+    background-color: #e4f0f6;
+    color: #17394d;
     cursor: pointer;
-    padding: 10px;
+    padding: 7px 10px;
     width: 100%;
     border: solid 1px #ccc;
     text-align: left;
@@ -221,7 +208,7 @@ button.accordion {
 }
 button.accordion.active,
 button.accordion:hover {
-    background-color: rgb(232, 103, 15)
+    background-color: #9fd0ec;
 }
 
 /* Style the accordion panel. Note: hidden by default */
@@ -239,7 +226,7 @@ button.accordion:before {
     -webkit-font-smoothing: antialiased;
     content: "\f077";
     font-size: 13px;
-    color: #fff;
+    color: #17394d;
     float: right;
     margin-left: 5px;
 }
@@ -783,7 +770,6 @@ div#report-objects {
 }
 
 .ditagis-widget-layer-editor {
-    max-height: 550px;
     max-height: 420px;
     width: 320px;
     overflow: hidden;
@@ -971,10 +957,9 @@ i.fa.fa-map-marker {
     font-size: 15px;
     padding: 7px
 }
-
-#pane-tools>div>span>span>span.k-select,
-#pane-tools>div>span>span>span.k-input {
-    background-color: #4285F4;
+#pane-tools>div>div>span>span>span.k-select,
+#pane-tools>div>div>span>span>span.k-input {
+    background: #0079c1;
     color: #fff;
 }
 
@@ -1056,6 +1041,34 @@ div {
 .pre-line {
     white-space: pre-line;
 }
-div#close-widget {
+div.close-widget {
     background-color: #ff3448;
+    float: right;
+}
+.close-item{
+    height: 34px;
+    width: 34px;
+    line-height: 34px;
+    margin: 1px 1px 1px 0;
+    border: solid 1px #ccc;
+}
+span.esri-icon-close{
+    margin: 3px;
+}
+.close-item span {
+    color: #fff;
+    font-size: 15px;
+    padding: 7px;
+}
+.title-pane{
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 36px;
+    padding-left: 15px;
+    width: 88%;
+    height: 34px;
+    margin: 1px 0px 1px 0;
+    float: left;
+    color: #fff;
+    text-align: left !important;
 }

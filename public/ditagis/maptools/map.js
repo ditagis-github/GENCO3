@@ -36,12 +36,12 @@ define([
                 this.queryLayer.on("click", addPane);
                 this.layerList = new LayerList({
                     view: view,
-                    container: "layer-list-panel"
+                    container: "layer-list"
                 });
 
                 this.legend = new Legend({
                     view: this.view,
-                    container: "legend-layer-list-panel",
+                    container: "legend-layer-list",
                 });
                 // this.view.ui.add(this.legend,"top-right");
                 $(".esri-component.esri-layer-list.esri-widget.esri-widget--panel").show();
@@ -53,23 +53,11 @@ define([
                 function addPane(pane) {
                     paneManager.add(pane);
                 }
-
-                var element = $("<div/>", {
-                    id: "close-widget",
-                    class: "control_item item"
-                });
-                $('#control_toolbar').append(element);
-                var span = $("<span/>", {
-                    class: "esri-icon-close",
-                    title: "Đóng"
-                });
-                element.append(span);
                 $(".left_panel").hide();
-                $("#close-widget").hide();
-                $("#close-widget").click(() => {
+                $(".close-widget").click(() => {
                     $(".left_panel").hide();
-                    $("#close-widget").hide();
                     $("#weather-panel").hide();
+                    $( ".pane-item" ).addClass( "hidden" );
                 });
             }
 
@@ -193,7 +181,6 @@ define([
                 // hien thi danh sach nha may
                 $("#factorylist").click(() => {
                     $(".left_panel").hide();
-                    $("#close-widget").hide();
                     $("div#danhsachnhamay").toggleClass("hidden");
                     this.danhsachnhamay();
 
@@ -209,12 +196,13 @@ define([
 
 
                 $("#printer-widget").click(() => {
-                    this.showElement($("div#print-panel"), true);
+                    this.showElement($("div#print-panel"));
                 });
 
                 // hien thi chu thich ban do
                 $("#legend-widget").click(() => {
-                    this.showElement($("#legend-layer-list-panel"), true);
+                    this.showElement($("#legend-layer-list-panel"));
+                    
                 });
                 // Biên tập dữ liệu
                 $("#editor-widget").click(() => {
@@ -229,7 +217,7 @@ define([
 
                 // Hiển thị ẩn lớp dữ liệu
                 $("#layer-list-widget").click(() => {
-                    this.showElement($("#layer-list-panel"), true);
+                    this.showElement($("#layer-list-panel"));
 
                 });
                 // map - tools (zoom in, out, location)
@@ -254,11 +242,10 @@ define([
 
 
             }
-            showElement(element, isClose) {
+            showElement(element) {
                 $(".left_panel").hide();
+                $( ".pane-item" ).addClass( "hidden" );
                 element.show();
-                if (isClose)
-                    $("#close-widget").show();
             }
             showLegend() {
                 document.getElementById("legend-symbols").innerHTML = "";

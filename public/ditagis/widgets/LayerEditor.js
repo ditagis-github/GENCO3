@@ -76,6 +76,7 @@ define([
           let panelGroup = this._layerGroups[layer.parent.id];
           if (!panelGroup) {
             let li = document.createElement('li');
+            li.classList.add('panelGroup');
             li.innerHTML = `<label class="title">${layer.parent.title}</label>`
             let div = document.createElement('div');
             div.classList.add('item-container');
@@ -226,6 +227,12 @@ define([
               let tr = document.createElement('tr');
               table.appendChild(tr);
               let tdSymbol = document.createElement('td');
+              if (layer.geometryType == "point") {
+                tdSymbol.classList.add('symbol-type-point');
+              }
+              else if (layer.geometryType == "polyline") {
+                tdSymbol.classList.add('symbol-type-polyline');
+              }
               tdSymbol.innerHTML = symbol;
               tr.appendChild(tdSymbol);
 
@@ -247,13 +254,34 @@ define([
 
       }
 
-      
+
 
       initView() {
         try {
           this._container = document.createElement('div');
           this._container.classList.add('esri-widget', 'ditagis-widget-layer-editor');
+
+          var title_widget = $("<div/>", {
+            width: "100%",
+            class:"title-widget"
+          }).appendTo(this._container);
+          $("<div/>", {
+            class: "title-pane",
+            text: "Danh sách công ty"
+          }).appendTo(title_widget);
+          var close_widget = $("<div/>", {
+            class: "close-item close-widget"
+          }).appendTo(title_widget);
+          close_widget.on('click', () => {
+            this.fire("click", $(this.pane));
+          });
+          var span = $("<span/>", {
+            class: "esri-icon-close",
+            title: "Đóng"
+          });
+          close_widget.append(span);
           this._ulContainer = document.createElement('ul');
+          this._ulContainer.classList.add('layer-editor');
           this._container.appendChild(this._ulContainer);
           this.view.on('layerview-create', (evt) => {
             const layer = evt.layer;
