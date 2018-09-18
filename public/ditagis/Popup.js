@@ -401,28 +401,26 @@ define([
                 let container = $('<div/>', {
                     class: 'popup-content',
                 });
-                var image = $('<img/>', {
+                $('<img/>', {
                     id: "img_camera",
                 }).appendTo(container);
                 var link_url = attributes["LinkAPI"];
                 if (link_url) {
-                    $.ajax({
-                        url: `${LinkAPI.CAMERA}${link_url}/`,
-                        success: (result) => {
-                            if (result) {
-                                var interval = setInterval(() => {
-                                    $("#img_camera")[0].setAttribute('src', 'http://' + result);
-                                }, 5000);
-                                this.listInterval.push(interval);
-                            } else {
-                                $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
-                                this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
-                                this.listInterval = []; // xóa hết giá trị
+                    var interval = setInterval(() => {
+                        $.ajax({
+                            url: `${LinkAPI.CAMERA}${link_url}/`,
+                            success: (result) => {
+                                if (result) {
+                                    $("#img_camera")[0].setAttribute('src', result);
+                                } else {
+                                    $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                    this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
+                                    this.listInterval = []; // xóa hết giá trị
+                                }
                             }
-
-
-                        }
-                    });
+                        });
+                    }, 5000);
+                    this.listInterval.push(interval);
 
                 }
                 return container[0].outerHTML;
