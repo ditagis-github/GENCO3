@@ -781,6 +781,8 @@ div#report-objects {
     margin: 0;
     list-style: none;
     padding: 0;
+    margin-bottom: 0px;
+    padding-bottom: 44px;
 }
 
 .ditagis-widget-layer-editor .title {
@@ -1071,4 +1073,7 @@ span.esri-icon-close{
     float: left;
     color: #fff;
     text-align: left !important;
+}
+span.esri-icon-close:hover{
+    cursor: pointer;
 }

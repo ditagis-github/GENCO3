@@ -57,7 +57,7 @@ define([
                 $(".close-widget").click(() => {
                     $(".left_panel").hide();
                     $("#weather-panel").hide();
-                    $( ".pane-item" ).addClass( "hidden" );
+                    $(".pane-item").addClass("hidden");
                 });
             }
 
@@ -183,6 +183,7 @@ define([
                     $(".left_panel").hide();
                     $("div#danhsachnhamay").toggleClass("hidden");
                     this.danhsachnhamay();
+                    // this.danhsachnhamay1();
 
                 });
 
@@ -202,7 +203,7 @@ define([
                 // hien thi chu thich ban do
                 $("#legend-widget").click(() => {
                     this.showElement($("#legend-layer-list-panel"));
-                    
+
                 });
                 // Biên tập dữ liệu
                 $("#editor-widget").click(() => {
@@ -244,7 +245,7 @@ define([
             }
             showElement(element) {
                 $(".left_panel").hide();
-                $( ".pane-item" ).addClass( "hidden" );
+                $(".pane-item").addClass("hidden");
                 element.show();
             }
             showLegend() {
@@ -344,6 +345,7 @@ define([
                     li_feature.find('span#layerID').text(layer.title + "  (" + sumImage + " hình ảnh)");
 
             }
+            
             async danhsachnhamay() {
                 var displayResults = await this.queryListNhaMay();
                 if (!displayResults) return;
@@ -405,7 +407,7 @@ define([
                 query.outSpatialReference = this.view.spatialReference;
                 query.where = "1=1";
                 query.outFields = ['*'];
-                query.orderByFields = ["Ten ASC"];
+                query.orderByFields = ["STT"];
                 if (this.layerNhaMay.definitionExpression != null) {
                     query.where = this.layerNhaMay.definitionExpression;
                 }

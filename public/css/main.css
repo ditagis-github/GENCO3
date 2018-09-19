@@ -199,17 +199,18 @@ div#layer-list,div#legend-layer-list ,.esri-widget.ditagis-widget-layer-editor.p
 .query-method-widget{
     padding:10px;
     width:300px;
-    max-height: 345px;
+    max-height: 414px;
     overflow: hidden;
     overflow-y: auto;
 }
-#pane-tools > div > div.btn-accept > button{
-    width: 88%;
-    text-align: center;
-    margin: 0 9px;
-    border-radius: 4px;
-    
-}
 .btn-accept{
+    position: absolute;
     padding-bottom: 6px;
+    bottom: 0;
+    width: 88%;
+}
+.btn-accept > button {
+    width: 100%;
+    text-align: center;
+    border-radius: 4px;
 }

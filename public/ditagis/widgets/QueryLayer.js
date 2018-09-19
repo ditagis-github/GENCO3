@@ -140,7 +140,7 @@ define(["../core/Base",
             text: 'Truy vấn'
           }).appendTo($('<div/>', {
             class: "btn-accept"
-          }).appendTo(this.pane));
+          }).appendTo(attributeslayer));
           btnQuery.click(() => this.btnQueryClickHandler(layer, observable));
         }
         return attributeslayer;
