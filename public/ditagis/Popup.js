@@ -490,6 +490,7 @@ define([
                 }).appendTo(row);
                 let tdValue = $('<td/>').appendTo(row);
                 if (field.name == 'CongSuat') {
+                    tdValue.text('Đang tải...')
                     var manhamay = attributes["Ma"];
                     tdValue.addClass('pre-line');
                     tdValue[0].id = manhamay;

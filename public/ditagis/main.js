@@ -94,7 +94,7 @@ require([
                         edit: layerCfg.IsEdit,
                         view: layerCfg.IsView,
                     },
-                    visible:false
+                    visible:layerCfg.IsVisible
                 });
                 if (layerCfg.Definition != null && layerCfg.Definition != "") {
                     fl.definitionExpression = layerCfg.Definition;
