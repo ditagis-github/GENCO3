@@ -54,11 +54,11 @@ define([
                 title: "Nhà máy",
                 outFields: this.featureLayer.outFields,
                 listMode:'hide',
-                id:"NhaMayLYR",
+                id:defineName.NHAMAY,
                 permission: {
                     create: false,
                     delete: false,
-                    edit: false,
+                    edit: true,
                     view: true,
                 },
             });

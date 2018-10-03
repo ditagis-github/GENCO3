@@ -1,5 +1,5 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new(P || (P = Promise))(function (resolve, reject) {
+    return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) {
             try {
                 step(generator.next(value));
@@ -25,12 +25,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 define([
-        "ditagis/core/LinkAPI",
-        "dojo/on", "dojo/dom-construct",
-        "ditagis/support/HightlightGraphic",
-        "ditagis/support/Editing",
-        "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
-    ],
+    "ditagis/core/LinkAPI",
+    "dojo/on", "dojo/dom-construct",
+    "ditagis/support/HightlightGraphic",
+    "ditagis/support/Editing",
+    "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
+],
     function (LinkAPI, on, domConstruct, HightlightGraphic, EditingSupport,
         SimpleLineSymbol, watchUtils, PopupTemplate,
     ) {
@@ -42,7 +42,9 @@ define([
                 this.options = {
                     hightLength: 100
                 };
-                this.fireFields = ['created_user', 'created_date', 'last_edited_user', 'last_edited_date', 'XaPhuongTT', 'HuyenTXTP', 'TinhTrang', 'ChapThuanCuaSo', 'LoaiTram', 'DoCaoTram'];
+                // this.fireFields = ['created_user', 'created_date', 'last_edited_user', 'last_edited_date', 'XaPhuongTT', 'HuyenTXTP', 'TinhTrang', 'ChapThuanCuaSo', 'LoaiTram', 'DoCaoTram'];
+                this.fireFields = ['OBJECTID', 'MaTruSo', 'MaNhaMay', 'MaDoiTuong'];
+                this.editingSupport = new EditingSupport();
                 this.editingSupport = new EditingSupport();
                 this.hightlightGraphic = new HightlightGraphic(view, {
                     symbolMarker: {
@@ -83,7 +85,7 @@ define([
                                 className: "esri-icon-erase",
                             });
                         }
-                        if (layer.id == "NhaMayLYR" || layer.id == "NhaMayDienLYR") {
+                        if (layer.id == defineName.NHAMAY || layer.id == defineName.NHAMAYDIEN) {
                             actions.push({
                                 id: "add-attachment",
                                 title: "Thêm hình ảnh",
@@ -114,7 +116,7 @@ define([
 
                             layer.popupTemplate = new PopupTemplate({
                                 content: (target) => {
-                                    if (layer.id == "NhaMayLYR" || layer.id == "NhaMayDienLYR") {
+                                    if (layer.id == defineName.NHAMAY || layer.id == defineName.NHAMAYDIEN) {
                                         this.view.popup.actions.find(function (action) {
                                             return action.id === 'delete-attachment';
                                         }).visible = false;
@@ -152,8 +154,8 @@ define([
                 });
             }
             get layer() {
-                if (this.view.popup.selectedFeature.layer.id == "NhaMayLYR") {
-                    return this.view.map.findLayerById("NhaMayDienLYR");
+                if (this.view.popup.selectedFeature.layer.id == defineName.NHAMAY) {
+                    return this.view.map.findLayerById(defineName.NHAMAYDIEN);
                 }
                 return this.view.popup.selectedFeature.layer;
             }
@@ -430,7 +432,7 @@ define([
                     const graphic = target.graphic,
                         layer = graphic.layer,
                         attributes = graphic.attributes;
-                    if (layer.id == "NhaMayLYR" || layer.id == "NhaMayDienLYR") {
+                    if (layer.id == defineName.NHAMAY || layer.id == defineName.NHAMAYDIEN) {
                         if (attributes["Ma"] == "buonkoup" || attributes["Ma"] == "buontuasrah" || attributes["Ma"] == "srepok3") {
                             this.view.popup.actions.find(function (action) {
                                 return action.id === 'link-website';
@@ -459,6 +461,9 @@ define([
                             this.showField(field, attributes, table);
                         }
 
+                    }
+                    if (layer.id == defineName.NHAMAY || layer.id == defineName.NHAMAYDIEN) {
+                        this.showCongSuatNhaMay(attributes, table);
                     }
                     if (layer.hasAttachments) {
                         layer.getAttachments(attributes['OBJECTID']).then(res => {
@@ -491,7 +496,7 @@ define([
                 let tdValue = $('<td/>').appendTo(row);
                 if (field.name == 'CongSuat') {
                     tdValue.text('Đang tải...')
-                    var manhamay = attributes["Ma"];
+                    var manhamay = attributes[fieldName_NhaMay.MANHAMAY];
                     tdValue.addClass('pre-line');
                     tdValue[0].id = manhamay;
                     if (manhamay) {
@@ -527,6 +532,35 @@ define([
                     if (formatString)
                         content = `{${field.name}:${formatString}}`;
                     tdValue.text(content);
+                }
+            }
+            showCongSuatNhaMay(attributes, table) {
+                let row = $('<tr/>').appendTo(table);
+                $('<th/>', {
+                    text: "Công suất"
+                }).appendTo(row);
+                let tdValue = $('<td/>').appendTo(row);
+                var manhamay = attributes[fieldName_NhaMay.MANHAMAY];
+                tdValue.addClass('pre-line');
+                tdValue[0].id = manhamay;
+                if (manhamay) {
+                    var p = $('p').appendTo(tdValue);
+                    var interval = setInterval(() => {
+                        $.ajax({
+                            url: `${LinkAPI.CONGSUAT}${manhamay}`,
+                            success: function (result) {
+                                if (result) {
+                                    var text = '';
+                                    for (const key in result) {
+                                        text += `${key}: ${result[key]}\r\n`
+                                    }
+                                    $(`#${manhamay}`).text(text);
+                                }
+
+                            }
+                        });
+                    }, 10000);
+                    this.listInterval.push(interval);
                 }
             }
             deleteAttachments() {

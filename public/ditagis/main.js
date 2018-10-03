@@ -36,6 +36,7 @@ require([
         var map = new Map({
             basemap: "osm"
         });
+        var mapTools;
         view = new MapView({
             container: "viewDiv",
             map: map,
@@ -62,6 +63,7 @@ require([
         view.systemVariable.user = MapConfigs.user;
         view.session().then(function (user) {
             initFeatureLayer();
+            mapTools = new MapTools(view);
         });
         
         function initFeatureLayer() {
@@ -69,7 +71,7 @@ require([
             for (const layerCfg of view.systemVariable.user.Layers) {
                 // tạo layer
                 if (!layerCfg.IsView) continue;
-                if (layerCfg.GroupID === "ChuyenDe" && layerCfg.LayerID == "baoLYR" && layerCfg.IsCreate) {
+                if (layerCfg.LayerID == "baoLYR" && layerCfg.IsCreate) {
                     var element = $("<a/>", {
                         target: "_blank",
                         href: "/quanlybao.html",
@@ -87,6 +89,7 @@ require([
                     url: layerCfg.Url,
                     title: layerCfg.LayerTitle,
                     id: layerCfg.LayerID,
+                    groupId:layerCfg.GroupID,
                     outFields: layerCfg.OutFields ? layerCfg.OutFields.split(',') : ['*'],
                     permission: {
                         create: layerCfg.IsCreate,
@@ -94,12 +97,12 @@ require([
                         edit: layerCfg.IsEdit,
                         view: layerCfg.IsView,
                     },
-                    visible:layerCfg.IsVisible
+                    visible:layerCfg.IsVisible,
                 });
                 if (layerCfg.Definition != null && layerCfg.Definition != "") {
                     fl.definitionExpression = layerCfg.Definition;
                 }
-                if (fl.id != "NhaMayDienLYR") {
+                if (fl.id != defineName.NHAMAYDIEN) {
                     fl.minScale = 30000;
                     fl.minScale = 36111.909643;
                 } else {
@@ -140,11 +143,11 @@ require([
             // thì kiểm tra đối tượng có phải là nhà máy hay không
             // nếu là nhà máy thì hiển thị thời tiết lên
             if (!this.view.draw) {
-                if (newVal && newVal.layer.id == "NhaMayLYR") {
-                    var manhamay = newVal.attributes["Ma"];
+                if (newVal && newVal.layer.id == defineName.NHAMAY) {
+                    var manhamay = newVal.attributes[fieldName_NhaMay.MANHAMAY];
                     thoitiet.laythongtinthoitiet(newVal.geometry, manhamay);
-                } else if (newVal && newVal.layer.id == "NhaMayDienLYR") {
-                    var manhamay = newVal.attributes["Ma"];
+                } else if (newVal && newVal.layer.id == defineName.NHAMAYDIEN) {
+                    var manhamay = newVal.attributes[fieldName_NhaMay.MANHAMAY];
                     thoitiet.laythongtinthoitiet(newVal.geometry.centroid, manhamay);
                 }
                 // nếu không phải là nhà máy hoặc là không có đối tượng nào cả thì tắt thời tiết
@@ -155,23 +158,15 @@ require([
         view.popup.watch('visible', (rs) => {
             !rs && thoitiet.close();
         });
-
-        // if (layer.id == "NhaMayLYR" || layer.id == "NhaMayDienLYR") {
-        //     var manhamay = graphic.attributes["Ma"];
-        //     this.thoitiet.laythongtinthoitiet(graphic.geometry, manhamay);
-        // }
-        // else if (layer.id == "NhaMayDienLYR") {
-
-        // }
         var count = 0;
-
         var layerNhaMay;
+        
         view.on("layerview-create", function (event) {
-            if (event.layer.id === "NhaMayDienLYR") {
+            let layer = event.layer;
+            if (event.layer.id === defineName.NHAMAYDIEN) {
                 layerNhaMay = event.layerView.layer;
-
                 new Renderer(view, layerNhaMay);
-                new MapTools(view, layerNhaMay);
+                mapTools.setLayerNhaMay(layerNhaMay);
             }
             if(event.layer.id === "baoLYR"){
                 var layerBao = event.layerView.layer;

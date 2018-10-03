@@ -8,14 +8,17 @@ define([
     "esri/geometry/geometryEngineAsync",
     "esri/geometry/geometryEngine",
     "esri/geometry/SpatialReference",
-    "ditagis/support/PolylineAttributes"
+    "ditagis/support/PolylineAttributes",
+    "ditagis/support/Editing",
 ], function (webMercatorUtils, Point, Polyline, Graphic, SimpleMarkerSymbol,
-    geometryEngineAsync, geometryEngine, SpatialReference, PolylineAttributes) {
+    geometryEngineAsync, geometryEngine, SpatialReference, PolylineAttributes,
+    EditingSupport) {
     'use strict';
     return class {
         constructor(view) {
             this.view = view;
             this.systemVariable = view.systemVariable;
+            this.editingSupport = new EditingSupport(view);
             this.plAttrs = new PolylineAttributes(this.view);
             this.systemVariable = this.view.systemVariable;
         }
@@ -51,6 +54,23 @@ define([
                             }).then(res => {
                                 if (res.features[0]) {
                                     let ft = res.features[0];
+                                    this.editingSupport.getMaNhaMay({
+                                        geometry: ft.geometry
+                                    }).then(nhaMayInfo => {
+                                        for (let i in nhaMayInfo) {
+                                            ft.attributes[i] = nhaMayInfo[i];
+                                        }
+                                        drawLayer.applyEdits({
+                                            updateFeatures: [{
+                                                attributes: ft.attributes
+                                            }]
+                                        }).then((result) => {
+                                            this.view.popup.open({
+                                                features: [ft],
+                                                updateLocationEnabled:true
+                                            });
+                                        });
+                                    })
                                     this.view.popup.open({
                                         features: [ft],
                                         updateLocationEnabled:true

@@ -78,7 +78,10 @@ define([
                                                 attributes: ft.attributes
                                             }]
                                         }).then((result) => {
-                                            console.log(result);
+                                            this.view.popup.open({
+                                                features: [ft],
+                                                updateLocationEnabled: true
+                                            });
                                         });
                                     })
                                     this.view.popup.open({

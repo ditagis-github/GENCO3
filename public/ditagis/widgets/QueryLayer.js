@@ -65,7 +65,7 @@ define(["../core/Base",
             }
           }
         });
-        for (const layer of view.systemVariable.user.Layers) {
+        for (const layer of this.view.systemVariable.user.Layers) {
           if (layer.IsView) {
             this.layerListContent.push({
               title: layer.LayerTitle,

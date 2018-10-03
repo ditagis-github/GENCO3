@@ -13,45 +13,45 @@ define(["require", "exports", "../core/Base", "dojo/dom-construct", "../core/Con
             super();
             this.view = view;
             this.displayFields = {
-                NhaMayDienLYR: [
+                nhamaydienLYR: [
                     { width: 60, title: "STT", field: "STT" },
-                    { width: 60, title: "Tên", field: "Ten" },
-                    { width: 60, title: "Mã", field: "Ma" },
+                    { width: 60, title: "Tên", field: "TenNhaMay" },
+                    { width: 60, title: "Mã", field: "MaNhaMay " },
                 ],
                 bonChuaLYR: [
                     { width: 60, title: "STT", field: "STT" },
-                    { width: 60, title: "Mã nhà máy", field: "MaNhaMay " },
+                    { width: 60, title: "Mã nhà máy", field: "MaNhaMay" },
                     { width: 60, title: "Mã", field: "Ma" },
                     { width: 60, title: "Ghi chú", field: "GhiChu" },
                 ],
                 tuabinLYR: [
                     { width: 60, title: "STT", field: "STT" },
-                    { width: 60, title: "Mã nhà máy", field: "MaNhaMay " },
+                    { width: 60, title: "Mã nhà máy", field: "MaNhaMay" },
                     { width: 60, title: "Mã", field: "Ma" },
                     { width: 60, title: "Ghi chú", field: "GhiChu" },
                 ],
                 lohoiLYR: [
                     { width: 60, title: "STT", field: "STT" },
-                    { width: 60, title: "Mã nhà máy", field: "MaNhaMay " },
+                    { width: 60, title: "Mã nhà máy", field: "MaNhaMay" },
                     { width: 60, title: "Mã", field: "Ma" },
                     { width: 60, title: "Ghi chú", field: "GhiChu" },
                 ],
                 ongkhoiLYR: [
                     { width: 60, title: "STT", field: "STT" },
-                    { width: 60, title: "MaNhaMay",field:"MaNhaMay"},
-                    { width: 60, title: "ChieuCao",field:"ChieuCao"},
-                    { width: 60, title: "VatLieu",field:"VatLieu"},
-                    { width: 60, title: "ChupOnge",field:"ChupOnge"},
-                    { width: 60, title: "TrongLuong",field:"TrongLuong"},
-                    { width: 60, title: "LoaiOK",field:"LoaiOK"},
-                    { width: 60, title: "KichThuoc",field:"KichThuoc"},
-                    { width: 60, title: "DuongKinh",field:"DuongKinh"},
-                    { width: 60, title: "DoDay",field:"DoDay"},
-                    { width: 60, title: "ApLuc",field:"ApLuc"},
-                    { width: 60, title: "LuongKhiThai",field:"LuongKhiThai"},
-                    { width: 60, title: "DVQL",field:"DVQL"},
-                    { width: 60, title: "TinhTrang",field:"TinhTrang"},
-                    { width: 60, title: "GhiChi",field:"GhiChi"},
+                    { width: 60, title: "MaNhaMay", field: "MaNhaMay" },
+                    { width: 60, title: "ChieuCao", field: "ChieuCao" },
+                    { width: 60, title: "VatLieu", field: "VatLieu" },
+                    { width: 60, title: "ChupOnge", field: "ChupOnge" },
+                    { width: 60, title: "TrongLuong", field: "TrongLuong" },
+                    { width: 60, title: "LoaiOK", field: "LoaiOK" },
+                    { width: 60, title: "KichThuoc", field: "KichThuoc" },
+                    { width: 60, title: "DuongKinh", field: "DuongKinh" },
+                    { width: 60, title: "DoDay", field: "DoDay" },
+                    { width: 60, title: "ApLuc", field: "ApLuc" },
+                    { width: 60, title: "LuongKhiThai", field: "LuongKhiThai" },
+                    { width: 60, title: "DVQL", field: "DVQL" },
+                    { width: 60, title: "TinhTrang", field: "TinhTrang" },
+                    { width: 60, title: "GhiChi", field: "GhiChi" },
                 ],
                 baoLYR: [
                     { width: 60, title: "STT", field: "STT" },
@@ -62,10 +62,10 @@ define(["require", "exports", "../core/Base", "dojo/dom-construct", "../core/Con
                 ],
             };
             this.initWindowKendo();
-           
+
         }
         initWindowKendo() {
-            this.report_content =  $('<div/>', {
+            this.report_content = $('<div/>', {
                 id: "report-objects"
             }).appendTo(document.body);
             this.table = domConstruct.create('div', {
@@ -89,13 +89,14 @@ define(["require", "exports", "../core/Base", "dojo/dom-construct", "../core/Con
         showTable(layer, attributes) {
             let columns = this.displayFields[layer.id];
             var fields = layer.fields;
-            columns.forEach(c => {
-                if (!c.title) {
-                    let field = layer.fields.find(f => f.name === c.field);
-                    if (field)
-                        c.title = field.alias;
-                }
-            });
+            if (columns)
+                columns.forEach(c => {
+                    if (!c.title) {
+                        let field = layer.fields.find(f => f.name === c.field);
+                        if (field)
+                            c.title = field.alias;
+                    }
+                });
             let kendoData = this.convertAttributes(fields, attributes);
             this.kendoGrid = $('#table-report').empty().kendoGrid({
                 height: "100%",

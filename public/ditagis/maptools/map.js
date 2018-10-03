@@ -16,10 +16,8 @@ define([
 ) {
 
         return class {
-            constructor(view, layerNhaMay) {
+            constructor(view) {
                 this.view = view;
-                this.layerNhaMay = layerNhaMay;
-
                 this.featuresNhaMay;
                 this.startup();
                 this.locateBtn = new Locate({
@@ -60,7 +58,9 @@ define([
                     $(".pane-item").addClass("hidden");
                 });
             }
-
+            setLayerNhaMay(layerNhaMay) {
+                this.layerNhaMay = layerNhaMay;
+            }
             startup() {
                 $("#danhsachnhamay").on("click", "span.viewData", (result) => {
                     var value = result.currentTarget.attributes.alt.nodeValue;
@@ -95,7 +95,8 @@ define([
                     var feature = this.featuresNhaMay.find(f =>
                         f.attributes['OBJECTID'] == objectId
                     );
-                    let gr = this.view.map.findLayerById(feature.attributes.GroupID);
+                    let gr = this.view.map.findLayerById(feature.layer.groupId);
+                    var MaNhaMay = feature.attributes.MaNhaMay;
                     if (!gr) return;
                     var layers = gr.layers.items;
                     if (this.windowKendo && this.windowKendo.data("kendoWindow")) {
@@ -131,21 +132,24 @@ define([
                     }).appendTo(this.ul_treeview);
                     $('<span/>', {
                         class: "fa fa-folder",
-                        text: gr.title
+                        text: MaNhaMay
                     }).appendTo(li_layer)
                     let ul_layer = $('<ul/>').appendTo(li_layer);
 
                     if (layers && layers.length > 0) {
                         for (const index in layers) {
                             var layer = layers[index];
-                            let li_feature = $('<li/>', {
-                            }).appendTo(ul_layer);
-                            $('<span/>', {
-                                class: "fa fa-folder",
-                                id: 'layerID',
-                                text: layer.title
-                            }).appendTo(li_feature);
-                            this.featuresOfLayer(layer, li_feature);
+                            if (layer.id != defineName.TRUSO && layer.id != defineName.GIAOTHONG) {
+                                let li_feature = $('<li/>', {
+                                }).appendTo(ul_layer);
+                                $('<span/>', {
+                                    class: "fa fa-folder",
+                                    id: 'layerID',
+                                    text: layer.title
+                                }).appendTo(li_feature);
+                                this.featuresOfLayer(layer, MaNhaMay, li_feature);
+                            }
+
                         }
                     }
                     window.data("kendoWindow").open();
@@ -302,11 +306,10 @@ define([
                 document.getElementById("legend-symbols").innerHTML += resultHtml;
 
             }
-            async featuresOfLayer(layer, li_feature) {
+            async featuresOfLayer(layer, MaNhaMay, li_feature) {
                 let ul_feature = $('<ul/>', {
                 }).appendTo(li_feature);
-                var span_LayerID = li_feature.find('span#layerID');
-                var rs = await this.queryFeatureLayer(layer);
+                var rs = await this.queryFeatureLayer(layer, MaNhaMay);
                 if (!rs) return;
                 let features = rs.features;
                 var sumImage = 0;
@@ -322,7 +325,7 @@ define([
                             }).appendTo(ul_feature);
                             $('<span/>', {
                                 class: "fa fa-folder",
-                                text: attr["OBJECTID"]
+                                text: attr["MaDoiTuong"] || attr["MaNhaMay"] || attr["OBJECTID"]
                             }).appendTo(li_object);
                             if (image_rs && image_rs.attachmentInfos) {
                                 let infos = image_rs.attachmentInfos;
@@ -341,11 +344,15 @@ define([
                             }
                         }
                     }
+
+                else {
+                    li_feature.addClass("hidden");
+                }
                 if (sumImage > 0)
                     li_feature.find('span#layerID').text(layer.title + "  (" + sumImage + " hình ảnh)");
 
             }
-            
+
             async danhsachnhamay() {
                 var displayResults = await this.queryListNhaMay();
                 if (!displayResults) return;
@@ -384,7 +391,7 @@ define([
                                     </div>
                                 </div>
                                 <div class="caption-image">
-                                    <label class="title-image">${attr["Ten"]}</label>
+                                    <label class="title-image">${attr["TenNhaMay"]}</label>
                                    
                                 </div>
                             </button>
@@ -395,11 +402,10 @@ define([
                 resultHtml += "</ul>";
                 document.getElementById("danhsachnhamay").innerHTML = resultHtml;
             }
-            queryFeatureLayer(layer) {
+            queryFeatureLayer(layer, MaNhaMay) {
                 var query = layer.createQuery();
-                query.outSpatialReference = this.view.spatialReference;
-                query.where = "1=1";
-                query.outFields = ['*'];
+                query.where = "MaNhaMay = '" + MaNhaMay + "'";
+                query.outFields = ['OBJECTID', 'MaNhaMay', 'MaDoiTuong'];
                 return layer.queryFeatures(query);
             }
             queryListNhaMay() {
@@ -407,7 +413,7 @@ define([
                 query.outSpatialReference = this.view.spatialReference;
                 query.where = "1=1";
                 query.outFields = ['*'];
-                query.orderByFields = ["STT"];
+                // query.orderByFields = ["STT"];
                 if (this.layerNhaMay.definitionExpression != null) {
                     query.where = this.layerNhaMay.definitionExpression;
                 }

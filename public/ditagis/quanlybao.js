@@ -37,7 +37,7 @@ require([
         this.outFields = ['OBJECTID', 'TenBao', 'TrangThai', 'NguoiCapNhat', 'NgayCapNhat', 'GhiChu'];
         function initFeatureLayer() {
             for (const layerCfg of view.systemVariable.user.Layers) {
-                if (layerCfg.GroupID === "ChuyenDe" && layerCfg.LayerID == "baoLYR") {
+                if (layerCfg.LayerID == "baoLYR") {
                     if (!layerCfg.IsCreate) {
                         location.href = '/index.html';
                         return;
