@@ -132,7 +132,7 @@ define([
                     }).appendTo(this.ul_treeview);
                     $('<span/>', {
                         class: "fa fa-folder",
-                        text: MaNhaMay
+                        text: feature.attributes.TenNhaMay
                     }).appendTo(li_layer)
                     let ul_layer = $('<ul/>').appendTo(li_layer);
 
@@ -413,7 +413,7 @@ define([
                 query.outSpatialReference = this.view.spatialReference;
                 query.where = "1=1";
                 query.outFields = ['*'];
-                // query.orderByFields = ["STT"];
+                query.orderByFields = ["STT"];
                 if (this.layerNhaMay.definitionExpression != null) {
                     query.where = this.layerNhaMay.definitionExpression;
                 }
