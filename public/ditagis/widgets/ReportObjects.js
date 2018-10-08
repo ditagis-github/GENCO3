@@ -99,7 +99,6 @@ define(["require", "exports", "../core/Base", "dojo/dom-construct", "../core/Con
                 });
             let kendoData = this.convertAttributes(fields, attributes);
             this.kendoGrid = $('#table-report').empty().kendoGrid({
-                height: "100%",
                 toolbar: [{ name: "excel", text: "Xuất báo cáo" }],
                 resizable: true,
                 excel: {
@@ -148,7 +147,7 @@ define(["require", "exports", "../core/Base", "dojo/dom-construct", "../core/Con
                 }
             });
             this.report_content.kendoWindow({
-                width: "100%",
+                width: "90%",
                 title: layer.title,
                 visible: false,
                 actions: [
@@ -157,7 +156,12 @@ define(["require", "exports", "../core/Base", "dojo/dom-construct", "../core/Con
                     "Maximize",
                     "Close"
                 ],
-            }).data("kendoWindow").center().open();
+                position: {
+                    top: 100, // or "100px"
+                    left: 8
+                },
+
+            }).data("kendoWindow").open();
         }
         showReport(layer, features) {
             return __awaiter(this, void 0, void 0, function* () {
