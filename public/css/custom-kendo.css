@@ -2697,17 +2697,23 @@ td.k-group-cell,
 .k-popup .k-button,
 .k-popup .k-primary:active,
 .k-popup .k-primary:active:hover,
+
 .k-edit-form-container .k-primary:active {
-  color: #444444;
-  background-color: #fafafa;
-  border-color: #fafafa;
-  box-shadow: none;
+    color: #444;
+    background-color: #ddd;
+    border-color: rgba(0,0,0,.2);
 }
+.k-button.k-button-icontext.k-grid-update {
+  color: #fff;
+  background-color: #4285f4;
+  border-color: rgba(0,0,0,.2);
+}
+
 .k-popup .k-primary,
 .k-edit-form-container .k-primary {
-  color: rgba(12, 107, 187, 0.67);
-  background-color: #fafafa;
-  border-color: #fafafa;
+  color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
 }
 .k-split-wrapper .k-button,
 .k-overflow-container .k-button,
@@ -3996,4 +4002,11 @@ table.k-editor {
 
 #vertical {
   height: 100%;
+}
+div.k-window-content {
+  padding: 0;
+}
+
+.k-edit-form-container .k-edit-buttons {
+  bottom: 0;
 }

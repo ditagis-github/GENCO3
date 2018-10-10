@@ -31,8 +31,9 @@ define([
         this._layerGroups = [];
         this._hasLayer = false;
         this.initView();
-        this.polylineDrawingTools = new PolylineDrawingTools(view);
         this.pointDrawingTools = new PointDrawingTools(view);
+        this.polylineDrawingTools = new PolylineDrawingTools(view);
+        
 
 
       }
@@ -312,6 +313,8 @@ define([
           layer.drawingAttributes[typeIdField] = value;
         }
         this.selectedFeature = layer;
+        this.polylineDrawingTools.destroy();
+        this.pointDrawingTools.destroy();
         switch (layer.geometryType) {
           case 'point':
             this.pointDrawingTools.startup();
@@ -319,12 +322,9 @@ define([
               if (this.polylineDrawingTools.expandWidget)
                 this.polylineDrawingTools.expandWidget.collapse();
             }
-            this.polylineDrawingTools.destroy();
-
             break;
           case 'polyline':
-            this.polylineDrawingTools.startup();
-            this.pointDrawingTools.destroy();
+          this.polylineDrawingTools.startup();
             break;
           default:
             console.log("Chưa được liệt kê")

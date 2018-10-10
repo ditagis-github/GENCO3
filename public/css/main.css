@@ -61,7 +61,9 @@ body{
     margin: 14px 10px 0 0;
     font-size: 14px;
 }
-
+#info-hinhanh-nhamay > span{
+    font-size: 11px;
+}
 div#edit-bao {
     top: -30px;
     right: -126px;
@@ -84,6 +86,7 @@ div#delete-bao{
     right: -126px;
     background: #c61a16;
 }
+
 .bao-item {
     float: left;
     width: 23px;
@@ -213,4 +216,36 @@ div#layer-list,div#legend-layer-list ,.esri-widget.ditagis-widget-layer-editor.p
     width: 100%;
     text-align: center;
     border-radius: 4px;
+}
+
+.esri-widget table tr th {
+    width: 50%;
+    text-align: left;
+    border-right: 3px solid rgba(0,0,0,0.05);
+}
+.esri-widget table tr:nth-child(odd) {
+    background-color: rgba(76,76,76,0.1);
+}
+.esri-widget table tr td, .esri-widget table tr th {
+    padding: .5em .7em;
+    word-break: break-word;
+    vertical-align: top;
+    font-size: 12px;
+    font-weight: 400;
+}
+.esri-widget table {
+    width: 100%;
+}
+span.esri-layer-list__item-toggle-icon.esri-icon-visible,span.esri-layer-list__item-toggle-icon.esri-icon-non-visible,
+span.esri-layer-list__child-toggle-icon--opened.esri-icon-down-arrow,span.esri-layer-list__child-toggle-icon--closed.esri-icon-right-triangle-arrow{
+    font-size: 12px;
+}
+.input-container {
+    width: 370px;
+  }
+.group-input {
+    padding: 5px 10px 0 0;
+}
+input.k-input.k-textbox {
+    border: solid 1px #ccc;
 }

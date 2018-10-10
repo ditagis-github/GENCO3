@@ -11,7 +11,8 @@ define([
   "esri/Graphic",
   "esri/geometry/Polyline",
   "esri/symbols/TextSymbol",
-], function (Base, Draw, GraphicsLayer, Graphic, Polyline, TextSymbol, ) {
+  "ditagis/toolview/InfosManager",
+], function (Base, Draw, GraphicsLayer, Graphic, Polyline, TextSymbol, InfosManager) {
   'use strict';
   return class extends Base {
     constructor(view) {
@@ -20,35 +21,44 @@ define([
       this.graphicsLayer = new GraphicsLayer({
         listMode: "hide"
       });
-      this.labelGraphicsLayer = new GraphicsLayer({
-        listMode: "hide"
-      });
       view.map.add(this.graphicsLayer);
-      view.map.add(this.labelGraphicsLayer);
       this.esriDraw = new Draw({
         view: view
-      })
+      });
       this.events = [];
       this.graphicNotify;
+      view.on("key-down", (evt) => {
+        if (evt.key === "Escape") {
+          this.esriDraw.complete();
+        }
+        if (evt.key === "Delete") {
+          this.graphicsLayer.removeAll();
+          this.draw();
+        }
+      });
     }
-    draw(layer) {
-      this.view.draw = true;
-      this.cancel();
-      let action = this.esriDraw.create("polyline")
+    draw() {
+      let action = this.esriDraw.create("polygon");
       this.events.push(action.on("vertex-add", this.updateVertices.bind(this)))
       this.events.push(action.on("vertex-remove", this.updateVertices.bind(this)))
       this.events.push(action.on("cursor-update", this.updateVertices.bind(this)))
       this.events.push(action.on("draw-complete", this.updateVertices.bind(this)))
-      this.graphicNotify = this.displayLabel(this.view.center, "Nhấn vào màn hình để vẽ");
-      this.view.graphics.add(this.graphicNotify);
+      var infos = ["Nhấn vào màn hình để vẽ",
+        "Nhấn nút Delete để xóa",
+        "Nhấn nút Esc để hủy"
+      ];
+      InfosManager.instance(view).show(infos);
+      
     }
     updateVertices(evt) {
-      this.view.graphics.remove(this.graphicNotify);
       this.graphicsLayer.removeAll();
       let graphic = this.createGraphic(evt.vertices);
       if (evt.type === "draw-complete") {
-        this.eventListener.fire('draw-finish', graphic.geometry);
-        this.view.draw = false;
+        InfosManager.instance(view).hide();
+        if (evt.native && evt.native.type == "pointerup") {
+          this.eventListener.fire('draw-finish', graphic.geometry);
+        }
+
       } else {
         this.graphicsLayer.add(graphic);
       }
@@ -69,31 +79,14 @@ define([
       });
       return graphic;
     }
-    displayLabel(geom, txt) {
-      let symbolProperties = {
-        color: "#505459",
-        text: txt,
-        xoffset: 3,
-        yoffset: 3,
-        font: { // autocast as Font
-          size: 12,
-          family: "sans-serif"
-        }
-      };
-      let symbol = new TextSymbol(symbolProperties);
-
-      var graphic = new Graphic({
-        geometry: geom,
-        symbol: symbol
-      });
-      return graphic;
-    }
     cancel() {
+      InfosManager.instance(view).hide();
       this.events.forEach(f => {
         f.remove();
       })
       this.events = [];
       this.graphicsLayer.removeAll();
+      
     }
   }
 });

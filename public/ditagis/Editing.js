@@ -47,12 +47,15 @@ define([
             geometry: options.geometry
           }).then(res => {
             if (res) {
-              let ft = res.features[0];
-              if (ft && ft.attributes) {
-                resolve({
-                  MaNhaMay: ft.attributes[fieldName_NhaMay.MANHAMAY],
-                });
+              if (res.features.length > 0) {
+                let ft = res.features[0];
+                if (ft && ft.attributes) {
+                  resolve({
+                    MaNhaMay: ft.attributes[fieldName_NhaMay.MANHAMAY],
+                  });
+                }
               }
+              else resolve(null);
             } else {
               resolve(null);
             }

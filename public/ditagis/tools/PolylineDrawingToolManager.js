@@ -4,14 +4,17 @@
  * systemVariable: Thông tin khách hàng đang hiển thị
  */
 define([
-    "esri/Graphic", "esri/geometry/Polyline", "esri/symbols/SimpleLineSymbol",
+    "esri/Graphic", "esri/geometry/Polyline",
+    "esri/symbols/SimpleLineSymbol",
     "esri/geometry/SpatialReference",
     "ditagis/tools/SimpleDrawPolyline",
     "ditagis/classes/EventListener",
     "ditagis/editing/PolylineEditing",
+    './DrawInput',
 ], function (Graphic, Polyline, SimpleLineSymbol, SpatialReference,
     SimpleDrawPolyline,
-    EventListener, PolylineEditing
+    EventListener, PolylineEditing,
+    DrawInput
 ) {
         'use strict';
         return class {
@@ -23,7 +26,7 @@ define([
                 this.polylineEditing = new PolylineEditing(this.view)
                 this.eventListener = new EventListener(this);
                 this.registerEvent();
-
+                this.pointInput = new DrawInput(this.view);
             }
             set drawLayer(val) {
                 this._drawLayer = val;
@@ -57,6 +60,19 @@ define([
             drawSimple() {
                 this.cancel();
                 this.simpleDrawPolyline.draw(this._drawLayer);
+            }
+            drawByPointInput() {
+                this.pointInput.getInputPoints().then(rs => {
+                    console.log(rs);
+                    if (rs.paths) {
+                        var geometry = new Polyline({
+                            paths: rs.paths,
+                            spatialReference: this.view.spatialReference
+                        })
+                        this.addFeature(geometry);
+                    }
+
+                });
 
             }
             cancel() {

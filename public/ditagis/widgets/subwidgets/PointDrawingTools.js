@@ -28,11 +28,11 @@ define([
                     type: "nhaptoado"
                 }];
 
-                this.drawManager = new PointDrawingToolManager(this.view);
+                this.drawingManager = new PointDrawingToolManager(this.view);
                 //đăng ký sự kiện khi có sự thay đổi giá trị của systemVariable
                 this.systemVariable.on('change-selectedFeature', () => {
                     //khi giá trị thay đổi thì cập nhật cho drawManager
-                    this.drawManager.drawLayer = this.drawLayer;
+                    this.drawingManager.drawLayer = this.drawLayer;
                 });
                 this.setupWindowKendo();
             }
@@ -42,25 +42,23 @@ define([
             }
             clearEvents() {
                 if (!this.drawLayer || this.drawLayer.geometryType !== 'point') return;
-                this.drawManager.clearEvents();
+                this.drawingManager.clearEvents();
                 this.isStartup = false;
             }
             destroy() {
                 if (this.isStartup) {
-
                     if (!this.view.isMobile) {
-                        this.destroyView();
+                        if (this.container && document.body.contains(this.container))
+                            document.body.removeChild(this.container);
                     }
                     this.isStartup = false;
                 }
-                this.drawManager.clearEvents();
-            }
-            destroyView() {
-                if (this.container && document.body.contains(this.container))
-                    document.body.removeChild(this.container);
+                this.drawingManager.clearEvents();
+                if (!this.inputWindow.element.is(":hidden"))
+                    this.inputWindow.close();
             }
             setupWindowKendo() {
-                this.container = $("#draw-method")[0];
+                this.container = $("#draw-method-point")[0];
                 for (let drawingMethod of this.drawingMethods) {
                     let btn = domConstruct.create("button", {
                         class: 'methods type-draw',
@@ -68,23 +66,21 @@ define([
                     }, this.container);
                     this.clickBtnEvt = on(btn, 'click', () => {
                         this.clickBtnFunc(drawingMethod.type);
-
                     })
-
                 }
                 domConstruct.place(this.container, document.body)
-                this.inputWindow = $('#draw-method').kendoWindow({
+                this.inputWindow = $('#draw-method-point').kendoWindow({
                     title: "Chọn cách thêm điểm",
                     position: {
-                        top: '10%',
-                        left: 'calc(50% - 200px)'
+                        top: 100, // or "100px"
+                        left: 8
                     },
                     visible: false,
                     actions: [
                         "Close"
                     ],
                     close: this.closeWindowKendo.bind(this)
-                }).data("kendoWindow").center();
+                }).data("kendoWindow");
             }
             closeWindowKendo() {
                 this.clearEvents();
@@ -97,10 +93,10 @@ define([
                 if (!this.drawLayer || this.drawLayer.geometryType !== 'point') return;
                 switch (drawingMethod) {
                     case this.drawingMethods[0].type:
-                        this.drawManager.drawSimple();
+                        this.drawingManager.drawSimple();
                         break;
                     case this.drawingMethods[1].type:
-                        this.drawManager.drawByPointInput();
+                        this.drawingManager.drawByPointInput();
                         break;
 
                     default:

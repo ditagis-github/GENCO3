@@ -117,10 +117,10 @@ define([
                             layer.popupTemplate = new PopupTemplate({
                                 content: (target) => {
                                     if (layer.id == defineName.NHAMAY || layer.id == defineName.NHAMAYDIEN) {
-                                        this.view.popup.actions.find(function (action) {
+                                        this.layerActions.items.find(function (action) {
                                             return action.id === 'delete-attachment';
                                         }).visible = false;
-                                        this.view.popup.actions.find(function (action) {
+                                        this.layerActions.items.find(function (action) {
                                             return action.id === 'add-attachment';
                                         }).visible = true;
                                     }
@@ -152,6 +152,10 @@ define([
                 this.view.popup.on("trigger-action", (evt) => {
                     this.triggerActionHandler(evt);
                 });
+            }
+            get layerActions() {
+                if (this.view.popup.selectedFeature)
+                    return this.view.popup.selectedFeature.layer.popupTemplate.actions;
             }
             get layer() {
                 if (this.view.popup.selectedFeature.layer.id == defineName.NHAMAY) {
@@ -256,7 +260,7 @@ define([
                 this.kendoModel = kendo.observable(model);
                 kendo.bind($(container), this.kendoModel);
                 this.view.popup.title = this.layer.title;
-                let updateAction = this.view.popup.actions.find(function (action) {
+                let updateAction = this.layerActions.find(function (action) {
                     return action.id === 'update';
                 });
                 updateAction.className = 'esri-icon-check-mark';
@@ -307,10 +311,10 @@ define([
                 kendo.bind($(container), this.kendoModel);
                 this.view.popup.content = container;
                 this.view.popup.title = this.layer.title;
-                this.view.popup.actions.find(function (action) {
+                this.layerActions.find(function (action) {
                     return action.id === 'delete-attachment';
                 }).visible = true;
-                this.view.popup.actions.find(function (action) {
+                this.layerActions.find(function (action) {
                     return action.id === 'add-attachment';
                 }).visible = false;
             }
@@ -434,11 +438,11 @@ define([
                         attributes = graphic.attributes;
                     if (layer.id == defineName.NHAMAY || layer.id == defineName.NHAMAYDIEN) {
                         if (attributes["Ma"] == "buonkoup" || attributes["Ma"] == "buontuasrah" || attributes["Ma"] == "srepok3") {
-                            this.view.popup.actions.find(function (action) {
+                            this.layerActions.find(function (action) {
                                 return action.id === 'link-website';
                             }).visible = true;
                         } else {
-                            this.view.popup.actions.find(function (action) {
+                            this.layerActions.find(function (action) {
                                 return action.id === 'link-website';
                             }).visible = false;
                         }
@@ -573,10 +577,10 @@ define([
                     });
                     this.kendoModel.set('deleteAttachment', []);
                 }
-                this.view.popup.actions.find(function (action) {
+                this.layerActions.find(function (action) {
                     return action.id === 'delete-attachment';
                 }).visible = false;
-                this.view.popup.actions.find(function (action) {
+                this.layerActions.find(function (action) {
                     return action.id === 'add-attachment';
                 }).visible = true;
                 let query = this.layer.createQuery();

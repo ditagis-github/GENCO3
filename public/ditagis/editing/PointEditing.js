@@ -3,8 +3,9 @@ define([
     "esri/tasks/QueryTask",
     "esri/tasks/support/Query",
     "ditagis/support/Editing",
-    "esri/layers/FeatureLayer"
-], function (constName, QueryTask, Query, EditingSupport, FeatureLayer) {
+    "esri/layers/FeatureLayer",
+    "ditagis/toolview/InfosManager"
+], function (constName, QueryTask, Query, EditingSupport, FeatureLayer, InfosManager) {
     'use strict';
     return class PointEditing {
         constructor(view) {
@@ -41,63 +42,62 @@ define([
                         attributes[i] = layer.drawingAttributes[i];
                     }
                 }
-                //lấy thông tin cập nhật gồm người tạo và thời gian tạo
-                // if(notify)
-                // notify.update({ 'type': 'info', 'message': 'Đang lấy định danh...', 'progress': 20 });
                 const createdInfo = await this.editingSupport.getCreatedInfo(this.view);
                 for (let i in createdInfo) {
                     attributes[i] = createdInfo[i];
                 }
-                let edits = {
-                    addFeatures: [{
-                        geometry: graphic.geometry,
-                        attributes: attributes
-                    }]
-                };
-                layer.applyEdits(edits).then((result) => {
-                    if (result.addFeatureResults.length > 0) {
-                        let objectId = result.addFeatureResults[0].objectId;
-                        if (objectId) {
-                            layer.queryFeatures({
-                                returnGeometry: true,
-                                outSpatialReference: this.view.spatialReference,
-                                where: 'OBJECTID = ' + objectId,
-                                outFields: ['*']
-                            }).then(res => {
-                                //neu tim duoc
-                                if (res.features[0]) {
-                                    let ft = res.features[0];
-                                    this.editingSupport.getMaNhaMay({
-                                        geometry: ft.geometry
-                                    }).then(nhaMayInfo => {
-                                        for (let i in nhaMayInfo) {
-                                            ft.attributes[i] = nhaMayInfo[i];
-                                        }
-                                        layer.applyEdits({
-                                            updateFeatures: [{
-                                                attributes: ft.attributes
-                                            }]
-                                        }).then((result) => {
+                this.editingSupport.getMaNhaMay({
+                    geometry: graphic.geometry
+                }).then(nhaMayInfo => {
+                    if (nhaMayInfo) {
+                        for (let i in nhaMayInfo) {
+                            attributes[i] = nhaMayInfo[i];
+                        }
+                        let edits = {
+                            addFeatures: [{
+                                geometry: graphic.geometry,
+                                attributes: attributes
+                            }]
+                        };
+                        layer.applyEdits(edits).then((result) => {
+                            if (result.addFeatureResults.length > 0) {
+                                let objectId = result.addFeatureResults[0].objectId;
+                                if (objectId) {
+                                    layer.queryFeatures({
+                                        returnGeometry: true,
+                                        outSpatialReference: this.view.spatialReference,
+                                        where: 'OBJECTID = ' + objectId,
+                                        outFields: ['*']
+                                    }).then(res => {
+                                        //neu tim duoc
+                                        if (res.features[0]) {
                                             this.view.popup.open({
                                                 features: [ft],
                                                 updateLocationEnabled: true
                                             });
-                                        });
-                                    })
-                                    this.view.popup.open({
-                                        features: [ft],
-                                        updateLocationEnabled: true
+                                        }
                                     });
                                 }
-                            });
-                        }
-                        //khi applyEdits, nếu phát hiện lỗi
-                        // if (!res.updateFeatureResults[0].error)
-                        // if(notify) notify.update({ 'type': 'danger', 'message': 'Có lỗi xảy ra trong quá trình thực hiện', 'progress': 100 });
+                                var infos = ["Thêm đối tượng thành công"
+                                ];
+                                InfosManager.instance(view).show(infos, "alert-success");
+                            }
+                        });
                     }
-                })
+                    else {
+                        var infos = ["Thêm đối tượng không thành công"
+                        ];
+                        InfosManager.instance(view).show(infos, "alert-error");
+                    }
+                }, (reason) => {
+                    var infos = ["Thêm đối tượng không thành công"
+                    ];
+                    InfosManager.instance(view).show(infos, "alert-error");
+                });
             } catch (err) {
-                console.log(err);
+                var infos = ["Thêm đối tượng không thành công"
+                ];
+                InfosManager.instance(view).show(infos, "alert-error");
             }
         }
 

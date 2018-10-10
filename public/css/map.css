@@ -1077,3 +1077,35 @@ span.esri-icon-close{
 span.esri-icon-close:hover{
     cursor: pointer;
 }
+.dtg-infos-map{
+    top: 35px;
+    left: -8px;
+    width: 233px;
+    position: absolute;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    border: solid 1px #ccc;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #4cae4c;
+    padding: 5px;
+}
+.alert-error{
+    background-color: #dc3545;
+    color: #fff;
+    padding: 5px;
+}
+.alert-warning {
+    color: #fff;
+    background-color: #33b5e5;
+    padding: 5px;
+}
+
+
+
+
+
+

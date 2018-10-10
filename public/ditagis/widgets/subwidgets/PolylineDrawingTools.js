@@ -8,71 +8,114 @@ define([
 
     "ditagis/tools/PointDrawingToolManager",
     "ditagis/tools/PolylineDrawingToolManager",
-
     "ditagis/classes/EventListener",
+
 
 ], function (on,
     domConstruct, domAttr, domClass, dom,
     Expand,
     PointDrawingToolManager, PolylineDrawingToolManager,
-    EventListener) {
-    'use strict';
+    EventListener,
+    ) {
+        'use strict';
 
-    return class {
-        constructor(view) {
-            this.view = view;
-            this.systemVariable = view.systemVariable;
-            this.isStartup = false;
-
-            this._drawLayer = null;
-            this.drawingMethods = [{
-                name: "Mặc định",
-                type: "macdinh"
-            }];
-
-            this.drawingManager = new PolylineDrawingToolManager(view)
-            this.eventListener = new EventListener(this);
-            this.drawingManager.on('draw-finish', (evt) => {
-                let method = evt.method;
+        return class {
+            constructor(view) {
+                this.view = view;
+                this.systemVariable = view.systemVariable;
                 this.isStartup = false;
-            })
-            //đăng ký sự kiện khi có sự thay đổi giá trị của systemVariable
-            this.systemVariable.on('change-selectedFeature', () => {
-                //khi giá trị thay đổi thì cập nhật cho drawingManager
-                this.drawingManager.drawLayer = this.drawLayer;
-            })
+                1
+                this._drawLayer = null;
+                this.drawingMethods = [{
+                    name: "Mặc định",
+                    type: "macdinh"
+                },
+                {
+                    name: "Tọa độ X-Y",
+                    type: "nhaptoado"
+                }];
 
-        }
-        startup() {
-            if (!this.isStartup) {
+                this.drawingManager = new PolylineDrawingToolManager(view)
+                this.eventListener = new EventListener(this);
+                this.drawingManager.on('draw-finish', (evt) => {
+                    let method = evt.method;
+                    this.isStartup = false;
+                })
+                //đăng ký sự kiện khi có sự thay đổi giá trị của systemVariable
+                this.systemVariable.on('change-selectedFeature', () => {
+                    //khi giá trị thay đổi thì cập nhật cho drawingManager
+                    this.drawingManager.drawLayer = this.drawLayer;
+                })
+                this.setupWindowKendo();
+            }
+            startup() {
+                this.inputWindow.open();
+            }
+            clearEvents() {
                 if (!this.drawLayer || this.drawLayer.geometryType !== 'polyline') return;
-                this.drawingManager.drawSimple();
-                this.isStartup = true;
-            }
-        }
-
-        destroy() {
-            if (this.isStartup) {
-                if (!this.view.isMobile) {
-                    this.view.ui.remove(this.expandWidget);
-                    this.destroyView();
-                }
+                this.drawingManager.cancel();
                 this.isStartup = false;
             }
-            this.drawingManager.cancel();
-        }
-        destroyView() {
-            if (this.container && document.body.contains(this.container))
-                document.body.removeChild(this.container);
-        }
-        initView() {
+            setupWindowKendo() {
+                this.container = $("#draw-method-polyline")[0];
+                for (let drawingMethod of this.drawingMethods) {
+                    let btn = domConstruct.create("button", {
+                        class: 'methods type-draw',
+                        innerHTML: drawingMethod.name,
+                    }, this.container);
+                    this.clickBtnEvt = on(btn, 'click', () => {
+                        this.clickBtnFunc(drawingMethod.type);
 
+                    })
+
+                }
+                domConstruct.place(this.container, document.body)
+                this.inputWindow = $('#draw-method-polyline').kendoWindow({
+                    title: "Chọn cách thêm đường",
+                    position: {
+                        top: 100, // or "100px"
+                        left: 8
+                    },
+                    visible: false,
+                    actions: [
+                        "Close"
+                    ],
+                    close: this.closeWindowKendo.bind(this),
+                }).data("kendoWindow");
+            }
+            closeWindowKendo() {
+                this.clearEvents();
+            }
+            destroy() {
+                if (this.isStartup) {
+                    if (!this.view.isMobile) {
+                        if (this.container && document.body.contains(this.container))
+                            document.body.removeChild(this.container);
+                    }
+                    this.isStartup = false;
+                }
+                this.drawingManager.cancel();
+                if (!this.inputWindow.element.is(":hidden"))
+                    this.inputWindow.close();
+            }
+            get drawLayer() {
+                return this.systemVariable.selectedFeature;
+            }
+            clickBtnFunc(drawingMethod) {
+                this.inputWindow.close();
+                if (!this.drawLayer || this.drawLayer.geometryType !== 'polyline') return;
+                switch (drawingMethod) {
+                    case this.drawingMethods[0].type:
+                        this.drawingManager.drawSimple();
+                        break;
+                    case this.drawingMethods[1].type:
+                        this.drawingManager.drawByPointInput();
+                        break;
+
+                    default:
+                        break;
+                }
+            }
 
         }
-        get drawLayer() {
-            return this.systemVariable.selectedFeature;
-        }
-
-
-    }
-});
+    });
