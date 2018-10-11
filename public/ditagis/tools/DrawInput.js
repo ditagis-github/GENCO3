@@ -46,13 +46,11 @@ define(["../core/Base",
                 $("#nhaptoado input[name='toadoy']").val(null);
             }
             closeWindowKendo() {
-                this.paths = [];
                 this.resetInput();
                 this.graphicsLayer.removeAll();
             }
             getInputPoints() {
                 return new Promise((resolve, reject) => {
-                    var inputWindow;
                     $('#nhaptoado').html(
                         `<div class="k-popup-edit-form k-window-content k-content">
                         <div class="k-edit-form-container input-container">
@@ -80,7 +78,7 @@ define(["../core/Base",
                             </div>
                         </div>
                     </div>`);
-                    inputWindow = $('#nhaptoado').kendoWindow({
+                    this.inputWindow = $('#nhaptoado').kendoWindow({
                         title: "Nhập tọa độ",
                         position: {
                             top: 100,
@@ -109,7 +107,7 @@ define(["../core/Base",
                                 paths: this.paths,
                                 point: point
                             });
-                            inputWindow.close();
+                            this.inputWindow.close();
 
                         }
                     });
@@ -127,9 +125,155 @@ define(["../core/Base",
                     });
 
                     $('#nhaptoado .k-grid-cancel').click(function () {
-                        inputWindow.close();
+                        this.inputWindow.close();
                     });
-                    inputWindow.open();
+                    this.inputWindow.open();
+                });
+            }
+            actionEventInputTable() {
+
+                $(document).ready(() => {
+                    var actions = $("div.group-input table td:last-child").html();
+                    $(".k-grid-addnew").attr("disabled", "disabled");
+                    $(".k-grid-complete").attr("disabled", "disabled");
+                    $('#nhaptoado .k-grid-addnew').click(() => {
+                        $(".k-grid-addnew").attr("disabled", "disabled");
+                        var row = '<tr>' +
+                            '<td><input type="number" class="form-control" name="name" id="name"></td>' +
+                            '<td><input type="number" class="form-control" name="department" id="department"></td>' +
+                            '<td>' + actions + '</td>' +
+                            '</tr>';
+                        $("div.group-input table").append(row);
+                    });
+                    $(document).on("click", ".add", (event) => {
+                        var target = event.target;
+                        var empty = false;
+                        var input = $(target).parents("tr").find('input[type="number"]');
+                        input.each(function () {
+                            if (!$(this).val()) {
+                                $(this).addClass("error");
+                                empty = true;
+                            } else {
+                                $(this).removeClass("error");
+                            }
+                        });
+                        $(target).parents("tr").find(".error").first().focus();
+                        if (!empty) {
+                            input.each(function () {
+                                $(this).parent("td").html($(this).val());
+                            });
+                            $(target).parents("tr").find(".add, .edit").toggle();
+                            $(".k-grid-addnew").removeAttr("disabled");
+                            var trs = $("table tbody tr");
+                            this.getPathsOfTable(trs);
+                        }
+
+                    });
+                    // Edit row on edit button click
+                    $(document).on("click", ".edit", function () {
+                        $(this).parents("tr").find("td:not(:last-child)").each(function () {
+                            $(this).html('<input type="number" class="form-control" value="' + $(this).text() + '">');
+                        });
+                        $(this).parents("tr").find(".add, .edit").toggle();
+                        $(".k-grid-addnew").removeAttr("disabled");
+
+                    });
+                    // Delete row on delete button click
+                    $(document).on("click", ".delete", function () {
+                        $(this).parents("tr").remove();
+                        var trs = $("table tbody tr");
+                        this.getPathsOfTable(trs);
+                        $(".k-grid-addnew").removeAttr("disabled");
+                    });
+
+                    $('#nhaptoado .k-grid-cancel').click(() => {
+                        this.inputWindow.close();
+                    });
+                });
+
+
+            }
+            getPathsOfTable(trs) {
+                var paths = [];
+                trs.each(function () {
+                    let toadox = $(this).find('td').eq(0).text();
+                    let toadoy = $(this).find('td').eq(1).text();
+                    var xy = webMercatorUtils.lngLatToXY(parseFloat(toadox), parseFloat(toadoy));
+                    paths.push(xy);
+                });
+                if (paths.length > 1){
+                    $(".k-grid-complete").removeAttr("disabled");
+                }
+                   
+                this.refreshMainGraphic(paths);
+            }
+
+            getInputPolyline() {
+                return new Promise((resolve, reject) => {
+                    $('#nhaptoado').html(
+                        `<div class="k-popup-edit-form k-window-content k-content">
+                        <div class="k-edit-form-container input-container">
+                            <div class="group-input">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Kinh độ</th>
+                                            <th>Vĩ độ</th>
+                                            <th>Chức năng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="number" class="form-control" name="name" id="name"></td>
+                                            <td><input type="number" class="form-control" name="department" id="department"></td>
+                                            <td>
+                                                <a class="add" title="Thêm" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                                                <a class="edit" title="Sửa" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                                                <a class="delete" title="Xóa" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>      
+                            </div>
+                            <div class="k-edit-buttons k-state-default">
+                                <button class="k-button k-button-icontext k-primary k-grid-complete">
+                                    <span class="k-icon k-i-check"> </span>Hoàn thành</button>
+                                <button class="k-button k-button-icontext k-grid-cancel">
+                                    <span class="k-icon k-i-cancel"> </span>Hủy</button>
+                                <button class="k-button k-button-icontext k-grid-addnew">
+                                    <span class="k-icon k-i-plus-circle"> </span>Thêm</button>
+                            </div>
+                        </div>
+                    </div>`);
+                    this.inputWindow = $('#nhaptoado').kendoWindow({
+                        title: "Nhập tọa độ",
+                        position: {
+                            top: 100,
+                            left: 8
+                        },
+                        visible: false,
+                        actions: [
+                            "Close"
+                        ],
+                        close: this.closeWindowKendo.bind(this)
+                    }).data("kendoWindow");
+                    this.actionEventInputTable();
+                    $('#nhaptoado .k-primary').click(() => {
+                        var paths = [];
+                        var trs = $("table tbody tr");
+                        trs.each(function () {
+                            let toadox = $(this).find('td').eq(0).text();
+                            let toadoy = $(this).find('td').eq(1).text();
+                            var xy = webMercatorUtils.lngLatToXY(parseFloat(toadox), parseFloat(toadoy));
+                            paths.push(xy);
+                        });
+                        this.refreshMainGraphic(paths);
+                        resolve({
+                            paths: paths,
+                        });
+                        this.inputWindow.close();
+                    });
+                    this.inputWindow.open();
                 });
             }
         }

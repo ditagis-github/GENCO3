@@ -62,8 +62,7 @@ define([
                 this.simpleDrawPolyline.draw(this._drawLayer);
             }
             drawByPointInput() {
-                this.pointInput.getInputPoints().then(rs => {
-                    console.log(rs);
+                this.pointInput.getInputPolyline().then(rs => {
                     if (rs.paths) {
                         var geometry = new Polyline({
                             paths: rs.paths,

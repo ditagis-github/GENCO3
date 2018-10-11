@@ -2703,9 +2703,14 @@ td.k-group-cell,
     background-color: #ddd;
     border-color: rgba(0,0,0,.2);
 }
-.k-button.k-button-icontext.k-grid-update {
+.k-button.k-button-icontext.k-grid-addnew {
   color: #fff;
   background-color: #4285f4;
+  border-color: rgba(0,0,0,.2);
+}
+.k-button.k-button-icontext[disabled] {
+  color: #999999;
+  background-color: #fafafa;
   border-color: rgba(0,0,0,.2);
 }
 
