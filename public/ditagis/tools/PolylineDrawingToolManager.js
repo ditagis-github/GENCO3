@@ -10,73 +10,77 @@ define([
     "ditagis/tools/SimpleDrawPolyline",
     "ditagis/classes/EventListener",
     "ditagis/editing/PolylineEditing",
-    './DrawInput',
+    './Polyline/InputCoordinates'
 ], function (Graphic, Polyline, SimpleLineSymbol, SpatialReference,
     SimpleDrawPolyline,
     EventListener, PolylineEditing,
     DrawInput
 ) {
-        'use strict';
-        return class {
-            constructor(view, layers) {
-                this.view = view;
-                this.systemVariable = view.systemVariable;
-                this._drawLayer = null;
-                this.simpleDrawPolyline = new SimpleDrawPolyline(view);
-                this.polylineEditing = new PolylineEditing(this.view)
-                this.eventListener = new EventListener(this);
-                this.registerEvent();
-                this.pointInput = new DrawInput(this.view);
-            }
-            set drawLayer(val) {
-                this._drawLayer = val;
-            }
-            get drawLayer() {
-                return this._drawLayer;
-            }
-            drawFinish(geometry, method) {
-                //kich hoat su kien
-                this.eventListener.fire('draw-finish', {
-                    geometry: geometry,
-                    method: method
-                });
-                //applyEdit
-                if (geometry && geometry.paths.length > 0)
+    'use strict';
+    return class {
+        constructor(view, layers) {
+            this.view = view;
+            this.systemVariable = view.systemVariable;
+            this._drawLayer = null;
+            this.simpleDrawPolyline = new SimpleDrawPolyline(view);
+            this.polylineEditing = new PolylineEditing(this.view)
+            this.eventListener = new EventListener(this);
+            this.registerEvent();
+            this.drawInput = new DrawInput(this.view);
+        }
+        set drawLayer(val) {
+            this._drawLayer = val;
+        }
+        get drawLayer() {
+            return this._drawLayer;
+        }
+        drawFinish(geometry, method) {
+            //kich hoat su kien
+            this.eventListener.fire('draw-finish', {
+                geometry: geometry,
+                method: method
+            });
+            //applyEdit
+            if (geometry && geometry.paths.length > 0)
+                this.addFeature(geometry);
+        }
+        addFeature(geometry) {
+            this.polylineEditing.draw(this.drawLayer, geometry, this.view).then((res) => {
+                this.simpleDrawPolyline.clearGraphic();
+                this.simpleDrawPolyline.geometry = null;
+            }).catch(err => {
+                this.simpleDrawPolyline.clearGraphic();
+            })
+        }
+        registerEvent() {
+            this.simpleDrawPolyline.on('draw-finish', (geometry) => {
+                this.drawFinish(geometry, 'simple')
+            })
+        }
+        drawSimple() {
+            this.cancel();
+            this.simpleDrawPolyline.draw(this._drawLayer);
+        }
+        drawByPointInput() {
+            // if (!this.inputCoordinate) {
+            //     this.inputCoordinate = new InputCoordinates();
+            // }
+            // this.inputCoordinate.open();
+            this.drawInput.getInputPolyline().then(rs => {
+                if (rs.paths) {
+                    var geometry = new Polyline({
+                        paths: rs.paths,
+                        spatialReference: this.view.spatialReference
+                    })
                     this.addFeature(geometry);
-            }
-            addFeature(geometry) {
-                this.polylineEditing.draw(this.drawLayer, geometry, this.view).then((res) => {
-                    this.simpleDrawPolyline.clearGraphic();
-                    this.simpleDrawPolyline.geometry = null;
-                }).catch(err => {
-                    this.simpleDrawPolyline.clearGraphic();
-                })
-            }
-            registerEvent() {
-                this.simpleDrawPolyline.on('draw-finish', (geometry) => {
-                    this.drawFinish(geometry, 'simple')
-                })
-            }
-            drawSimple() {
-                this.cancel();
-                this.simpleDrawPolyline.draw(this._drawLayer);
-            }
-            drawByPointInput() {
-                this.pointInput.getInputPolyline().then(rs => {
-                    if (rs.paths) {
-                        var geometry = new Polyline({
-                            paths: rs.paths,
-                            spatialReference: this.view.spatialReference
-                        })
-                        this.addFeature(geometry);
-                    }
+                }
 
-                });
-
-            }
-            cancel() {
-                this.simpleDrawPolyline.cancel();
-            }
+            });
 
         }
-    });
+        cancel() {
+            this.simpleDrawPolyline.cancel();
+        }
+
+    }
+});

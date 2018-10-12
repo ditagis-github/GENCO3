@@ -113,7 +113,8 @@ span.btn-danger.pull-right.closePanel.closePanel_print {
     overflow: hidden;
 }
 
-#layer-list-panel ,#legend-layer-list-panel{
+#layer-list-panel,
+#legend-layer-list-panel {
     width: 320px;
     background-color: #f9f9f9;
     float: right;
@@ -206,6 +207,7 @@ button.accordion {
     outline: none;
     transition: 0.4s;
 }
+
 button.accordion.active,
 button.accordion:hover {
     background-color: #9fd0ec;
@@ -348,7 +350,8 @@ fieldset[disabled] .btn-primary.active {
     max-width: 100%;
 }
 
-.widget-list-factory,.widget-list-diembao {
+.widget-list-factory,
+.widget-list-diembao {
     left: 20px;
     opacity: 1;
     top: 80px;
@@ -959,6 +962,7 @@ i.fa.fa-map-marker {
     font-size: 15px;
     padding: 7px
 }
+
 #pane-tools>div>div>span>span>span.k-select,
 #pane-tools>div>div>span>span>span.k-input {
     background: #0079c1;
@@ -1043,26 +1047,31 @@ div {
 .pre-line {
     white-space: pre-line;
 }
+
 div.close-widget {
     background-color: #ff3448;
     float: right;
 }
-.close-item{
+
+.close-item {
     height: 34px;
     width: 34px;
     line-height: 34px;
     margin: 1px 1px 1px 0;
     border: solid 1px #ccc;
 }
-span.esri-icon-close{
+
+span.esri-icon-close {
     margin: 3px;
 }
+
 .close-item span {
     color: #fff;
     font-size: 15px;
     padding: 7px;
 }
-.title-pane{
+
+.title-pane {
     font-size: 15px;
     font-weight: 700;
     line-height: 36px;
@@ -1074,10 +1083,12 @@ span.esri-icon-close{
     color: #fff;
     text-align: left !important;
 }
-span.esri-icon-close:hover{
+
+span.esri-icon-close:hover {
     cursor: pointer;
 }
-.dtg-infos-map{
+
+.dtg-infos-map {
     top: 35px;
     left: -8px;
     width: 233px;
@@ -1093,19 +1104,42 @@ span.esri-icon-close:hover{
     border-color: #4cae4c;
     padding: 5px;
 }
-.alert-error{
+
+.alert-error {
     background-color: #dc3545;
     color: #fff;
     padding: 5px;
 }
+
 .alert-warning {
     color: #fff;
     background-color: #33b5e5;
     padding: 5px;
 }
 
+.polyline-input-coordinates {
+    width: 100%;
+}
 
+.polyline-input-coordinates .row-new {}
 
+.polyline-input-coordinates>.row {
+    display: flex;
+    flex-direction: row;
+}
 
+.polyline-input-coordinates>.row>.input {
+    flex-grow: 1;
+}
 
+.polyline-input-coordinates>.row>.input>input[type="text"] {
+    width: 100%;
+}
 
+.polyline-input-coordinates>.row>.action {
+    width: 30px;
+}
+
+.polyline-input-coordinates>.k-grid-header {
+    display: none;
+}
