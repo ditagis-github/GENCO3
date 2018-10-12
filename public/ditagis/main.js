@@ -102,13 +102,6 @@ require([
                 if (layerCfg.Definition != null && layerCfg.Definition != "") {
                     fl.definitionExpression = layerCfg.Definition;
                 }
-                if (fl.id != defineName.NHAMAYDIEN) {
-                    fl.minScale = 30000;
-                    fl.minScale = 36111.909643;
-                } else {
-                    fl.opacity = 0.2;
-                    fl.visible = true;
-                }
 
                 // nếu layer tồn tại group
                 if (layerCfg.GroupID) {
