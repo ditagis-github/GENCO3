@@ -93,13 +93,8 @@ define(["../../core/Base",
             "Y",
             {
               command: "destroy",
-<<<<<<< HEAD
-              title: "Xóa",
-              width: "100px"
-=======
               text: "Xóa",
-              width: "150px"
->>>>>>> 94e548051c86dbedbbf3a92d7822b23933762152
+              width: "100px"
             }
           ],
           toolbar: [{
