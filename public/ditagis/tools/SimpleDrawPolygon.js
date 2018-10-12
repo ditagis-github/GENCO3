@@ -9,9 +9,9 @@ define([
   "esri/views/2d/draw/Draw",
   "esri/layers/GraphicsLayer",
   "esri/Graphic",
-  "esri/geometry/Polyline",
+  "esri/geometry/Polygon",
   "ditagis/toolview/InfosManager",
-], function (Base, Draw, GraphicsLayer, Graphic, Polyline, InfosManager) {
+], function (Base, Draw, GraphicsLayer, Graphic, Polygon, InfosManager) {
   'use strict';
   return class extends Base {
     constructor(view) {
@@ -47,7 +47,7 @@ define([
         "Nhấn nút Esc để hủy"
       ];
       InfosManager.instance(view).show(infos);
-      
+
     }
     updateVertices(evt) {
       this.graphicsLayer.removeAll();
@@ -63,17 +63,22 @@ define([
       }
     }
     createGraphic(vertices) {
+      var polygon = {
+        type: "polygon", // autocasts as Polygon
+        rings: vertices,
+        spatialReference: view.spatialReference
+      };
+    
       var graphic = new Graphic({
-        geometry: new Polyline({
-          paths: [vertices],
-          spatialReference: this.view.spatialReference
-        }),
+        geometry: polygon,
         symbol: {
-          type: "simple-line",
-          color: [178, 102, 234],
-          width: 1,
-          cap: "round",
-          join: "round"
+          type: "simple-fill", // autocasts as SimpleFillSymbol
+          color: [249, 249, 249,0.3],
+          style: "solid",
+          outline: {  // autocasts as SimpleLineSymbol
+            color: [178, 102, 234],
+            width: 1
+          }
         }
       });
       return graphic;
@@ -85,7 +90,7 @@ define([
       })
       this.events = [];
       this.graphicsLayer.removeAll();
-      
+
     }
   }
 });

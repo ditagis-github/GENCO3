@@ -47,7 +47,8 @@ define([
                     attributes[i] = createdInfo[i];
                 }
                 this.editingSupport.getMaNhaMay({
-                    geometry: graphic.geometry
+                    geometry: graphic.geometry,
+                    layerID: layer.id
                 }).then(nhaMayInfo => {
                     if (nhaMayInfo) {
                         for (let i in nhaMayInfo) {

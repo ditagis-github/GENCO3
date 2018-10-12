@@ -46,10 +46,7 @@ define([
         }
         addFeature(geometry) {
             this.polylineEditing.draw(this.drawLayer, geometry, this.view).then((res) => {
-                this.simpleDrawPolyline.clearGraphic();
-                this.simpleDrawPolyline.geometry = null;
             }).catch(err => {
-                this.simpleDrawPolyline.clearGraphic();
             })
         }
         registerEvent() {

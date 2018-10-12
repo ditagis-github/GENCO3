@@ -2,7 +2,8 @@ define([
   "../core/ConstName",
   "esri/tasks/QueryTask",
   "esri/tasks/support/Query",
-], function (constName, QueryTask, Query) {
+  "ditagis/core/LinkAPI"
+], function (constName, QueryTask, Query, LinkAPI) {
   'use strict';
   return class {
     constructor(view, options = {}) {
@@ -50,9 +51,19 @@ define([
               if (res.features.length > 0) {
                 let ft = res.features[0];
                 if (ft && ft.attributes) {
-                  resolve({
-                    MaNhaMay: ft.attributes[fieldName_NhaMay.MANHAMAY],
+                  $.ajax({
+                    url: `${LinkAPI.MADOITUONG}/${options.layerID}/${ft.attributes[fieldName_NhaMay.MANHAMAY]}`,
+                    success: function (madoituong) {
+                      if (madoituong) {
+                        resolve({
+                          MaNhaMay: ft.attributes[fieldName_NhaMay.MANHAMAY],
+                          MaDoiTuong: madoituong
+                        });
+                      }
+
+                    }
                   });
+
                 }
               }
               else resolve(null);
@@ -67,6 +78,7 @@ define([
         }
       });
     }
+
     getLocationInfo(options) {
 
       return new Promise((resolve, reject) => {

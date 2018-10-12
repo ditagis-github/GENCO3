@@ -183,7 +183,10 @@ define([
                         break;
                     case "delete":
                         if (per && per.delete) {
-                            this.deleteFeature();
+                            if (confirm("Chắc chắn xóa đối tượng?")) {
+                                this.deleteFeature();
+                            }
+
                         }
                         break;
                     case "add-attachment":

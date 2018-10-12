@@ -51,11 +51,12 @@ define(["../../core/Base",
     getPathsOfTable(datas) {
       var paths = [];
       datas.forEach(data => {
-        var xy = webMercatorUtils.lngLatToXY(data.X, data.Y);
+        var xy = webMercatorUtils.lngLatToXY(parseFloat(data.X), parseFloat(data.Y));
         paths.push(xy);
       });
 
       this.refreshMainGraphic(paths);
+      return paths;
     }
 
     getInputPolyline() {
@@ -67,14 +68,14 @@ define(["../../core/Base",
               model: {
                 fields: {
                   X: {
-                    type: "number",
+                    // type: "number",
                     nullable: false,
                     validation: {
                       required: true
                     }
                   },
                   Y: {
-                    type: "number",
+                    // type: "number",
                     nullable: false,
                     validation: {
                       required: true
@@ -84,7 +85,6 @@ define(["../../core/Base",
               }
             },
           },
-          height: 550,
           scrollable: true,
           pageable: false,
           editable: "incell",
@@ -94,7 +94,7 @@ define(["../../core/Base",
             {
               command: "destroy",
               title: "Xóa",
-              width: "150px"
+              width: "100px"
             }
           ],
           toolbar: [{
@@ -125,6 +125,8 @@ define(["../../core/Base",
             top: 100,
             left: 8
           },
+          width: 400,
+          height:400,
           visible: false,
           actions: [
             "Close"

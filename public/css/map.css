@@ -1143,3 +1143,9 @@ span.esri-icon-close:hover {
 .polyline-input-coordinates>.k-grid-header {
     display: none;
 }
+img.img-symbol{
+    width: 25px;
+    height: 25px;
+    border-color: #ff3448;
+    border: solid 1px #ccc;
+}

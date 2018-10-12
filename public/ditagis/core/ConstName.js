@@ -5,5 +5,6 @@ var defineName = {
     GIAOTHONG: "giaothongLYR"
 };
 var fieldName_NhaMay = {
-    MANHAMAY: "MaNhaMay"
+    MANHAMAY: "MaNhaMay",
+    MADOITUONG: "MaDoiTuong"
 }

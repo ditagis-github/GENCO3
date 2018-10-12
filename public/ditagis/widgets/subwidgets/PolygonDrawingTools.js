@@ -1,13 +1,13 @@
 define([
     "dojo/on",
     "dojo/dom-construct",
-    "ditagis/tools/PolylineDrawingToolManager",
+    "ditagis/tools/PolygonDrawingToolManager",
     "ditagis/classes/EventListener",
 
 
 ], function (on,
     domConstruct,
-    PolylineDrawingToolManager,
+    PolygonDrawingToolManager,
     EventListener,
     ) {
         'use strict';
@@ -28,7 +28,7 @@ define([
                     type: "nhaptoado"
                 }];
 
-                this.drawingManager = new PolylineDrawingToolManager(view)
+                this.drawingManager = new PolygonDrawingToolManager(view)
                 this.eventListener = new EventListener(this);
                 this.drawingManager.on('draw-finish', (evt) => {
                     this.isStartup = false;
@@ -49,7 +49,7 @@ define([
                 this.isStartup = false;
             }
             setupWindowKendo() {
-                this.container = $("#draw-method-polyline")[0];
+                this.container = $("#draw-method-polygon")[0];
                 for (let drawingMethod of this.drawingMethods) {
                     let btn = domConstruct.create("button", {
                         class: 'methods type-draw',
@@ -62,8 +62,8 @@ define([
 
                 }
                 domConstruct.place(this.container, document.body)
-                this.inputWindow = $('#draw-method-polyline').kendoWindow({
-                    title: "Chọn cách thêm đường",
+                this.inputWindow = $('#draw-method-polygon').kendoWindow({
+                    title: "Chọn cách thêm vùng",
                     position: {
                         top: 100, // or "100px"
                         left: 8
@@ -95,7 +95,7 @@ define([
             }
             clickBtnFunc(drawingMethod) {
                 this.inputWindow.close();
-                if (!this.drawLayer || this.drawLayer.geometryType !== 'polyline') return;
+                if (!this.drawLayer || this.drawLayer.geometryType !== 'polygon') return;
                 switch (drawingMethod) {
                     case this.drawingMethods[0].type:
                         this.drawingManager.drawSimple();

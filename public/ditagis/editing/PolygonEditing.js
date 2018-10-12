@@ -1,26 +1,13 @@
 define([
-
-    "esri/geometry/support/webMercatorUtils",
-    "esri/geometry/Point",
-    "esri/geometry/Polyline",
-    "esri/Graphic",
-    "esri/symbols/SimpleMarkerSymbol",
-    "esri/geometry/geometryEngineAsync",
-    "esri/geometry/geometryEngine",
-    "esri/geometry/SpatialReference",
-    "ditagis/support/PolylineAttributes",
     "ditagis/support/Editing",
     "ditagis/toolview/InfosManager"
-], function (webMercatorUtils, Point, Polyline, Graphic, SimpleMarkerSymbol,
-    geometryEngineAsync, geometryEngine, SpatialReference, PolylineAttributes,
-    EditingSupport, InfosManager) {
+], function (EditingSupport, InfosManager) {
         'use strict';
         return class {
             constructor(view) {
                 this.view = view;
                 this.systemVariable = view.systemVariable;
                 this.editingSupport = new EditingSupport(view);
-                this.plAttrs = new PolylineAttributes(this.view);
                 this.systemVariable = this.view.systemVariable;
             }
             get layer() {
@@ -33,7 +20,6 @@ define([
             draw(drawLayer = this.layer, geometry) {
                 return new Promise((resolve, reject) => {
                     let attributes = {};
-                    this.plAttrs.layer = drawLayer;
                     for (var i in drawLayer.drawingAttributes) {
                         attributes[i] = drawLayer.drawingAttributes[i];
                     }

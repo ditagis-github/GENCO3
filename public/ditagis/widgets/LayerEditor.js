@@ -1,17 +1,14 @@
 define([
   "../core/Base",
   "dojo/on",
-  "dojo/dom-construct",
-  "dojo/dom-class",
-  "dojo/dom",
-  "esri/widgets/Expand",
   "../core/ConstName",
   "ditagis/widgets/subwidgets/PointDrawingTools",
-  "ditagis/widgets/subwidgets/PolylineDrawingTools"
-], function (Base, on,
-  domConstruct, domClass, dom,
-  Expand, constName,
-  PointDrawingTools, PolylineDrawingTools) {
+  "ditagis/widgets/subwidgets/PolylineDrawingTools",
+  "ditagis/widgets/subwidgets/PolygonDrawingTools"
+], function (Base, on, constName,
+  PointDrawingTools, PolylineDrawingTools,
+  PolygonDrawingTools
+) {
     'use strict';
     return class extends Base {
       constructor(view, options = {}) {
@@ -33,7 +30,8 @@ define([
         this.initView();
         this.pointDrawingTools = new PointDrawingTools(view);
         this.polylineDrawingTools = new PolylineDrawingTools(view);
-        
+        this.polygonDrawingTools = new PolygonDrawingTools(view);
+
 
 
       }
@@ -64,16 +62,18 @@ define([
       clearEvents() {
         this.pointDrawingTools.clearEvents();
         // this.polylineDrawingTools.clearEvents();
+        // this.polygonDrawingTools.clearEvents();
       }
       destroy() {
         if (this._isStartup) {
           this.pointDrawingTools.destroy();
           this.polylineDrawingTools.destroy();
+          this.polygonDrawingTools.destroy();
           this._isStartup = false;
         }
       }
       rendererLayerGroup(layer) {
-        if (layer.parent && layer.parent.type === 'group' && layer.geometryType != "polygon") {
+        if (layer.parent && layer.parent.type === 'group') {
           let panelGroup = this._layerGroups[layer.parent.id];
           if (!panelGroup) {
             let li = document.createElement('li');
@@ -116,7 +116,7 @@ define([
             const img = symbol.url;
             let contentSymbol;
             if (img) {
-              contentSymbol = `<img src='${img}'></img>`;
+              contentSymbol = `<img src='${img}' class="img-symbol"></img>`;
             } else {
               if (symbol.type === "simple-marker") {
                 contentSymbol = `<svg overflow="hidden" width="30" height="30" style="touch-action: none;">
@@ -143,6 +143,21 @@ define([
                            transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)">
                            </path>
                            </svg>`
+              }
+              else if (symbol.type === "simple-fill") {
+                var rgb_fill = "rgb(" + symbol.color.r + ", " + symbol.color.g + ", " + symbol.color.b + ")";
+                var rgb_stroke = "rgb(" + symbol.outline.color.r + ", " + symbol.outline.color.g + ", " + symbol.outline.color.b + ")";
+                contentSymbol = "<svg overflow='hidden' width='24' height='24' style='touch-action: none;'>"
+                  + "<defs></defs>"
+                  + "<g transform='matrix(1.00000000,0.00000000,0.00000000,1.00000000,12.00000000,12.00000000)'>"
+                  + "   <path fill='" + rgb_fill + "' fill-opacity= '" + symbol.color.a + "' stroke= '" + rgb_stroke + "' stroke-opacity='" + symbol.outline.color.a
+                  + "'       stroke-width='0.5333333333333333' stroke-linecap='butt' stroke-linejoin='miter' stroke-miterlimit='10'"
+                  + "        path='M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z' d='M-10-10L 10 0L 10 10L-10 10L-10-10Z'"
+                  + "        fill-rule='evenodd' stroke-dasharray='none' dojoGfxStrokeStyle='solid'></path>"
+                  + " </g>"
+                  + "  </svg>";
+                 
+
               }
             }
             layerSymbols.push({
@@ -190,8 +205,23 @@ define([
                            </path>
                            </svg>`
               }
+              else if (symbol.type === "simple-fill") {
+                var rgb_fill = "rgb(" + symbol.color.r + ", " + symbol.color.g + ", " + symbol.color.b + ")";
+                var rgb_stroke = "rgb(" + symbol.outline.color.r + ", " + symbol.outline.color.g + ", " + symbol.outline.color.b + ")";
+                contentSymbol = "<svg overflow='hidden' width='24' height='24' style='touch-action: none;'>"
+                  + "<defs></defs>"
+                  + "<g transform='matrix(1.00000000,0.00000000,0.00000000,1.00000000,12.00000000,12.00000000)'>"
+                  + "   <path fill='" + rgb_fill + "' fill-opacity= '" + symbol.color.a + "' stroke= '" + rgb_stroke + "' stroke-opacity='" + symbol.outline.color.a
+                  + "'       stroke-width='0.5333333333333333' stroke-linecap='butt' stroke-linejoin='miter' stroke-miterlimit='10'"
+                  + "        path='M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z' d='M-10-10L 10 0L 10 10L-10 10L-10-10Z'"
+                  + "        fill-rule='evenodd' stroke-dasharray='none' dojoGfxStrokeStyle='solid'></path>"
+                  + " </g>"
+                  + "  </svg>";
+
+              }
               //nếu như có hình ảnh thì hiển thị hình ảnh
               else {
+                console.log(symbol.type);
                 const img = symbol.url;
                 contentSymbol = `<img src='${img}' style="width: 25px;"></img>`;
               }
@@ -264,7 +294,7 @@ define([
 
           var title_widget = $("<div/>", {
             width: "100%",
-            class:"title-widget"
+            class: "title-widget"
           }).appendTo(this._container);
           $("<div/>", {
             class: "title-pane",
@@ -315,16 +345,16 @@ define([
         this.selectedFeature = layer;
         this.polylineDrawingTools.destroy();
         this.pointDrawingTools.destroy();
+        this.polygonDrawingTools.destroy();
         switch (layer.geometryType) {
           case 'point':
             this.pointDrawingTools.startup();
-            if (!this.view.isMobile) {
-              if (this.polylineDrawingTools.expandWidget)
-                this.polylineDrawingTools.expandWidget.collapse();
-            }
             break;
           case 'polyline':
-          this.polylineDrawingTools.startup();
+            this.polylineDrawingTools.startup();
+            break;
+          case 'polygon':
+            this.polygonDrawingTools.startup();
             break;
           default:
             console.log("Chưa được liệt kê")
