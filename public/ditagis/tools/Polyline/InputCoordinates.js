@@ -93,7 +93,7 @@ define(["../../core/Base",
             "Y",
             {
               command: "destroy",
-              title: "Xóa",
+              text: "Xóa",
               width: "150px"
             }
           ],
@@ -121,6 +121,8 @@ define(["../../core/Base",
 
         this.inputWindow = this.windowContent.kendoWindow({
           title: "Nhập tọa độ (VN2000)",
+          width: 300,
+          height: 400,
           position: {
             top: 100,
             left: 8
