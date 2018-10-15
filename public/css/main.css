@@ -3,7 +3,7 @@
 }
 .header-navbar {
     display: grid;
-    grid-template-columns: 15% auto auto;
+    grid-template-columns: 15% auto 11%;
     padding: 2px;
 }
 .logo img {
@@ -330,4 +330,35 @@ table.table .form-control.error {
 }
 table.table td .edit {
     display: none;
+}
+.nav {
+    margin: 0;
+    margin-right: 8px;
+}
+.nav .open>a,.nav .open>a:hover,.nav .open>a:focus {
+    background-color: #eee;
+    border-color: #428bca
+}
+.nav>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 15px
+}
+a {
+    color: #428bca;
+    text-decoration: none
+}
+
+a:hover,a:focus {
+    color: #2a6496;
+}
+
+a:focus {
+    outline: thin dotted #333;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px
+}
+.dropdown-user li:first-child a span {
+    color: #ef4040;
+    font-weight: 700;
 }

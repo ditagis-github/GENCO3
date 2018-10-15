@@ -1,3 +1,4 @@
+document.getElementById("userName").innerHTML = localStorage.getItem("username");
 require([
     "esri/Map",
     "ditagis/views/MapView",
@@ -65,7 +66,7 @@ require([
             initFeatureLayer();
             mapTools = new MapTools(view);
         });
-        
+
         function initFeatureLayer() {
 
             for (const layerCfg of view.systemVariable.user.Layers) {
@@ -89,7 +90,7 @@ require([
                     url: layerCfg.Url,
                     title: layerCfg.LayerTitle,
                     id: layerCfg.LayerID,
-                    groupId:layerCfg.GroupID,
+                    groupId: layerCfg.GroupID,
                     outFields: layerCfg.OutFields ? layerCfg.OutFields.split(',') : ['*'],
                     permission: {
                         create: layerCfg.IsCreate,
@@ -153,7 +154,7 @@ require([
         });
         var count = 0;
         var layerNhaMay;
-        
+
         view.on("layerview-create", function (event) {
             let layer = event.layer;
             if (event.layer.id === defineName.NHAMAYDIEN) {
@@ -161,10 +162,10 @@ require([
                 new Renderer(view, layerNhaMay);
                 mapTools.setLayerNhaMay(layerNhaMay);
             }
-            if(event.layer.id === "baoLYR"){
+            if (event.layer.id === "baoLYR") {
                 var layerBao = event.layerView.layer;
                 layerBao.listMode = 'hide';
-                new HienThiBao(view,layerBao)
+                new HienThiBao(view, layerBao)
             }
         });
     });

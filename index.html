@@ -31,11 +31,28 @@
                     Tổng công ty phát điện 3
                 </div>
             </div>
-            <div class="user-setting">
-                <div>
-                    <a class="menu" href="/login.html">Đăng xuất</a>
-                </div>
-            </div>
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">
+                        <i class="fa fa-user fa-fw"></i>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li>
+                            <a>
+                                <span id="userName" class="user">User</span>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="/login.html">
+                                <i class="fa fa-sign-out fa-fw"></i>Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
         </div>
     </nav>
     <div id="header_template">
@@ -99,9 +116,6 @@
     <div id="viewDiv">
     </div>
     <div id="weather-panel" style="display: none;">
-        <!-- <div class="panel-heading">
-            <h3 class="panel-title">Thời tiết</h3>
-        </div> -->
         <div class="panel-primary" style="max-height:650px;overflow: hidden;">
             <div class="row-item">
                 Nhiệt độ
@@ -182,11 +196,9 @@
     </div>
     <div class="widget-list">
         <div id="toggle-basemap"></div>
-
-        <!-- <div class="horizontal-scroll-wrapper squares" id="danhsachnhamay">
-
-        </div> -->
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="../public/ditagis/libs/jquery.min.js"></script>
     <script src="../public/ditagis/libs/kendo.all.min.js"></script>
     <script src="../public/ditagis/libs/jszip.js"></script>
@@ -195,8 +207,8 @@
     <script src="https://js.arcgis.com/4.8/"></script>
     <script src="../public/ditagis/core/ConstName.js"></script>
     <script src="../public/ditagis/main.js"></script>
-    
-    
+
+
 </body>
 
 </html>

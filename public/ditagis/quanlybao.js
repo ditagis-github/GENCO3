@@ -1,3 +1,4 @@
+document.getElementById("userName").innerHTML = localStorage.getItem("username");
 require([
     "esri/Map",
     "ditagis/views/MapView",
