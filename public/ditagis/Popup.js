@@ -170,6 +170,7 @@ define([
                 let actionId = event.action.id,
                     selectedFeature = this.view.popup.viewModel.selectedFeature,
                     layer = selectedFeature.layer;
+                    if(!layer) return;
                 const per = layer.permission;
                 switch (actionId) {
                     case "update":
@@ -323,7 +324,7 @@ define([
             }
             editField(field, model, divInfo) {
                 let inputHTML = '';
-                if (field.type === 'oid' || this.isFireField(field.name))
+                if (field.type === 'oid' || (this.isFireField(field.name) && this.attributes[field.name]))
                     return;
                 if (field.domain && field.domain.type === "codedValue") {
                     let domain = field.domain,
@@ -437,7 +438,7 @@ define([
             contentPopup(target) {
                 return __awaiter(this, void 0, void 0, function* () {
                     const graphic = target.graphic,
-                        layer = graphic.layer,
+                        layer = graphic.layer || graphic.sourceLayer,
                         attributes = graphic.attributes;
                     if (layer.id == defineName.NHAMAY || layer.id == defineName.NHAMAYDIEN) {
                         if (attributes["Ma"] == "buonkoup" || attributes["Ma"] == "buontuasrah" || attributes["Ma"] == "srepok3") {

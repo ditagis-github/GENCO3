@@ -2,38 +2,26 @@ document.getElementById("userName").innerHTML = localStorage.getItem("username")
 require([
     "esri/Map",
     "ditagis/views/MapView",
-    "esri/Graphic",
     "esri/layers/GroupLayer",
-    "esri/geometry/Polyline",
-    "esri/geometry/geometryEngine",
     "esri/widgets/BasemapToggle",
-    "esri/widgets/Zoom",
     "ditagis/layers/FeatureLayer",
-    "esri/layers/MapImageLayer",
-    "esri/geometry/Extent",
     "ditagis/Popup",
     "ditagis/MapConfigs",
     "ditagis/maptools/thoitiet",
     "ditagis/maptools/hiddenmap",
     "ditagis/maptools/map",
     "ditagis/maptools/hienthibao",
-    "esri/core/watchUtils",
     "ditagis/support/Renderer",
     "ditagis/classes/SystemStatusObject",
-    "dojo/dom-construct",
-    "esri/widgets/Print",
-    "esri/widgets/LayerList",
     "dojo/domReady!"
 ], function (
-    Map, MapView, Graphic, GroupLayer,
-    Polyline, geometryEngine,
-    BasemapToggle, Zoom,
-    FeatureLayer, MapImageLayer,
-    Extent, Popup, MapConfigs, ThoiTiet, HiddenMap,
+    Map, MapView, GroupLayer,
+    BasemapToggle,
+    FeatureLayer,
+    Popup, MapConfigs, ThoiTiet, HiddenMap,
     MapTools, HienThiBao,
-    watchUtils, Renderer, SystemStatusObject,
-    domConstruct, Print, LayerList
-) {
+    Renderer, SystemStatusObject,
+    ) {
         var map = new Map({
             basemap: "osm"
         });
@@ -137,10 +125,10 @@ require([
             // thì kiểm tra đối tượng có phải là nhà máy hay không
             // nếu là nhà máy thì hiển thị thời tiết lên
             if (!this.view.draw) {
-                if (newVal && newVal.layer.id == defineName.NHAMAY) {
+                if (newVal && newVal.layer && newVal.layer.id == defineName.NHAMAY) {
                     var manhamay = newVal.attributes[fieldName_NhaMay.MANHAMAY];
                     thoitiet.laythongtinthoitiet(newVal.geometry, manhamay);
-                } else if (newVal && newVal.layer.id == defineName.NHAMAYDIEN) {
+                } else if (newVal && newVal.layer && newVal.layer.id == defineName.NHAMAYDIEN) {
                     var manhamay = newVal.attributes[fieldName_NhaMay.MANHAMAY];
                     thoitiet.laythongtinthoitiet(newVal.geometry.centroid, manhamay);
                 }
@@ -168,4 +156,5 @@ require([
                 new HienThiBao(view, layerBao)
             }
         });
+        
     });

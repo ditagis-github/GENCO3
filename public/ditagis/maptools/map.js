@@ -8,11 +8,13 @@ define([
     "ditagis/widgets/QueryLayer",
     "ditagis/toolview/PaneManager",
     "esri/widgets/LayerList",
+    "esri/widgets/Search",
+    "esri/layers/FeatureLayer"
 
 ], function (Locate, LocateViewModel, Legend, Print, Home,
     LayerEditor,
     QueryLayer,
-    PaneManager, LayerList
+    PaneManager, LayerList, Search, FeatureLayer
 ) {
 
         return class {
@@ -57,6 +59,40 @@ define([
                     $("#weather-panel").hide();
                     $(".pane-item").addClass("hidden");
                 });
+                var searchWidget = new Search({  
+                    includeDefaultSources:false, 
+                    locationEnabledBoolean:false,
+                    view: view,
+                    container:"search-pane",
+                    allPlaceholder:"Nhập mã đối tượng"
+                 });  
+                view.when(() => {
+                    // view.ui.add(searchWidget, {
+                    //     position: "top-right"
+                    // });
+                });
+                searchWidget.on("search-focus", function (event) {
+                    document.querySelector('.esri-search__input').onfocusout = null;
+                });
+                this.view.on('layerview-create', (evt) => {
+                    const layer = evt.layer;
+                    var field = layer.getFields().find(function (element) {
+                        return element.name == fieldName_NhaMay.MADOITUONG;
+                    });
+                    if (layer.type === 'feature' && layer.permission && layer.permission.view && field) {
+                        var feature = {
+                            featureLayer: layer,
+                            searchFields: ["MaDoiTuong"],
+                            displayField: "MaDoiTuong",
+                            exactMatch: true,
+                            outFields: ["*"],
+                            name: layer.title,
+                            placeholder:"Nhập mã đối tượng"
+                        }
+                        searchWidget.sources.push(feature);
+                    }
+                });
+
             }
             setLayerNhaMay(layerNhaMay) {
                 this.layerNhaMay = layerNhaMay;
@@ -219,12 +255,17 @@ define([
                     this.showElement($("#pane-tools"));
                     this.queryLayer.start();
                 })
+                $("#search-widget").click(() => {
+                    this.showElement($("#search-panel"));
 
+                });
                 // Hiển thị ẩn lớp dữ liệu
                 $("#layer-list-widget").click(() => {
                     this.showElement($("#layer-list-panel"));
 
                 });
+
+               
                 // map - tools (zoom in, out, location)
                 $("#zoom-in").click(() => {
                     this.view.zoom += 1;

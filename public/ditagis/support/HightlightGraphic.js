@@ -28,7 +28,7 @@ define([
                 }
             })
             this.symbolPlg = options.symbolPlg || {
-                type:'simple-fill',
+                type: 'simple-fill',
                 color: [255, 0, 0, 0.0],
                 size: 3,
                 width: 4,
@@ -69,9 +69,9 @@ define([
         clear() {
             this.removeAll();
         }
-        rendererGraphic(type,geometry) {
+        rendererGraphic(type, geometry) {
             let symbol;
-            
+
             if (type === 'point') {
                 symbol = this.symbolMarker;
             } else if (type === 'polyline') {
@@ -81,13 +81,14 @@ define([
             }
             let graphic = new Graphic({
                 geometry: geometry,
-                symbol:symbol
+                symbol: symbol
             });
             return graphic;
         }
         add(graphic) {
-            const type = graphic.layer.geometryType;
-            let renderergraphic = this.rendererGraphic(type,graphic.geometry);
+            var layer = graphic.layer || graphic.sourceLayer;
+            const type = layer.geometryType;
+            let renderergraphic = this.rendererGraphic(type, graphic.geometry);
             this.tmpGraphics.push(renderergraphic);
             this.view.graphics.add(renderergraphic);
         }

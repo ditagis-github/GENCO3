@@ -72,6 +72,7 @@ define([
                                     }).then(res => {
                                         //neu tim duoc
                                         if (res.features[0]) {
+                                            var ft = res.features[0];
                                             this.view.popup.open({
                                                 features: [ft],
                                                 updateLocationEnabled: true
