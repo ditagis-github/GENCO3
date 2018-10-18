@@ -1,4 +1,4 @@
-define(["ditagis/core/LinkAPI","esri/views/MapView", "ditagis/classes/SystemStatusObject", "esri/request"], function (LinkAPI, MapView, SystemStatusObject, esriRequest) {
+define(["ditagis/core/LinkAPI", "esri/views/MapView", "ditagis/classes/SystemStatusObject", "esri/request"], function (LinkAPI, MapView, SystemStatusObject, esriRequest) {
     "use strict";
     class MapViewDTG extends MapView {
         constructor(params) {
@@ -7,6 +7,25 @@ define(["ditagis/core/LinkAPI","esri/views/MapView", "ditagis/classes/SystemStat
         }
         session() {
             return new Promise((resolve, reject) => {
+                $.ajax(LinkAPI.ACCOUNT_PROFILE, {
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": localStorage.login_code
+                    },
+                    statusCode: {
+                        0: function () {
+                            location.href = '/login.html';
+                        }
+                    }
+                })
+                    .then(rs => {
+                        view.systemVariable.user = rs;
+                    })
+                    .fail(fl => {
+                        console.log(fl.responseJSON);
+                    })
                 $.ajax(LinkAPI.LAYER_INFOS, {
                     contentType: 'application/json',
                     dataType: 'json',
@@ -14,9 +33,9 @@ define(["ditagis/core/LinkAPI","esri/views/MapView", "ditagis/classes/SystemStat
                     headers: {
                         "Authorization": localStorage.login_code
                     },
-                    statusCode:{
-                        0:function(){
-                            location.href='/login.html';
+                    statusCode: {
+                        0: function () {
+                            location.href = '/login.html';
                         }
                     }
                 })
@@ -28,6 +47,7 @@ define(["ditagis/core/LinkAPI","esri/views/MapView", "ditagis/classes/SystemStat
                         console.log(fl.responseJSON);
                     })
             });
+
         }
         switchBasemap(basemaps) {
             basemaps.forEach(function (f) {
