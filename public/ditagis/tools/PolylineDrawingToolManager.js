@@ -45,9 +45,7 @@ define([
                 this.addFeature(geometry);
         }
         addFeature(geometry) {
-            this.polylineEditing.draw(this.drawLayer, geometry, this.view).then((res) => {
-            }).catch(err => {
-            })
+            this.polylineEditing.draw(this.drawLayer, geometry, this.view).then((res) => {}).catch(err => {})
         }
         registerEvent() {
             this.simpleDrawPolyline.on('draw-finish', (geometry) => {
@@ -64,12 +62,8 @@ define([
             // }
             // this.inputCoordinate.open();
             this.drawInput.getInputPolyline().then(rs => {
-                if (rs.paths) {
-                    var geometry = new Polyline({
-                        paths: rs.paths,
-                        spatialReference: this.view.spatialReference
-                    })
-                    this.addFeature(geometry);
+                if (rs.graphic) {
+                    this.addFeature(rs.graphic.geometry);
                 }
 
             });
