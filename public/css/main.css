@@ -3,7 +3,7 @@
 }
 .header-navbar {
     display: grid;
-    grid-template-columns: 15% auto 11%;
+    grid-template-columns: 15% auto auto;
     padding: 2px;
 }
 .logo img {
@@ -142,6 +142,9 @@ li.panelGroup {
     border: solid 1px #ccc;
     background: #4285f4;
     color: #fff;
+}
+li.dropdown {
+    float: right;
 }
 td.icon-label {
     line-height: 31px;
@@ -331,9 +334,12 @@ table.table .form-control.error {
 table.table td .edit {
     display: none;
 }
+nav.navbar {
+    width: 99%;
+}
 .nav {
     margin: 0;
-    margin-right: 8px;
+    
 }
 .nav .open>a,.nav .open>a:hover,.nav .open>a:focus {
     background-color: #eee;

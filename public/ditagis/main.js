@@ -1,4 +1,4 @@
-document.getElementById("userName").innerHTML = localStorage.getItem("username");
+
 require([
     "esri/Map",
     "ditagis/views/MapView",
@@ -53,6 +53,7 @@ require([
         view.session().then(function (user) {
             initFeatureLayer();
             mapTools = new MapTools(view);
+            document.getElementById("userName").innerHTML = view.systemVariable.user.DisplayName;
         });
 
         function initFeatureLayer() {
