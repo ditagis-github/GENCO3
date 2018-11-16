@@ -1,3 +1,37 @@
+nav.navbar {
+  width:100%;
+  margin: auto;
+  height: 200px;
+}
+.img-login{
+  width: 200px;
+  height: 100px;
+  
+}
+.logo-login{
+  text-align: center;
+}
+.header-login {
+  position: absolute;
+  z-index: 15;
+  top: 50%;
+  left: 50%;
+  margin: -90px 0 0 -212px;
+}
+.name-company{
+  color: #ef2c33;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.name-system{
+  color: #0082c6;
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
 .hidden{
     visibility: visible;
   }
@@ -119,8 +153,9 @@
   /*
   modal windows
   */
-  .center-vertical {height: 100vh;}
-  .center-vertical #form-login {top: 50%;margin: auto;position: relative;-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);}
+  .center-vertical {height: 69vh;;}
+  .center-vertical #form-login {
+    top: 33%;margin: auto;position: relative;-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);}
   .form-horizontal .form-buttons {
   float: right;
   }
@@ -144,3 +179,5 @@
   margin-top: 10px;
   margin-bottom: 0px;
   }
+
+  

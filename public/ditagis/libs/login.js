@@ -1,3 +1,5 @@
+ // var gisapi_url = "https://gis.genco3.com/gisapi/";
+ var gisapi_url = "https://ditagis.com/genco3/";
 localStorage.clear();
 let input = $('input[name="remember"]');
 $('#remember').click(function () {
@@ -13,7 +15,7 @@ $('#remember').click(function () {
     input.val(val);
 })
 function login() {
-    $.ajax("https://ditagis.com/genco3/api/Login", {
+    $.ajax(gisapi_url + "api/Login", {
         contentType: 'application/json',
         dataType: 'json',
         type: 'POST',
