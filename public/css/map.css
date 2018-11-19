@@ -1023,7 +1023,7 @@ label {
 img#img_camera {
     width: 100%;
     height: auto;
-}
+}   
 
 span.esri-layer-list__item-toggle-icon.esri-icon-visible:before {
     padding-top: -2px;

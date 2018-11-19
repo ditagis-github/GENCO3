@@ -158,13 +158,18 @@ define([
                 this.view.popup.watch('dockEnabled', (newValue) => {
                     var selectedFeature = this.view.popup.selectedFeature;
                     if (selectedFeature.sourceLayer.id === "cameraLYR" && newValue) {
-                        $(".esri-popup .esri-widget").css({
-                            "top": "41px",
-                            "right": "24px",
-                            "width": "84%",
-                            "height": "100%",
-                            "max-height": "97%"
-                        });
+                        var link_url = selectedFeature.attributes["LinkAPI"];
+                        if (link_url) {
+                            var url = `${LinkAPI.CAMERA}${link_url}/`;
+                            this.getCameraImage(url);
+                            $(".esri-popup .esri-widget").css({
+                                "top": "41px",
+                                "right": "24px",
+                                "width": "84%",
+                                "height": "100%",
+                                "max-height": "97%"
+                            });
+                        }
                     }
                     else {
                         $('.esri-popup .esri-widget').removeAttr('style');
@@ -439,30 +444,40 @@ define([
                 let container = $('<div/>', {
                     class: 'popup-content',
                 });
+                var link_url = attributes["LinkAPI"];
                 $('<img/>', {
                     id: "img_camera",
                 }).appendTo(container);
-                var link_url = attributes["LinkAPI"];
+                kendo.ui.progress($(".esri-popup .esri-widget"), true);
+
                 if (link_url) {
+                    var url = `${LinkAPI.CAMERA}${link_url}/`;
+                    this.getCameraImage(url);
                     var interval = setInterval(() => {
-                        $.ajax({
-                            url: `${LinkAPI.CAMERA}${link_url}/`,
-                            success: (result) => {
-                                if (result) {
-                                    // $("#img_camera")[0].setAttribute('src', result);
-                                    $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
-                                } else {
-                                    $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
-                                    this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
-                                    this.listInterval = []; // xóa hết giá trị
-                                }
-                            }
-                        });
+                        this.getCameraImage(url);
                     }, 5000);
                     this.listInterval.push(interval);
 
                 }
                 return container[0].outerHTML;
+            }
+            getCameraImage(url) {
+                $.ajax({
+                    url: url,
+                    success: (result) => {
+                        if ($("#img_camera")[0]) {
+                            kendo.ui.progress($(".esri-popup .esri-widget"), false);
+                            if (result) {
+                                // $("#img_camera")[0].setAttribute('src', result);
+                                $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                            } else {
+                                $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
+                                this.listInterval = []; // xóa hết giá trị
+                            }
+                        }
+                    }
+                });
             }
             contentPopup(target) {
                 return __awaiter(this, void 0, void 0, function* () {
