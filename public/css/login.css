@@ -28,9 +28,12 @@ nav.navbar {
 .name-system{
   color: #0082c6;
   text-align: center;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: bold;
   text-transform: uppercase;
+}
+.title-login {
+  padding-top: 10px;
 }
 .hidden{
     visibility: visible;

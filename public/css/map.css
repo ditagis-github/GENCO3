@@ -656,6 +656,14 @@ div#pane>.btn-group {
     font-family: "Roboto", Helvetica, Arial, sans-serif
 }
 
+/* .esri-popup .esri-widget {
+    background-color: #fff;
+    top: 41px;
+    right: 24px;
+    width: 84%;
+    height: 100%;
+    max-height: 97%;
+} */
 .esri-popup .esri-widget {
     background-color: #fff;
 }
@@ -1013,8 +1021,8 @@ label {
 }
 
 img#img_camera {
-    height: 200px;
-    width: 300px;
+    width: 100%;
+    height: auto;
 }
 
 span.esri-layer-list__item-toggle-icon.esri-icon-visible:before {

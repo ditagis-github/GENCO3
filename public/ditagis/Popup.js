@@ -141,6 +141,34 @@ define([
 
                         this.hightlightGraphic.clear();
                     }
+                    var selectedFeature = this.view.popup.selectedFeature;
+                    if (selectedFeature && selectedFeature.sourceLayer && selectedFeature.sourceLayer.id === "cameraLYR" && this.view.popup.dockEnabled) {
+                        $(".esri-popup .esri-widget").css({
+                            "top": "41px",
+                            "right": "24px",
+                            "width": "84%",
+                            "height": "100%",
+                            "max-height": "97%"
+                        });
+                    }
+                    else {
+                        $('.esri-popup .esri-widget').removeAttr('style');
+                    }
+                });
+                this.view.popup.watch('dockEnabled', (newValue) => {
+                    var selectedFeature = this.view.popup.selectedFeature;
+                    if (selectedFeature.sourceLayer.id === "cameraLYR" && newValue) {
+                        $(".esri-popup .esri-widget").css({
+                            "top": "41px",
+                            "right": "24px",
+                            "width": "84%",
+                            "height": "100%",
+                            "max-height": "97%"
+                        });
+                    }
+                    else {
+                        $('.esri-popup .esri-widget').removeAttr('style');
+                    }
                 });
                 this.view.popup.watch('selectedFeature', (newVal, oldVal) => {
                     // nếu giá trị mới khác giá trị cũ
@@ -170,7 +198,7 @@ define([
                 let actionId = event.action.id,
                     selectedFeature = this.view.popup.viewModel.selectedFeature,
                     layer = selectedFeature.layer;
-                    if(!layer) return;
+                if (!layer) return;
                 const per = layer.permission;
                 switch (actionId) {
                     case "update":
@@ -421,7 +449,8 @@ define([
                             url: `${LinkAPI.CAMERA}${link_url}/`,
                             success: (result) => {
                                 if (result) {
-                                    $("#img_camera")[0].setAttribute('src', result);
+                                    // $("#img_camera")[0].setAttribute('src', result);
+                                    $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
                                 } else {
                                     $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
                                     this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
