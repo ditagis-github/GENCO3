@@ -1,14 +1,12 @@
 define(["../../core/Base",
-  "esri/geometry/Point",
   "esri/geometry/Polyline",
   "esri/Graphic",
   "esri/layers/GraphicsLayer",
-  "esri/tasks/support/ProjectParameters", "esri/tasks/GeometryService",
-  "esri/geometry/support/webMercatorUtils"
+  "esri/tasks/support/ProjectParameters", "esri/tasks/GeometryService"
 ], function (
-  Base, Point, Polyline,
+  Base, Polyline,
   Graphic, GraphicsLayer,
-  ProjectParameters, GeometryService, webMercatorUtils) {
+  ProjectParameters, GeometryService) {
   "use strict";
   class DrawInput extends Base {
     constructor(view) {
@@ -26,22 +24,38 @@ define(["../../core/Base",
       })
     }
     refreshMainGraphic(paths) {
-      this.graphicsLayer.removeAll();
-      var graphic = new Graphic({
-        geometry: new Polyline({
+      return new Promise((resolve, reject) => {
+        this.graphicsLayer.removeAll();
+        // Create a polygon geometry
+        var polyline = new Polyline({
           paths: paths,
-          spatialReference: this.view.spatialReference
-        }),
-        symbol: {
-          type: "simple-line",
-          color: [178, 102, 234],
-          width: 1,
-          cap: "round",
-          join: "round"
-        }
+          spatialReference: {
+            wkt: 'PROJCS["VN_2000_KT108-15_3deg",GEOGCS["GCS_VN_2000",DATUM["D_Vietnam_2000",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",108.25],PARAMETER["Scale_Factor",0.9999],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]',
+          }
+        });
+
+        let projectParameters = new ProjectParameters({
+          geometries: [polyline],
+          outSpatialReference: view.spatialReference
+        });
+        this.geometryService.project(projectParameters).then(results => {
+
+          var graphic = new Graphic({
+            geometry: results[0],
+            symbol: {
+              type: "simple-line",
+              color: [178, 102, 234],
+              width: 1,
+              cap: "round",
+              join: "round"
+            }
+          });
+          this.graphicsLayer.add(graphic);
+          this.view.goTo(graphic);
+          resolve(graphic);
+        });
       });
-      this.graphicsLayer.add(graphic);
-      this.view.goTo(graphic);
+
     }
     closeWindowKendo() {
       this.inputWindow.destroy();
@@ -51,12 +65,10 @@ define(["../../core/Base",
     getPathsOfTable(datas) {
       var paths = [];
       datas.forEach(data => {
-        var xy = webMercatorUtils.lngLatToXY(parseFloat(data.X), parseFloat(data.Y));
-        paths.push(xy);
+        paths.push([parseFloat(data.X), parseFloat(data.Y)]);
       });
 
-      this.refreshMainGraphic(paths);
-      return paths;
+      return this.refreshMainGraphic(paths);
     }
 
     getInputPolyline() {
@@ -110,10 +122,12 @@ define(["../../core/Base",
             if (!confirm("Chắc chắn thêm đối tượng?")) {
               e.preventDefault();
             } else {
-              let paths = this.getPathsOfTable(this.windowContent.data("kendoGrid").dataSource.data());
-              resolve({
-                paths
-              });
+              this.getPathsOfTable(this.windowContent.data("kendoGrid").dataSource.data())
+                .then(g =>
+                  resolve({
+                    graphic: g
+                  }));
+
               this.windowContent.data("kendoGrid").dataSource.data([]);
             }
           }
@@ -128,7 +142,7 @@ define(["../../core/Base",
             left: 8
           },
           width: 400,
-          height:400,
+          height: 400,
           visible: false,
           actions: [
             "Close"
