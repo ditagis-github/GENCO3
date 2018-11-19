@@ -1,5 +1,5 @@
- // var gisapi_url = "https://gis.genco3.com/gisapi/";
- var gisapi_url = "https://ditagis.com/genco3/";
+ var gisapi_url = "https://gis.genco3.com/gisapi/";
+//  var gisapi_url = "https://ditagis.com/genco3/";
 localStorage.clear();
 let input = $('input[name="remember"]');
 $('#remember').click(function () {

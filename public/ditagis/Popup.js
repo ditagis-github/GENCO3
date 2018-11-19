@@ -461,6 +461,9 @@ define([
                 $('<img/>', {
                     id: "img_camera",
                 }).appendTo(container);
+                $("#img_camera").on("error", function () {
+                    console.log("error");
+                });
                 kendo.ui.progress($(".esri-popup .esri-widget"), true);
 
                 if (link_url) {
@@ -478,16 +481,23 @@ define([
                 $.ajax({
                     url: url,
                     success: (result) => {
-                        if ($("#img_camera")[0]) {
-                            kendo.ui.progress($(".esri-popup .esri-widget"), false);
+                        var img_camera = $("#img_camera");
+                        if (img_camera[0]) {
                             if (result) {
-                                // $("#img_camera")[0].setAttribute('src', result);
-                                $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                img_camera[0].setAttribute('src', result);
                             } else {
-                                $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                img_camera[0].setAttribute('src', "../public/images/error-camera.jpg");
                                 this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
                                 this.listInterval = []; // xóa hết giá trị
                             }
+                            img_camera[0].onerror =  () =>{
+                                img_camera[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
+                                this.listInterval = []; // xóa hết giá trị
+                            };
+                            img_camera[0].onload =  () =>{
+                                kendo.ui.progress($(".esri-popup .esri-widget"), false);
+                            };
                         }
                     }
                 });

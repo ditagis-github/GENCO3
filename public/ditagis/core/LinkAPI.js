@@ -1,6 +1,6 @@
 define([], function () {
-    // var gisapi_url = "https://gis.genco3.com/gisapi/";
-    var gisapi_url = "https://ditagis.com/genco3/";
+    var gisapi_url = "https://gis.genco3.com/gisapi/";
+    // var gisapi_url = "https://ditagis.com/genco3/";
     const linkAPI = {
         ACCOUNT_PROFILE: gisapi_url + "api/Account/Profile",
         CAMERA:gisapi_url +  "api/Camera/",
