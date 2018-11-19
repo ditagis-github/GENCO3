@@ -153,6 +153,7 @@ define([
                     }
                     else {
                         $('.esri-popup .esri-widget').removeAttr('style');
+                        kendo.ui.progress($(".esri-popup .esri-widget"), false);
                     }
                 });
                 this.view.popup.watch('dockEnabled', (newValue) => {
@@ -173,6 +174,7 @@ define([
                     }
                     else {
                         $('.esri-popup .esri-widget').removeAttr('style');
+                        kendo.ui.progress($(".esri-popup .esri-widget"), false);
                     }
                 });
                 this.view.popup.watch('selectedFeature', (newVal, oldVal) => {
@@ -193,6 +195,7 @@ define([
                     }
                     else {
                         $('.esri-popup .esri-widget').removeAttr('style');
+                        kendo.ui.progress($(".esri-popup .esri-widget"), false);
                     }
                 });
                 this.view.popup.on("trigger-action", (evt) => {
@@ -452,6 +455,7 @@ define([
                 return itemDiv;
             }
             contentImages(target) {
+                this.view.popup.dockEnabled = true;
                 const graphic = target.graphic,
                     attributes = graphic.attributes;
                 let container = $('<div/>', {
@@ -465,7 +469,6 @@ define([
                     console.log("error");
                 });
                 kendo.ui.progress($(".esri-popup .esri-widget"), true);
-
                 if (link_url) {
                     var url = `${LinkAPI.CAMERA}${link_url}/`;
                     this.getCameraImage(url);
@@ -484,6 +487,7 @@ define([
                         var img_camera = $("#img_camera");
                         if (img_camera[0]) {
                             if (result) {
+                                kendo.ui.progress($(".esri-popup .esri-widget"), true);
                                 img_camera[0].setAttribute('src', result);
                             } else {
                                 img_camera[0].setAttribute('src', "../public/images/error-camera.jpg");
