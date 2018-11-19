@@ -181,6 +181,19 @@ define([
                         this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
                         this.listInterval = []; // xóa hết giá trị
                     }
+                    var selectedFeature = this.view.popup.selectedFeature;
+                    if (selectedFeature && selectedFeature.sourceLayer && selectedFeature.sourceLayer.id === "cameraLYR" && this.view.popup.dockEnabled) {
+                        $(".esri-popup .esri-widget").css({
+                            "top": "41px",
+                            "right": "24px",
+                            "width": "84%",
+                            "height": "100%",
+                            "max-height": "97%"
+                        });
+                    }
+                    else {
+                        $('.esri-popup .esri-widget').removeAttr('style');
+                    }
                 });
                 this.view.popup.on("trigger-action", (evt) => {
                     this.triggerActionHandler(evt);
