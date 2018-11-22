@@ -152,6 +152,7 @@ define([
                         });
                     } else {
                         $('.esri-popup .esri-widget').removeAttr('style');
+                        kendo.ui.progress($(".esri-popup .esri-widget"), false);
                     }
                 });
                 this.view.popup.watch('dockEnabled', (newValue) => {
@@ -171,6 +172,7 @@ define([
                         }
                     } else {
                         $('.esri-popup .esri-widget').removeAttr('style');
+                        kendo.ui.progress($(".esri-popup .esri-widget"), false);
                     }
                 });
                 this.view.popup.watch('selectedFeature', (newVal, oldVal) => {
@@ -178,6 +180,20 @@ define([
                     if (newVal !== oldVal) {
                         this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
                         this.listInterval = []; // xóa hết giá trị
+                    }
+                    var selectedFeature = this.view.popup.selectedFeature;
+                    if (selectedFeature && selectedFeature.sourceLayer && selectedFeature.sourceLayer.id === "cameraLYR" && this.view.popup.dockEnabled) {
+                        $(".esri-popup .esri-widget").css({
+                            "top": "41px",
+                            "right": "24px",
+                            "width": "84%",
+                            "height": "100%",
+                            "max-height": "97%"
+                        });
+                    }
+                    else {
+                        $('.esri-popup .esri-widget').removeAttr('style');
+                        kendo.ui.progress($(".esri-popup .esri-widget"), false);
                     }
                 });
                 this.view.popup.on("trigger-action", (evt) => {
@@ -437,6 +453,7 @@ define([
                 return itemDiv;
             }
             contentImages(target) {
+                this.view.popup.dockEnabled = true;
                 const graphic = target.graphic,
                     attributes = graphic.attributes;
                 let container = $('<div/>', {
@@ -446,7 +463,9 @@ define([
                 $('<img/>', {
                     id: "img_camera",
                 }).appendTo(container);
-
+                $("#img_camera").on("error", function () {
+                    console.log("error");
+                });
                 if (link_url) {
                     kendo.ui.progress($(".esri-popup .esri-widget"), true);
 
@@ -464,16 +483,24 @@ define([
                 $.ajax({
                     url: url,
                     success: (result) => {
-                        if ($("#img_camera")[0]) {
-                            kendo.ui.progress($(".esri-popup .esri-widget"), false);
+                        var img_camera = $("#img_camera");
+                        if (img_camera[0]) {
                             if (result) {
-                                // $("#img_camera")[0].setAttribute('src', result);
-                                $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                kendo.ui.progress($(".esri-popup .esri-widget"), true);
+                                img_camera[0].setAttribute('src', result);
                             } else {
-                                $("#img_camera")[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                img_camera[0].setAttribute('src', "../public/images/error-camera.jpg");
                                 this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
                                 this.listInterval = []; // xóa hết giá trị
                             }
+                            img_camera[0].onerror =  () =>{
+                                img_camera[0].setAttribute('src', "../public/images/error-camera.jpg");
+                                this.listInterval.forEach(interval => clearInterval(interval)); // xóa interval
+                                this.listInterval = []; // xóa hết giá trị
+                            };
+                            img_camera[0].onload =  () =>{
+                                kendo.ui.progress($(".esri-popup .esri-widget"), false);
+                            };
                         }
                     }
                 });
