@@ -1,5 +1,5 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
+    return new(P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) {
             try {
                 step(generator.next(value));
@@ -25,12 +25,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 define([
-    "ditagis/core/LinkAPI",
-    "dojo/on", "dojo/dom-construct",
-    "ditagis/support/HightlightGraphic",
-    "ditagis/support/Editing",
-    "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
-],
+        "ditagis/core/LinkAPI",
+        "dojo/on", "dojo/dom-construct",
+        "ditagis/support/HightlightGraphic",
+        "ditagis/support/Editing",
+        "esri/symbols/SimpleLineSymbol", "esri/core/watchUtils", "esri/PopupTemplate",
+    ],
     function (LinkAPI, on, domConstruct, HightlightGraphic, EditingSupport,
         SimpleLineSymbol, watchUtils, PopupTemplate,
     ) {
@@ -150,8 +150,7 @@ define([
                             "height": "100%",
                             "max-height": "97%"
                         });
-                    }
-                    else {
+                    } else {
                         $('.esri-popup .esri-widget').removeAttr('style');
                     }
                 });
@@ -170,8 +169,7 @@ define([
                                 "max-height": "97%"
                             });
                         }
-                    }
-                    else {
+                    } else {
                         $('.esri-popup .esri-widget').removeAttr('style');
                     }
                 });
@@ -448,9 +446,10 @@ define([
                 $('<img/>', {
                     id: "img_camera",
                 }).appendTo(container);
-                kendo.ui.progress($(".esri-popup .esri-widget"), true);
 
                 if (link_url) {
+                    kendo.ui.progress($(".esri-popup .esri-widget"), true);
+
                     var url = `${LinkAPI.CAMERA}${link_url}/`;
                     this.getCameraImage(url);
                     var interval = setInterval(() => {
