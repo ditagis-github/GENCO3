@@ -486,7 +486,6 @@ define([
                         var img_camera = $("#img_camera");
                         if (img_camera[0]) {
                             if (result) {
-                                kendo.ui.progress($(".esri-popup .esri-widget"), true);
                                 img_camera[0].setAttribute('src', result);
                             } else {
                                 img_camera[0].setAttribute('src', "../public/images/error-camera.jpg");
