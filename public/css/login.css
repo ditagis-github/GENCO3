@@ -182,5 +182,10 @@ nav.navbar {
   margin-top: 10px;
   margin-bottom: 0px;
   }
+  .footer-copyright.text-center.py-3 {
+    color: #1a78c2;
+    padding: 10px 0;
+    margin-top: -5px;
+}
 
   
