@@ -29,8 +29,8 @@ body{
     overflow: hidden;
 }
 #viewDiv {
-    height: calc(100vh - 50px);;
-    width: 99%;
+    height: calc(100vh - 45px);;
+    width: 100%;
     border: solid 1px #ccc;
   }
 

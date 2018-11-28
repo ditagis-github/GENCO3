@@ -150,6 +150,8 @@ require([
                 layerNhaMay = event.layerView.layer;
                 new Renderer(view, layerNhaMay);
                 mapTools.setLayerNhaMay(layerNhaMay);
+                $('.esri-component.esri-attribution.esri-widget').css("visibility", "visible");
+                $('.esri-attribution__powered-by').text('Copyright © 2018 TỔNG CÔNG TY PHÁT ĐIỆN 3 - CTCP');
             }
             if (event.layer.id === "baoLYR") {
                 var layerBao = event.layerView.layer;

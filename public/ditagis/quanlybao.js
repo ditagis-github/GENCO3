@@ -34,6 +34,8 @@ require([
         view.systemVariable.user = MapConfigs.user;
         view.session().then(() => {
             initFeatureLayer();
+            $('.esri-component.esri-attribution.esri-widget').css("visibility", "visible");
+            $('.esri-attribution__powered-by').text('Copyright © 2018 TỔNG CÔNG TY PHÁT ĐIỆN 3 - CTCP');
         });
         this.outFields = ['OBJECTID', 'TenBao', 'TrangThai', 'NguoiCapNhat', 'NgayCapNhat', 'GhiChu'];
         function initFeatureLayer() {
@@ -217,7 +219,7 @@ require([
             result.stopPropagation();
             let objectID = result.currentTarget.attributes.alt.nodeValue;
 
-            if(this.windowKendo && this.windowKendo.data("kendoWindow")){
+            if (this.windowKendo && this.windowKendo.data("kendoWindow")) {
                 this.windowKendo.data("kendoWindow").close();
                 this.windowKendo = null;
             }

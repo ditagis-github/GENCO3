@@ -44,7 +44,7 @@
     position: fixed;
     z-index: 99999;
     right: 20px;
-    bottom: 10px;
+    bottom: 30px;
     border-radius: 3px;
     font-weight: 700;
 }
@@ -96,7 +96,7 @@ span.btn-danger.pull-right.closePanel.closePanel_print {
     background-color: #f9f9f9;
     float: right;
     position: absolute;
-    bottom: 10px;
+    bottom: 30px;
     right: 55px;
     z-index: 999;
     overflow: hidden;
@@ -342,10 +342,14 @@ fieldset[disabled] .btn-primary.active {
 .label.pull-right>img {
     width: 40px;
 }
+/* Footer begin */
 
 .esri-component.esri-attribution.esri-widget {
-    display: none;
+    font-size: 12px;
+    visibility: hidden;;
 }
+/* Footer end */
+
 
 .hidden {
     display: none;
