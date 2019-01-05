@@ -17,8 +17,8 @@ define(["../core/Base",
           kendo.ui.progress(this.attributeslayer, false)
         })
         this.bindingDataSource();
-        this.displayFields = {
-        }
+        this.hiddenQueryFields = ["DonViCapNhat", "NgayCapNhat", "NguoiCapNhat", "MaDoiTuong", "Ten"];
+        this.selectQueryFields = ["TenNhaMay", "MaNhaMay", "MaTruSo", "TenTruSo"];
         this.reportObjects = new ReportObjects(view);
         this.render();
       }
@@ -77,12 +77,13 @@ define(["../core/Base",
         }
       }
       onCbChangeQueryLayer(evt) {
-        var div = this.dropDownLayers_change(evt);
-        this.attributeslayer.empty();
-        this.attributeslayer.append(div);
+        this.dropDownLayers_change(evt).then((div) => {
+          this.attributeslayer.empty();
+          this.attributeslayer.append(div);
+        });
+
       }
-      dropDownLayers_change(evt) {
-        var that = this;
+      async dropDownLayers_change(evt) {
         var attributeslayer = $("<div/>");
         if (!evt) return;
         var selected = evt.sender._old;
@@ -92,14 +93,22 @@ define(["../core/Base",
             class: 'fieldList'
           }).appendTo(attributeslayer);
           let optionObservable = {};
-          var fields = layer.getQueryFields(this.displayFields[selected]);
+          var fields = layer.getQueryFields();
           for (const field of fields) {
-            if (field.type === 'oid')
+            var isHiddenQueryField = false;
+            for (const hiddenQueryField of this.hiddenQueryFields) {
+              if (field.name == hiddenQueryField) {
+                isHiddenQueryField = true;
+                break;
+              }
+            }
+            if (field.type === 'oid' || isHiddenQueryField) {
               continue;
+            }
             optionObservable[field.name] = null;
-            let li, label, input;
+            let li, input;
             li = $('<li/>').appendTo(ul);
-            label = $('<label/>', {
+            $('<label/>', {
               for: 'field' + field.name,
               text: field.alias
             }).appendTo(li);
@@ -114,13 +123,69 @@ define(["../core/Base",
                 this.btnQueryClickHandler(layer, observable)
               }
             });
-            if (field.domain && field.domain.type === "codedValue") {
+            var isSelectQueryField = false;
+            for (const selectQueryField of this.selectQueryFields) {
+              if (field.name == selectQueryField) {
+                isSelectQueryField = true;
+                break;
+              }
+            }
+            if (isSelectQueryField) {
+              var features = await this.queryFeatureLayer(layer, field.name);
+              var rs_Features = await this.queryFeatureLayer(layer);
+              input[0].features = features;
+              input.kendoComboBox({
+                dataTextField: field.name,
+                dataValueField: field.name,
+                dataSource: this.getDataSource(features),
+              });
+              input.bind("change", combobox_change.bind(this));
+              function combobox_change (e) {
+                let value = e.currentTarget.value;
+                var changeFields;
+                if (field.name == "MaTruSo") {
+                  changeFields = ["TenNhaMay", "TenTruSo", "MaNhaMay"];
+                }
+                else if (field.name == "MaNhaMay") {
+                  changeFields = ["TenNhaMay"];
+                }
+                else changeFields = [];
+                if (changeFields.length > 0)
+                  for (const changeField of changeFields) {
+                    let inputField = $(ul.find(`input[name=${changeField}]`));
+                    if (inputField.length > 0) {
+                      if (value) {
+                        inputField.kendoComboBox({
+                          dataTextField: changeField,
+                          dataValueField: changeField,
+                          dataSource: this.getDataSource(rs_Features)
+                        });
+                        inputField.data('kendoComboBox').dataSource.filter({
+                          field: field.name,
+                          operator: "eq",
+                          value: value
+                        });
+                      }
+                      else {
+                        var features = inputField[0].features;
+                        inputField.kendoComboBox({
+                          dataTextField: changeField,
+                          dataValueField: changeField,
+                          dataSource: this.getDataSource(features),
+                        });
+                      }
+                      inputField.data("kendoComboBox").value("");
+                    }
+                  }
+              }
+            }
+            else if (field.domain && field.domain.type === "coded-value") {
               const codedValues = field.domain.codedValues;
               if (codedValues.length > 0) {
-                input.kendoDropDownList({
+                input.kendoComboBox({
                   dataTextField: "name",
                   dataValueField: "code",
-                  dataSource: codedValues,
+                  dataSource: codedValues
                 });
               }
             } else if (field.type === 'date') {
@@ -145,6 +210,13 @@ define(["../core/Base",
         }
         return attributeslayer;
       }
+      getDataSource(rs) {
+        if (!rs) return null;
+        let features = rs.features;
+        return features.map(function (f) {
+          return f.attributes;
+        });
+      }
       btnQueryClickHandler(layer, observable) {
         this.fire("query-start", {
           layer,
@@ -158,11 +230,17 @@ define(["../core/Base",
           if (!observable[field.name])
             continue;
           let value = null;
-          if (field.name === 'HuyenTXTP') {
-            value = observable[field.name]['MaHuyenTp'];
-          } else if (field.name === 'XaPhuongTT') {
-            value = observable[field.name]['MaXaPhuongTT'];
-          } else if (field.domain && field.domain.type === "codedValue") {
+          var isSelectQueryField = false;
+          for (const selectQueryField of this.selectQueryFields) {
+            if (field.name == selectQueryField) {
+              isSelectQueryField = true;
+              break;
+            }
+          }
+          if (isSelectQueryField) {
+            value = observable[field.name][field.name];
+          }
+          else if (field.domain && field.domain.type === "coded-value") {
             //tìm theo name
             value = observable[field.name].code;
           } else
@@ -207,6 +285,14 @@ define(["../core/Base",
           });
         }
       }
+      queryFeatureLayer(layer, outFields) {
+        var query = layer.createQuery();
+        query.where = "1 = 1";
+        query.outFields = outFields || this.selectQueryFields;
+        query.returnDistinctValues = true;
+        query.returnGeometry = false;
+        return layer.queryFeatures(query);
+      }
       start() {
         this.dropDownLayers.setDataSource(new kendo.data.DataSource({
           group: { field: "group" },
@@ -215,6 +301,7 @@ define(["../core/Base",
         this.fire("click", $(this.pane));
         this.dropDownLayers.bind("change", this.onCbChangeQueryLayer.bind(this))
       }
+
     }
 
     return QueryLayer;

@@ -1,7 +1,7 @@
 define([
     "dojo/dom-construct",
     "ditagis/core/LinkAPI",
-], function (domConstruct,LinkAPI) {
+], function (domConstruct, LinkAPI) {
 
     return class ThoiTiet {
         constructor() {
@@ -22,7 +22,7 @@ define([
                 if (this.manhamay)
                     for (const chiso of cacchiso) {
                         $.ajax({
-                            url: `${LinkAPI.THOITIET_THONGTINMOITRUONG}${this.manhamay}?id=${chiso}`, 
+                            url: `${LinkAPI.THOITIET_THONGTINMOITRUONG}${this.manhamay}?id=${chiso}`,
                             success: function (result) {
                                 document.getElementById("thongtinmoitruong").innerHTML += `
                                 <div class="row-item">
@@ -33,10 +33,9 @@ define([
                                 </div>
                                 `
                             },
-                            error : function(jqXHR, textStatus, errorThrown) { 
-                                if(jqXHR.status == 404 || errorThrown == 'Not Found') 
-                                { 
-                                    console.log('There was a 404 error.'); 
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                if (jqXHR.status == 404 || errorThrown == 'Not Found') {
+                                    console.log('There was a 404 error.');
                                 }
                             }
                         });
@@ -50,7 +49,9 @@ define([
             this.script;
             this.script = document.createElement('script');
             var encodedQuery = "select atmosphere.humidity, wind.speed, item.condition.temp from weather.forecast where woeid in (select woeid from geo.places(1) where text='(" + view.center.latitude + "," + view.center.longitude + ")')";
-            this.script.src = 'https://query.yahooapis.com/v1/public/yql?q='
+            var url = "https://weather-ydn-yql.media.yahoo.com/forecastrss";
+            var url2 = "https://query.yahooapis.com";
+            this.script.src = url + "/v1/public/yql?q="
                 + encodedQuery + "&format=json&callback=laydulieuthoitiet";
             document.head.appendChild(this.script);
 
@@ -62,13 +63,15 @@ define([
             }
             this.script = document.createElement('script');
             var encodedQuery = "select atmosphere.humidity, wind.speed, item.condition.temp from weather.forecast where woeid in (select woeid from geo.places(1) where text='(" + location.latitude + "," + location.longitude + ")')";
-            this.script.src = 'https://query.yahooapis.com/v1/public/yql?q='
+            var url = "https://weather-ydn-yql.media.yahoo.com/forecastrss";
+            var url2 = "https://query.yahooapis.com";
+            this.script.src = url + "/v1/public/yql?q="
                 + encodedQuery + "&format=json&callback=laydulieuthoitiet";
             document.head.appendChild(this.script);
             $("div#weather-panel").show();
             $("#close-widget").show();
         }
-        close(){
+        close() {
             $("#weather-panel").hide();
             $("#close-widget").hide();
         }

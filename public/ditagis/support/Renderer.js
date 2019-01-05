@@ -66,7 +66,6 @@ define([
             this.view.map.add(this.graphicLayer);
             this.queryListNhaMay().then((displayResults) => {
                 var features = displayResults.features;
-                var graphics = [];
                 for (const feature of features) {
                     var pointGraphic = new Graphic({
                         geometry: {

@@ -1006,7 +1006,13 @@ input.input-field {
     border-width: 1px;
     border-style: solid;
 }
-
+span.k-widget.k-combobox{
+    height: 32px;
+    color: #000;
+    border-color: #bcb0b0;
+    border-width: 1px;
+    border-style: solid;
+}
 span.k-widget.k-dropdown.k-header.input-field,
 span.k-widget.k-datepicker.k-header.input-field {
     color: #000;
