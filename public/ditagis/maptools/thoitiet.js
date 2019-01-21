@@ -43,8 +43,29 @@ define([
 
             };
             this.start();
+            this.test();
         }
-
+        test(location,manhamay) {
+            this.manhamay = manhamay;
+            $.ajax({
+                url: "https://weatherbit-v1-mashape.p.rapidapi.com/current?lat="+location.latitude+ "&lon="+location.longitude,
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    "X-RapidAPI-Key": "a376f6fdd6msh9ba450daf42bbaep1e2fd9jsnccab26cf77a8"
+                },
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                   // CallBack(result);
+                   console.log(result);
+                },
+                error: function (error) {
+                    onsole.log("Fail zone");
+                }
+            });
+            $("div#weather-panel").show();
+            $("#close-widget").show();
+        }
         start() {
             this.script;
             this.script = document.createElement('script');

@@ -2911,13 +2911,19 @@ input[type="submit"].btn-block,input[type="reset"].btn-block,input[type="button"
 
 .dropdown-menu>li>a {
     display: block;
-    padding: 3px 20px;
+    padding: 5px 20px;
     clear: both;
     font-weight: normal;
-    line-height: 1.428571429;
+    line-height: 1.8;
     color: #333;
     white-space: nowrap
 }
+.dropdown-menu>li>a:hover{
+    background-color: #4285F4;
+    color: #fff;
+    text-decoration: none;
+}
+
 
 
 
